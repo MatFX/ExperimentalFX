@@ -1,7 +1,5 @@
 package tools.helper.polygon;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -23,7 +21,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -64,7 +65,7 @@ public class PolygonConverter extends Application
         initHoehe = new TextField("64.0");
         
         
-        Button importButton = new Button("Import");
+        Button importButton = new Button("Import/Resize");
         importButton.setOnAction(new EventHandler<ActionEvent>(){
 
 			@Override
@@ -174,6 +175,9 @@ public class PolygonConverter extends Application
 			}
         	
         });
+      
+        
+        
         //TODO raus
         //export die fertige tabelle in ein psuedocode Format
         //Button export = new Button("Export");
@@ -181,17 +185,37 @@ public class PolygonConverter extends Application
         initLinie.getChildren().addAll(new Label("Breite: "), initBreite, new Label("Hoehe: "), initHoehe, importButton, clear);
         vBox.getChildren().add(initLinie);
         
-        HBox tableLine = new HBox(5);
-        tableLine.setPadding(new Insets(5,5,5,5));
-        ScrollPane scrollLeft = new ScrollPane();
+        GridPane gridPane = new GridPane();
+    	gridPane.setHgap(5);
+		gridPane.setVgap(5);
+        RowConstraints row = new RowConstraints();
+        row.setVgrow(Priority.ALWAYS);
+		gridPane.getRowConstraints().add(0, row);
+		gridPane.getRowConstraints().add(1, row);
+		gridPane.getRowConstraints().add(2, row);
+		gridPane.getRowConstraints().add(3, row);	
+    
+		
+		
+		Label labelTableImport = new Label("Tabelle SVG:");
+        Label labelTableExport = new Label("Tabelle Export-Daten:");
         
-        ScrollPane scrollRight = new ScrollPane();
+        gridPane.add(labelTableImport, 0, 0);
+        gridPane.add(labelTableExport, 1, 0);
+		
+		ScrollPane scrollLeft = new ScrollPane();
+		scrollLeft.setFitToWidth(true);
+	    ScrollPane scrollRight = new ScrollPane();
+	    scrollRight.setFitToWidth(true);
         svgWerteTabelle = new TableView<DoubleContainer>();
         ergebnisWerteTabelle = new TableView<DoubleContainer>();
+      
+        svgWerteTabelle.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+       // HBox.setHgrow(svgWerteTabelle, Priority.ALWAYS);
         
         //TODO zwingend erfoderlich dass jede Tabelle seine eigene ColumnDefintion erhält
          TableColumn<DoubleContainer, Double> xSVGCol = new TableColumn<DoubleContainer, Double>("x");
-        xSVGCol.setMinWidth(100);
+        xSVGCol.setMinWidth(200);
         xSVGCol.setCellValueFactory(new PropertyValueFactory<DoubleContainer, Double>("xValue"));
 		
 		TableColumn<DoubleContainer, Double> ySVGCol = new TableColumn<DoubleContainer, Double>("y");
@@ -201,34 +225,43 @@ public class PolygonConverter extends Application
 
 		 
         TableColumn<DoubleContainer, Double> xCol = new TableColumn<DoubleContainer, Double>("x");
-        xCol.setMinWidth(100);
+        xCol.setMinWidth(200);
         xCol.setCellValueFactory(new PropertyValueFactory<DoubleContainer, Double>("xValue"));
 		
 		TableColumn<DoubleContainer, Double> yCol = new TableColumn<DoubleContainer, Double>("y");
 		yCol.setMinWidth(200);
 		yCol.setCellValueFactory(new PropertyValueFactory<DoubleContainer, Double>("yValue"));  
 		
+		
+		
+		
 		svgWerteTabelle.getColumns().addAll(xSVGCol, ySVGCol);
+		
+		
+		
 		ergebnisWerteTabelle.getColumns().addAll(xCol, yCol);
         
         scrollLeft.setContent(svgWerteTabelle);
         scrollRight.setContent(ergebnisWerteTabelle);
+		
+		gridPane.add(scrollLeft, 0, 1);
+        gridPane.add(scrollRight, 1, 1);
         
-        tableLine.getChildren().addAll(scrollLeft, scrollRight);
         
+        Label labelImport = new Label("Import SVG:");
+        Label labelExport = new Label("Export Double[]:");
         
-        vBox.getChildren().add(tableLine);
-        
-        HBox importLine = new HBox(5);
-        importLine.setPadding(new Insets(5,5,5,5));
+        gridPane.add(labelImport, 0, 2);
+        gridPane.add(labelExport, 1, 2);
         
         
         importArea = new TextArea();
         exportArea = new TextArea();
-        importLine.getChildren().addAll(importArea, exportArea);
         
+        gridPane.add(importArea, 0, 3);
+        gridPane.add(exportArea, 1, 3);
         
-        vBox.getChildren().add(importLine);
+        vBox.getChildren().add(gridPane);
         pane.setCenter(vBox);
       
         Scene scene = new Scene(pane, 800, 800);
