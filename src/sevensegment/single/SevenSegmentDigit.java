@@ -1,7 +1,11 @@
-package sevensegment;
+package sevensegment.single;
 
 
 
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import javafx.application.Platform;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -18,6 +22,19 @@ public class SevenSegmentDigit extends Region
 	 */
 	private Polygon a,b,c,d,e,f,g;
 	
+	//Keine richtige Konstante, kann später vom Inhalt noch verändert werden.
+	private Color OFF = Color.web("#767c6c");
+	
+	private Color ON = Color.web("#000000");
+	
+	private Color BACKGROUND = Color.web("#cdcdcd");
+	
+	private Thread animThread = null;
+	
+	private boolean isAnimation = false;
+	
+	//zu beginn werden alle polygon auf OFF gesetzt
+	private int currentValue = -1;
 	
 	public SevenSegmentDigit()
 	{
@@ -26,7 +43,6 @@ public class SevenSegmentDigit extends Region
 		//TODO interfaces und resize auch so
 		this.initGraphics();
 		this.registerListener();
-	
 		
 	}
 
@@ -47,21 +63,30 @@ public class SevenSegmentDigit extends Region
 		f = new Polygon();
 		g = new Polygon();
 		
-		
-		this.drawBackground();
 		this.draw7Segment();
 		
 		
 		//alles auf die Oberfläche ablegen
 		this.getChildren().addAll(background, a, b, c, d, e, f, g);
 	}
+
 	
-	private void draw7Segment() {
-		// TODO Auto-generated method stub
-		
+	public void setONColor(Color onColor)
+	{
+		ON = onColor;
+	}
+	
+	public void setOFFColor(Color offColor)
+	{
+		OFF = offColor;
+	}
+	
+	public void setBACKGROUNDColor(Color backgroundColor)
+	{
+		BACKGROUND = backgroundColor;
 	}
 
-	private void drawBackground() 
+	private void draw7Segment() 
 	{
 		//46
 		double w = this.getWidth();
@@ -75,7 +100,7 @@ public class SevenSegmentDigit extends Region
 		background.setY(0D);
 		background.setWidth(w);
 		background.setHeight(h);
-		background.setFill(Color.web("#5B8C3E"));
+		background.setFill(BACKGROUND);
 	
 		//Erstmal die Punkte leeren; Vorbereitung für die wiederholte Zeichnung
 		a.getPoints().clear();
@@ -179,21 +204,191 @@ public class SevenSegmentDigit extends Region
 		
 		
 		
+		this.repaintDigit();
+	}
+	
+	public void setAndRepaintDigit(int newValue)
+	{
+		this.currentValue = newValue;
+		this.repaintDigit();
+	}
+	
+	public void repaintDigit()
+	{
 		
-		a.setFill(Color.WHITE);
-		b.setFill(Color.WHITE);
-		c.setFill(Color.WHITE);
-		d.setFill(Color.WHITE);
-		e.setFill(Color.WHITE);
-		f.setFill(Color.WHITE);
-		g.setFill(Color.WHITE);
 		
+		switch(currentValue)
+		{
+			case 0:
+				a.setFill(ON);
+				b.setFill(ON);
+				c.setFill(ON);
+				d.setFill(ON);
+				e.setFill(ON);
+				f.setFill(ON);
+				g.setFill(ON);
+				break;
+			
+			case 1:
+				a.setFill(OFF);
+				b.setFill(ON);
+				c.setFill(ON);
+				d.setFill(OFF);
+				e.setFill(OFF);
+				f.setFill(OFF);
+				g.setFill(OFF);
+				break;
+			
+			case 2:
+				a.setFill(ON);
+				b.setFill(ON);
+				c.setFill(OFF);
+				d.setFill(ON);
+				e.setFill(ON);
+				f.setFill(OFF);
+				g.setFill(ON);
+				break;
+			
+			case 3:
+				a.setFill(ON);
+				b.setFill(ON);
+				c.setFill(ON);
+				d.setFill(ON);
+				e.setFill(OFF);
+				f.setFill(OFF);
+				g.setFill(ON);
+				break;
+			case 4:
+				a.setFill(OFF);
+				b.setFill(ON);
+				c.setFill(ON);
+				d.setFill(OFF);
+				e.setFill(OFF);
+				f.setFill(ON);
+				g.setFill(ON);
+				break;
+			
+			case 5:
+				a.setFill(ON);
+				b.setFill(OFF);
+				c.setFill(ON);
+				d.setFill(ON);
+				e.setFill(OFF);
+				f.setFill(ON);
+				g.setFill(ON);
+				break;
+			
+			
+			case 6:
+				a.setFill(ON);
+				b.setFill(OFF);
+				c.setFill(ON);
+				d.setFill(ON);
+				e.setFill(ON);
+				f.setFill(ON);
+				g.setFill(ON);
+			
+				break;
+				
+			case 7:
+				a.setFill(ON);
+				b.setFill(ON);
+				c.setFill(ON);
+				d.setFill(OFF);
+				e.setFill(OFF);
+				f.setFill(OFF);
+				g.setFill(OFF);
+			
+				break;
+			case 8:
+				a.setFill(ON);
+				b.setFill(ON);
+				c.setFill(ON);
+				d.setFill(ON);
+				e.setFill(ON);
+				f.setFill(ON);
+				g.setFill(ON);
+			
+				break;
+			case 9:
+				a.setFill(ON);
+				b.setFill(ON);
+				c.setFill(ON);
+				d.setFill(ON);
+				e.setFill(OFF);
+				f.setFill(ON);
+				g.setFill(ON);
+				break;
+			//alle anderen Werte schalten ab
+			default:
+				a.setFill(OFF);
+				b.setFill(OFF);
+				c.setFill(OFF);
+				d.setFill(OFF);
+				e.setFill(OFF);
+				f.setFill(OFF);
+				g.setFill(OFF);
+				break;
+		}
 	}
 
 	public void resize()
 	{
-		this.drawBackground();
+		this.draw7Segment();
 		
+	}
+
+	public void startAnimation() 
+	{
+		if(animThread != null && animThread.isAlive())
+			animThread.stop();
+		
+		
+		isAnimation = true;
+		Runnable runnable = new Runnable(){
+
+			@Override
+			public void run() 
+			{
+				int minValue = 0;
+				int maxValue = 9;
+				
+				while(isAnimation)
+				{
+					Random ran = new Random();
+					int zufallszahl = ran.nextInt((maxValue - minValue) + 1);
+					System.out.println("ran " + zufallszahl);
+					
+					Platform.runLater(() -> setAndRepaintDigit(zufallszahl));
+					
+
+					try 
+					{
+						TimeUnit.MILLISECONDS.sleep(500);
+					} 
+					catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					}
+					
+				}
+			}	
+			
+		};
+		
+		animThread = new Thread(runnable);
+		animThread.start();
+		
+		
+	
+		
+	}
+
+	public void stopAnimation() 
+	{
+		isAnimation = false;
+		if(animThread != null)
+			animThread.stop();
 	}
 	
 

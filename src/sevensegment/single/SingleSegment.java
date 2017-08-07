@@ -1,4 +1,4 @@
-package sevensegment;
+package sevensegment.single;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -25,10 +25,9 @@ public class SingleSegment extends Application
         //one digit
         SevenSegmentDigit sevenSegDigit = new SevenSegmentDigit();
         
+        //start und stop von Zufallswerte Darstellung
         ToggleButton test = new ToggleButton("Start");
-        /* TODO
-        //start and stop animation with random values
-        ToggleButton test = new ToggleButton("Start");
+       
         test.setOnAction(new EventHandler<ActionEvent>(){
 
 			@Override
@@ -37,18 +36,18 @@ public class SingleSegment extends Application
 				if(test.isSelected())
 				{
 					
-					customCircle.startAnimation();
+					sevenSegDigit.startAnimation();
 					test.setText("Ende");
 				}
 				else
 				{
-					customCircle.stopAnimation();
+					sevenSegDigit.stopAnimation();
 					test.setText("Start");
 				}
 			
 			}
         	
-        });*/
+        });
         
         pane.setCenter(sevenSegDigit);
         pane.setRight(test);
@@ -64,8 +63,7 @@ public class SingleSegment extends Application
         {
             @Override
             public void handle(WindowEvent event) {
-            	//TODO
-            	//sevenSegDigit.stopAnimation();
+            	sevenSegDigit.stopAnimation();
             }
         });
     }
