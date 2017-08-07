@@ -1,4 +1,4 @@
-package ninePatch;
+package ninePatch.sample1;
 
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;

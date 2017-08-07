@@ -1,4 +1,4 @@
-package ninePatch;
+package ninePatch.sample1;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
