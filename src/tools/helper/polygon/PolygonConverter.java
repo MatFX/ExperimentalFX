@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,7 +16,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -28,6 +31,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import tools.helper.GenericPair;
 
 
@@ -148,8 +152,8 @@ public class PolygonConverter extends Application
 						
 						
 					}
-					svgWerteTabelle.getColumns().get(0).setVisible(false);
-					svgWerteTabelle.getColumns().get(0).setVisible(true);
+					//svgWerteTabelle.getColumns().get(0).setVisible(false);
+					//svgWerteTabelle.getColumns().get(0).setVisible(true);
 					
 					svgWerteTabelle.getItems().addAll(leftSideList);
 					ergebnisWerteTabelle.getItems().addAll(rightSideList);
@@ -175,12 +179,6 @@ public class PolygonConverter extends Application
 			}
         	
         });
-      
-        
-        
-        //TODO raus
-        //export die fertige tabelle in ein psuedocode Format
-        //Button export = new Button("Export");
         
         initLinie.getChildren().addAll(new Label("Breite: "), initBreite, new Label("Hoehe: "), initHoehe, importButton, clear);
         vBox.getChildren().add(initLinie);
@@ -208,16 +206,18 @@ public class PolygonConverter extends Application
 	    ScrollPane scrollRight = new ScrollPane();
 	    scrollRight.setFitToWidth(true);
         svgWerteTabelle = new TableView<DoubleContainer>();
+        //set editable on svg table
+        svgWerteTabelle.setEditable(true);
         ergebnisWerteTabelle = new TableView<DoubleContainer>();
       
         svgWerteTabelle.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
        // HBox.setHgrow(svgWerteTabelle, Priority.ALWAYS);
-        
-        //TODO zwingend erfoderlich dass jede Tabelle seine eigene ColumnDefintion erhält
-         TableColumn<DoubleContainer, Double> xSVGCol = new TableColumn<DoubleContainer, Double>("x");
+       
+        //zwingend erfoderlich dass jede Tabelle seine eigene ColumnDefintion erhält
+        TableColumn<DoubleContainer, Double> xSVGCol = new TableColumn<DoubleContainer, Double>("x");
         xSVGCol.setMinWidth(200);
         xSVGCol.setCellValueFactory(new PropertyValueFactory<DoubleContainer, Double>("xValue"));
-		
+        
 		TableColumn<DoubleContainer, Double> ySVGCol = new TableColumn<DoubleContainer, Double>("y");
 		ySVGCol.setMinWidth(200);
 		ySVGCol.setCellValueFactory(new PropertyValueFactory<DoubleContainer, Double>("yValue"));  
@@ -318,8 +318,8 @@ public class PolygonConverter extends Application
     public static void main(String[] args) {
         Application.launch(args);
     }
-
-
+    
+  
 }
 
 
