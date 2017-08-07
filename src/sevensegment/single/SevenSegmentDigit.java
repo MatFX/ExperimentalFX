@@ -23,7 +23,7 @@ public class SevenSegmentDigit extends Region
 	private Polygon a,b,c,d,e,f,g;
 	
 	//Keine richtige Konstante, kann später vom Inhalt noch verändert werden.
-	private Color OFF = Color.web("#767c6c");
+	private Color OFF = Color.web("#969e8945");
 	
 	private Color ON = Color.web("#000000");
 	
@@ -36,14 +36,23 @@ public class SevenSegmentDigit extends Region
 	//zu beginn werden alle polygon auf OFF gesetzt
 	private int currentValue = -1;
 	
-	public SevenSegmentDigit()
+	
+	public SevenSegmentDigit(int currentValue)
 	{
+		this.currentValue = currentValue;
 		this.setWidth(46);
 		this.setHeight(64);
 		//TODO interfaces und resize auch so
 		this.initGraphics();
 		this.registerListener();
 		
+	}
+	
+	
+	
+	public SevenSegmentDigit()
+	{
+		this(-1);
 	}
 
 	private void registerListener() {
@@ -86,7 +95,7 @@ public class SevenSegmentDigit extends Region
 		BACKGROUND = backgroundColor;
 	}
 
-	private void draw7Segment() 
+	public void draw7Segment() 
 	{
 		//46
 		double w = this.getWidth();
@@ -226,7 +235,7 @@ public class SevenSegmentDigit extends Region
 				d.setFill(ON);
 				e.setFill(ON);
 				f.setFill(ON);
-				g.setFill(ON);
+				g.setFill(OFF);
 				break;
 			
 			case 1:
@@ -338,6 +347,7 @@ public class SevenSegmentDigit extends Region
 		
 	}
 
+	//testbereich
 	public void startAnimation() 
 	{
 		if(animThread != null && animThread.isAlive())

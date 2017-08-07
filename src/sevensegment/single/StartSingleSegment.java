@@ -12,7 +12,7 @@ import javafx.stage.WindowEvent;
 
 
 
-public class SingleSegment extends Application 
+public class StartSingleSegment extends Application 
 {
    
 
