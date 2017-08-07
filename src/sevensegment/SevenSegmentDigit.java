@@ -85,25 +85,6 @@ public class SevenSegmentDigit extends Region
 		e.getPoints().clear();
 		f.getPoints().clear();
 		g.getPoints().clear();
-	
-		
-		/**
-		 * 	//x 100/46 = 
-				33.106,
-				//y, x
-				7.28, 38.967,
-				//y, x
-				1.418, 38.967,
-				//y, x 
-				1.359, 7.077,
-				//y, x
-				1.359, 12.982,
-				//y, x
-				7.263, 12.965,
-				//y
-				7.28,
-				
-		 */
 		
 		a.getPoints().addAll(new Double[]
 		{
@@ -206,9 +187,6 @@ public class SevenSegmentDigit extends Region
 		e.setFill(Color.WHITE);
 		f.setFill(Color.WHITE);
 		g.setFill(Color.WHITE);
-		
-		
-		
 		
 	}
 
