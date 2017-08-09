@@ -16,7 +16,10 @@ public class ImageLoader
 		
 		file = new File(file.getAbsoluteFile() + resname);
 		InputStream inputStream = new FileInputStream(file.getAbsolutePath());
+	
 		return inputStream;
+	
+	
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Border;
@@ -13,10 +12,8 @@ import javafx.scene.layout.BorderRepeat;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sevensegment.single.SevenSegmentDigit;
 import tools.helper.NinePatchLoader;
