@@ -75,6 +75,7 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 	{
 		//Aufbau ist: -12345.9090
 		
+		//TODO
 		//negatives entfernen 
 		
 		//feststellen die anzahl der stellen im bereich > 0
