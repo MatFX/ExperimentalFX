@@ -75,6 +75,13 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 	{
 		//Aufbau ist: -12345.9090
 		
+		//negatives entfernen 
+		
+		//feststellen die anzahl der stellen im bereich > 0
+		
+		//fesstellen ob nachkommastellen gefordert dann anzahl stellen bereich < 0
+		
+		
 		//für jede stelle wird eine sieben segment Anzeige benötigt 
 		
 		int zahl = to.intValue();
@@ -126,7 +133,7 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
         
 	}
 	
-	private static int getFigure(int zahl, int i,int log) {
+	private static int getFigure(int zahl, int i, int log) {
         return (int) ((zahl / Math.pow(10.0, log - i))) % 10;
     }
 	
