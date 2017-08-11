@@ -17,7 +17,7 @@ public class StartMultipleSegment extends Application
 	{
 		  BorderPane pane = new BorderPane();
 		  
-		  ValueContainer<Integer> valueContainer = new ValueContainer<Integer>(75, 0, 200, 0);
+		  ValueContainer<Integer> valueContainer = new ValueContainer<Integer>(-75, -200, 200, 0);
 		  pane.setCenter(valueContainer);
 	
 		  ToggleButton test = new ToggleButton("Start");

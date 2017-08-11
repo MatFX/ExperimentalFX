@@ -33,6 +33,11 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 	
 	private boolean isAnimation = false;
 	
+	/**
+	 * Für ein negatives Vorzeichen muss nicht immer vorhanden sein
+	 */
+	private SevenSegmentDigit negSign = null;
+	
 	public ValueContainer(DATATYPE currentValue, DATATYPE from, DATATYPE to, int digitsAfterDecimalPoint)
 	{
 		this.currentValue = currentValue;
@@ -73,10 +78,62 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 
 	private void initGraphics() 
 	{
+		ColumnConstraints col = new ColumnConstraints();
+		col.setHgrow(Priority.ALWAYS);
 		//Aufbau ist: -12345.9090
+		int colIndex = 0;
+		boolean vorzeichen = false;
+		//Ist der aktuelle Wert negative oder einer der Grenzbereich im negativen
+		if(this.isNegative || from.doubleValue() < 0 || to.doubleValue() < 0 )
+		{
+			vorzeichen = true;
+			
+			//jetzt geht es darum ob der eigentliche Wert Negative ist und nicht ob es möglich wäre
+			if(this.isNegative)
+				negSign =  new SevenSegmentDigit();
+			else 
+				negSign =  new SevenSegmentDigit(Integer.MAX_VALUE);
+			
+			negSign.setOFFColor(Color.web("#787e6e80"));
+			negSign.setBACKGROUNDColor(Color.TRANSPARENT);
+			
+			//initiales malen wird hier nochmals erzwungen, dann brauche ich die o.a. setMethoden mit Leben befüllen
+			negSign.draw7Segment();
+			this.add(negSign, colIndex, 0);
+			//damit die späteren Werte auch in den richtigen Spalten ihr zuhause finden.
+			colIndex++;
+			this.getColumnConstraints().add(col);
+		}
+	
+		
+		
 		
 		//TODO
 		//negatives entfernen 
+		
+		
+		int zahl = 0;
+		
+		System.out.println("digitsAfterDecimalPoint " + digitsAfterDecimalPoint);
+		//Nachkommastellen
+		if(digitsAfterDecimalPoint > 0)
+		{
+		//int zahl = (int) doubleValue;
+			
+			
+			
+			
+		}
+		else
+		{
+			zahl = to.intValue();
+			System.out.println("zahl vorher " + zahl);
+			//negatives vorzeichen von der Zahl entfernen 
+			if(zahl < 0)
+				zahl *= -1;
+		}
+		System.out.println("zahl " + zahl);
+		
 		
 		//feststellen die anzahl der stellen im bereich > 0
 		
@@ -85,9 +142,7 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 		
 		//für jede stelle wird eine sieben segment Anzeige benötigt 
 		
-		int zahl = to.intValue();
-		if(this.isNegative)
-			zahl *= -1;
+		
 		
 		
 		RowConstraints rc = new RowConstraints();
@@ -97,12 +152,16 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 		int anzahlStellen = laenge(zahl);
 		System.out.println(" anzahlStellen " + anzahlStellen);
 		int log = (int)Math.log10(zahl);
-		ColumnConstraints col = new ColumnConstraints();
-		col.setHgrow(Priority.ALWAYS);
+		
+		int currentIntValue = currentValue.intValue();
+		if(currentIntValue < 0)
+			currentIntValue *= -1;
+		
+		
 		for(int i = 0; i < anzahlStellen; i++)
 		{
-			System.out.println("wert " + getFigure(currentValue.intValue(), i, log));
-			SevenSegmentDigit ssd =  new SevenSegmentDigit(getFigure(currentValue.intValue(), i, log));
+			System.out.println("wert " + getFigure(currentIntValue, i, log));
+			SevenSegmentDigit ssd =  new SevenSegmentDigit(getFigure(currentIntValue, i, log));
 			ssd.setOFFColor(Color.web("#787e6e80"));
 			ssd.setBACKGROUNDColor(Color.TRANSPARENT);
 			//initiales malen wird hier nochmals erzwungen, dann brauche ich die o.a. setMethoden mit Leben befüllen
@@ -112,17 +171,40 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 			
 		}
 	
-		int colIndex = 0;
 		
+		int mapIndex = 0;
+	
 		for(int i = anzahlStellen; i > 0 ; i--)
 		{
-			this.add(vorkommaStellen.get(colIndex), colIndex, 0);
+			System.out.println("naechste col " + colIndex);
+			this.add(vorkommaStellen.get(mapIndex), colIndex, 0);
 			colIndex++;
+			mapIndex++;
 		}
 	}
 	
 	public static void main(String[] args)
 	{
+		
+		double doubleValue = 12654.12;
+		System.out.println("Math.log10 " + (Math.log10(doubleValue)+1));
+		
+		int anzahlStellen =  (int) (Math.log10(doubleValue)+1);
+		
+		int vorkommaBereich = (int) doubleValue;
+		System.out.println("vorkommeBereich " + vorkommaBereich);
+		
+		String doubleValueString = ""+doubleValue;
+		int nachKomma = Integer.parseInt(doubleValueString.substring(doubleValueString.indexOf(".")+1));
+	
+		System.out.println("nachkommaBereich " + nachKomma);
+		int anzahlStellenNachkomma = (int) (Math.log10(nachKomma)+1);
+		System.out.println("anzahlStellenNachkomma " + anzahlStellenNachkomma);
+
+		
+		
+		
+		/*
 		int test = 101;
 		int zahl = 1;
         int log = (int)Math.log10(zahl);
@@ -130,7 +212,7 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
         for(int i = 0; i <= log; i++)
         {
             System.out.println(getFigure(zahl, i,log));
-        }
+        }*/
         
 	}
 	
@@ -209,8 +291,36 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 					
 					
 					Random ran = new Random();
-					int zufallszahl = ran.nextInt((maxValue - minValue) + 1);
+					
+					
+					int zufallszahl = (int) getZufallsZahl(from, to);
+					/*
+					if(minValue < 0)
+						minValue *=-1;
+					
+					if(maxValue < 0)
+						maxValue *=-1;
+					*/
+					
+					
+					//int zufallszahl = ran.nextInt((maxValue - minValue) + 1);
 					System.out.println("ermittelte Zahl " + zufallszahl);
+					
+					
+					if(negSign != null)
+					{
+						if(zufallszahl < 0)
+						{
+							negSign.setAndRepaintDigit(-1);
+						}
+						else
+						{
+							negSign.setAndRepaintDigit(Integer.MAX_VALUE);
+							
+						}
+					}
+					
+					
 					
 					//TODO
 					//currentValue = zufallszahl;
@@ -218,10 +328,14 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 					//als nächstes muss die Zahl aufgeteilt werden in einzelteile und
 					//die einzelnen werte müssen in der map gesetzt werden
 					int zahl = to.intValue();
-
+					
 					int anzahlStellen = laenge(zahl);
 					System.out.println(" anzahlStellen " + anzahlStellen);
 					int log = (int)Math.log10(zahl);
+					//bevor die eigentliche Zahl gesetzt wird, wieder zurücksetzen des evtl. vorahnden -1
+					if(zufallszahl < 0 )
+						zufallszahl *=-1;
+					
 					for(int i = 0; i < anzahlStellen; i++)
 					{
 						
@@ -249,7 +363,8 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 					//isAnimation = false;
 					
 				}
-			}	
+			}
+
 			
 		};
 		
@@ -260,6 +375,60 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 	
 		
 	}
+	
+	
+	/**
+	 * Ermittelt die nächste Zufallszahl
+	 * @param minValue
+	 * @param maxValue
+	 * @return
+	 */
+	private Number getZufallsZahl(DATATYPE minValue, DATATYPE maxValue) 
+	{
+		Number returnValue = null;
+		if(minValue instanceof Integer)
+		{
+			Random ran = new Random();
+			
+			if(minValue.intValue() < 0 && maxValue.intValue() > 0)
+			{
+				//groesserer Wertebereich
+				int minimum = minValue.intValue() * -1;
+				
+				int wertebereich = minimum + maxValue.intValue();
+				int nextValue = (ran.nextInt(wertebereich) + 1) + minValue.intValue();
+				return new Integer(nextValue);
+			}
+			else if(minValue.intValue() < 0 && maxValue.intValue() < 0)
+			{
+				//*-1
+				int minimum = minValue.intValue() * -1;
+				int maximum = maxValue.intValue() * -1;
+				
+				int wertebereich = maximum - minimum;
+				int nextValue = (ran.nextInt(wertebereich) + 1);
+				return new Integer(nextValue * -1);
+				
+			}
+			else
+			{
+				int wertebereich = maxValue.intValue() - minValue.intValue();
+				int nextValue = (ran.nextInt(wertebereich) + 1);
+				return new Integer(nextValue * -1);
+			}
+			
+			
+			
+		}
+		else if(minValue instanceof Double)
+		{
+			
+		}
+		
+		
+		
+		return (DATATYPE) returnValue;
+	}	
 
 	public void stopAnimation() 
 	{

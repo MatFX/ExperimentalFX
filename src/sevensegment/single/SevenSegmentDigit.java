@@ -36,6 +36,11 @@ public class SevenSegmentDigit extends Region
 	//zu beginn werden alle polygon auf OFF gesetzt
 	private int currentValue = -1;
 	
+	/**
+	 * Hier die Kennzeichnung ob diese Objekt als Negativ Zeichen Verwendung findet
+	 * <br>In diesem Fall kann nur Minus oder nichts gesetzt werden.
+	 */
+	private boolean isNegativeDigit = false;
 	
 	public SevenSegmentDigit(int currentValue)
 	{
@@ -228,6 +233,17 @@ public class SevenSegmentDigit extends Region
 		
 		switch(currentValue)
 		{
+			//bei -1 wird das Minuszeichen gesetzt
+			case -1:
+				a.setFill(OFF);
+				b.setFill(OFF);
+				c.setFill(OFF);
+				d.setFill(OFF);
+				e.setFill(OFF);
+				f.setFill(OFF);
+				g.setFill(ON);
+				break;
+				
 			case 0:
 				a.setFill(ON);
 				b.setFill(ON);
