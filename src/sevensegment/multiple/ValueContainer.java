@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Border;
@@ -15,6 +16,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import sevensegment.single.SevenSegmentDigit;
 import tools.helper.NinePatchLoader;
 
@@ -28,6 +31,10 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 	private boolean isNegative = false;
 	
 	private TreeMap<Integer, SevenSegmentDigit> vorkommaStellen = new TreeMap<Integer, SevenSegmentDigit>();
+	/**
+	 * Nicht immer vorhanden nur dann wenn von außen angefordert 
+	 */
+	private TreeMap<Integer, SevenSegmentDigit> nachkommaStellen = new TreeMap<Integer, SevenSegmentDigit>();
 	
 	private Thread animThread = null;
 	
@@ -114,27 +121,6 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 		
 		int zahl = 0;
 		
-		System.out.println("digitsAfterDecimalPoint " + digitsAfterDecimalPoint);
-		//Nachkommastellen
-		if(digitsAfterDecimalPoint > 0)
-		{
-		//int zahl = (int) doubleValue;
-			
-			
-			
-			
-		}
-		else
-		{
-			zahl = to.intValue();
-			System.out.println("zahl vorher " + zahl);
-			//negatives vorzeichen von der Zahl entfernen 
-			if(zahl < 0)
-				zahl *= -1;
-		}
-		System.out.println("zahl " + zahl);
-		
-		
 		//feststellen die anzahl der stellen im bereich > 0
 		
 		//fesstellen ob nachkommastellen gefordert dann anzahl stellen bereich < 0
@@ -142,7 +128,11 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 		
 		//für jede stelle wird eine sieben segment Anzeige benötigt 
 		
-		
+		zahl = to.intValue();
+		System.out.println("zahl vorher " + zahl);
+		//negatives vorzeichen von der Zahl entfernen 
+		if(zahl < 0)
+			zahl *= -1;
 		
 		
 		RowConstraints rc = new RowConstraints();
@@ -181,6 +171,56 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 			colIndex++;
 			mapIndex++;
 		}
+		
+		//jetzt fehlen noch die evtl. nachkommastellen
+		
+
+		System.out.println("digitsAfterDecimalPoint " + digitsAfterDecimalPoint);
+		//Nachkommastellen
+		if(digitsAfterDecimalPoint > 0)
+		{
+			//TODO hier noch ein digit für den punkt
+			
+			Rectangle circle = new Rectangle(0,0,5,5);
+		
+			
+			this.add(circle, colIndex, 0);
+			colIndex++;
+			//int zahl = (int) doubleValue;
+			
+			String doubleValueString = ""+currentValue.doubleValue();
+			int nachKommaWert = Integer.parseInt(doubleValueString.substring(doubleValueString.indexOf(".")+1));
+		
+			System.out.println("nachkommaBereich " + nachKommaWert);
+			int anzahlStellenNachkomma = digitsAfterDecimalPoint; // (int) (Math.log10(nachKommaWert)+1);
+			System.out.println("anzahlStellenNachkomma " + anzahlStellenNachkomma);
+			
+			
+			for(int i = 0; i < anzahlStellenNachkomma; i++)
+			{
+				System.out.println("wert " + getFigure(nachKommaWert, i, log));
+				SevenSegmentDigit ssd =  new SevenSegmentDigit(getFigure(nachKommaWert, i, log));
+				ssd.setOFFColor(Color.web("#787e6e80"));
+				ssd.setBACKGROUNDColor(Color.TRANSPARENT);
+				//initiales malen wird hier nochmals erzwungen, dann brauche ich die o.a. setMethoden mit Leben befüllen
+				ssd.draw7Segment();
+				nachkommaStellen.put(i, ssd);
+				this.getColumnConstraints().add(col);
+				
+			}
+			mapIndex = 0;
+			for(int i = anzahlStellenNachkomma; i > 0 ; i--)
+			{
+				System.out.println("naechste col " + colIndex);
+				this.add(nachkommaStellen.get(mapIndex), colIndex, 0);
+				colIndex++;
+				mapIndex++;
+			}
+			
+		}
+		
+		
+		
 	}
 	
 	public static void main(String[] args)
