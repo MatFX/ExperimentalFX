@@ -18,6 +18,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import sevensegment.single.DecimalPoint;
 import sevensegment.single.SevenSegmentDigit;
 import tools.helper.NinePatchLoader;
 
@@ -179,12 +180,29 @@ public class ValueContainer<DATATYPE extends Number> extends GridPane
 		//Nachkommastellen
 		if(digitsAfterDecimalPoint > 0)
 		{
+			/*
+			* <g id="Ebene_9">
+				<rect x="1.3" y="56.9" class="st1" width="6" height="6"/>
+			</g>
+			 */
+			
+			//100% b = 8.6" 100% h ="64"/
+			//100/8.6 * 1.3 = 0,1511627906976744
+			//100/64 * 56.9 = 0,8890625
+			
+			DecimalPoint decimalPoint = new DecimalPoint();
+			decimalPoint.setBACKGROUNDColor(Color.TRANSPARENT);
+			
+			
 			//TODO hier noch ein digit für den punkt
 			
-			Rectangle circle = new Rectangle(0,0,5,5);
-		
 			
-			this.add(circle, colIndex, 0);
+			//this.add(circle, colIndex, 0);
+			
+			this.add(decimalPoint, colIndex, 0);
+			ColumnConstraints colDecimalPoint = new ColumnConstraints();
+			colDecimalPoint.setHgrow(Priority.NEVER);
+			this.getColumnConstraints().add(colDecimalPoint);
 			colIndex++;
 			//int zahl = (int) doubleValue;
 			
