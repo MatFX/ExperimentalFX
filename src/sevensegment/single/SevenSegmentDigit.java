@@ -54,7 +54,9 @@ public class SevenSegmentDigit extends Region
 	}
 	
 	
-	
+	/**
+	 * Konstruktor für das Negativzeichen
+	 */
 	public SevenSegmentDigit()
 	{
 		this(-1);
