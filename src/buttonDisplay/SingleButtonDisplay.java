@@ -1,5 +1,6 @@
-package firstgauge;
+package buttonDisplay;
 
+import firstgauge.CustomCircle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,22 +10,20 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-
-
-
-public class SingleGauge extends Application 
+public class SingleButtonDisplay extends Application
 {
-   
 
-    @Override 
+	@Override 
     public void start(Stage stage) 
     {
         BorderPane pane = new BorderPane();
         //first gauge; center of borderpane
-        CustomCircle customCircle = new CustomCircle();
+        ButtonDisplay buttonDisplay = new ButtonDisplay();
         
+     
         //start and stop animation with random values
         ToggleButton test = new ToggleButton("Start");
+        /* TODO später
         test.setOnAction(new EventHandler<ActionEvent>(){
 
 			@Override
@@ -45,8 +44,8 @@ public class SingleGauge extends Application
 			}
         	
         });
-        
-        pane.setCenter(customCircle);
+        */
+        pane.setCenter(buttonDisplay);
         pane.setRight(test);
 
         Scene scene = new Scene(pane);
@@ -55,6 +54,7 @@ public class SingleGauge extends Application
         stage.setScene(scene);
         stage.show();
         
+        /* TODO
         //closing event with stop animation
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() 
         {
@@ -62,7 +62,7 @@ public class SingleGauge extends Application
             public void handle(WindowEvent event) {
             	customCircle.stopAnimation();
             }
-        });
+        });*/
     }
 
     public static void main(String[] args) {
@@ -71,5 +71,3 @@ public class SingleGauge extends Application
 
 
 }
-
-
