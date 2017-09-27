@@ -166,7 +166,7 @@ public class CustomCircle extends Region
 		if(getWidth() > 0)
 			centerX = getWidth() / 2d;
 		
-		
+		 
 		
 		
 		double radius = size / 2d;

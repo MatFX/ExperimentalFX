@@ -33,8 +33,9 @@ public class DecimalPoint extends Region
 	public void resize()
 	{
 		this.drawDecimalPoint();
-		
 	}
+	
+	
 	private void drawDecimalPoint() {
 		
 	
