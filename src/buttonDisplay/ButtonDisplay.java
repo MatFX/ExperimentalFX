@@ -36,7 +36,7 @@ public class ButtonDisplay extends Region
 		
 		GLANZ_LCD_OBEN,
 		GLANZ_LCD_LINKS,
-		GLANZ_LCD_RECHTS;
+		GLANZ_LCD_RECHTS, DIODE_BASIS_GLANZ;
 		
 		
 		
@@ -50,7 +50,7 @@ public class ButtonDisplay extends Region
 	private RadialGradient rgComponentBasisRahmen;
 	
 	private LinearGradient lgComponentBasisGlanz, lgSchaltflaecheBasis, lgSchaltflaecheGlanz,
-		lgLCDOben, lgLCDLinks, lgLCDRechts;
+		lgLCDOben, lgLCDLinks, lgLCDRechts, lgDiodeBasisGlanz;
 	
 	private double centerX = 36, centerY = 36;
 	
@@ -59,6 +59,7 @@ public class ButtonDisplay extends Region
 	private Arc backgroundHalf, backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben,
 		overlayLCDLinks, overlayLCDRechts;
 	
+	private Circle diodeUntergrund, diodeBasisGlanz;
 	
 	
 	public ButtonDisplay()
@@ -377,11 +378,36 @@ public class ButtonDisplay extends Region
 		overlayLCDRechts.setFill(lgLCDRechts);
 		
 		
-		//TODO hier fehlt noch der Circle mit der Leuchtdiode
+		//ab hier die leuchdiode
+		diodeUntergrund = new Circle();
+		//cx 61.5 cy 30.333334 r = 3
+		diodeUntergrund.setFill(Color.web("#353535"));
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#FFFFFFCC")),
+				new Stop(0.1243167, Color.web("#FBFBFBC9")),
+				new Stop(0.2560624, Color.web("#EEEEEEC5")),
+				new Stop(0.3913673, Color.web("#D9D9D9C2")),
+				new Stop(0.5290745, Color.web("#BBBBBBBF")),
+				new Stop(0.6686305, Color.web("#959595BB")),
+				new Stop(0.8097913, Color.web("#666666B7")),
+				new Stop(0.9495661, Color.web("#303030B4")),
+				new Stop(1.0, Color.web("#1A1A1AB3"))
+			};
+		stopMap.put(StopIndizes.DIODE_BASIS_GLANZ, stopArray);
+		
+		//x1="61.5" y1="33.3333321" x2="61.5" y2="27.333334"
+		lgDiodeBasisGlanz = new LinearGradient(61.5, 33.3333321, 61.5,  27.333334,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_BASIS_GLANZ));
+		
+		diodeBasisGlanz = new Circle();
+		//cx="61.5" cy="30.333334" r="3"
+		diodeBasisGlanz.setFill(lgDiodeBasisGlanz);
 		
 		
 		this.getChildren().addAll(componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay, backgroundHalf, 
-				backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben, overlayLCDLinks);//, overlayLCDRechts);
+				backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben, overlayLCDLinks, /* overlayLCDRechts*/
+				diodeUntergrund, diodeBasisGlanz);
 	}
 	
 
@@ -573,6 +599,28 @@ public class ButtonDisplay extends Region
 		overlayLCDRechts.setFill(lgLCDRechts);
 		*/
 		
+		//cx 61.5 cy 30.333334 r = 3
+		diodeUntergrund.setFill(Color.web("#353535"));
+		
+		//TODO das geht so auch nicht, es muss der Mittelpunkt in Abhängigkeit von "großen" Mittelpunkt berechnet werden
+		
+		//60.5 - 36 = 24,5 = 100/72 * 24.5 = 0.3402777777777778
+		//36 - 30.333334 = 5,666666 = 100/72 * 5,666666 = 0,0787036944444444
+		diodeUntergrund.setCenterX(centerX + (size *  0.3402777777777778));
+		diodeUntergrund.setCenterY(centerY - (size * 0.0787036944444444));
+		//100/72 * 3 = 4,166666666666667 = 0.04166666666666667
+		diodeUntergrund.setRadius(size * 0.04166666666666667);
+		
+		
+		//x1="61.5" y1="33.3333321" x2="61.5" y2="27.333334"
+		//61.5 - 36 = 25,5 = 100/72 * 25,5 = 0.3541666666666667
+		//TODO hier gehts weiter
+		lgDiodeBasisGlanz = new LinearGradient(61.5, 33.3333321, 61.5,  27.333334,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_BASIS_GLANZ));
+		
+		diodeBasisGlanz = new Circle();
+		//cx="61.5" cy="30.333334" r="3"
+		diodeBasisGlanz.setFill(lgDiodeBasisGlanz);
 		
 		
 		
