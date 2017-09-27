@@ -126,6 +126,11 @@ public class StopConverter extends Application
 								if(alphaHex != null && alphaHex.length() == 2)
 								{
 									finalColorValue  = stopColorValue + alphaHex;
+								}
+								//in dem Fall wird die opacity auf 00 gesetzt
+								else
+								{
+									finalColorValue  = stopColorValue + "00";
 									
 								}
 							}

@@ -34,7 +34,9 @@ public class ButtonDisplay extends Region
 		
 		SCHALTFLAECHE_GLANZ,
 		
-		GLANZ_LCD_OBEN;
+		GLANZ_LCD_OBEN,
+		GLANZ_LCD_LINKS,
+		GLANZ_LCD_RECHTS;
 		
 		
 		
@@ -43,17 +45,19 @@ public class ButtonDisplay extends Region
 	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
-	private Circle componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay;
+	private Circle componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay, componentCircle;
 	
 	private RadialGradient rgComponentBasisRahmen;
 	
-	private LinearGradient lgComponentBasisGlanz, lgSchaltflaecheBasis, lgSchaltflaecheGlanz;
+	private LinearGradient lgComponentBasisGlanz, lgSchaltflaecheBasis, lgSchaltflaecheGlanz,
+		lgLCDOben, lgLCDLinks, lgLCDRechts;
 	
 	private double centerX = 36, centerY = 36;
 	
 	private double width = 72, height = 72;
 
-	private Arc backgroundHalf, backgroundHalfGlanz, backgroundLCDBasis;
+	private Arc backgroundHalf, backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben,
+		overlayLCDLinks, overlayLCDRechts;
 	
 	
 	
@@ -267,8 +271,117 @@ public class ButtonDisplay extends Region
 			};
 		stopMap.put(StopIndizes.GLANZ_LCD_OBEN, stopArray);
 		
+		//x1="36" y1="-2.9166667" x2="36" y2="13.666667"
+		//y1 = centerY - (-2.9166667) = 38,9166667 = 100/72 * 38,9166667 = 0,5405092638888889
+		//y2 = 13.666667; centerY - 13.66667 =  22,33333 = 100/72 * 22,33333 = 0,3101851388888889
+		lgLCDOben = new LinearGradient(centerX, centerY - (gaugeSize * 0.5405092638888889) ,centerX, 
+				centerY - (gaugeSize * 0.3101851388888889), false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_LCD_OBEN));
 		
-		this.getChildren().addAll(componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay, backgroundHalf, backgroundHalfGlanz, backgroundLCDBasis);
+		
+		overlayLCDOben = new Arc();
+		overlayLCDOben.setCenterX(centerX);
+		//3 px Abstand zu der gruenen Flaeche 100/128 * 3 = 2.34375 = 0.0234375
+		
+		overlayLCDOben.setCenterY(centerY - (gaugeSize * 0.015635));
+		overlayLCDOben.setRadiusX(radius2 *  0.90625);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		overlayLCDOben.setRadiusY(radius2 * 0.90625 - (gaugeSize * 0.015635));
+		overlayLCDOben.setStartAngle(45f);
+		overlayLCDOben.setLength(90.0f);
+		overlayLCDOben.setType(ArcType.ROUND);
+		overlayLCDOben.setFill(lgLCDOben);
+		
+		
+		
+		stopArray = new Stop[]
+		{
+				new Stop(0.0, Color.web("#FFFFFF")),
+				new Stop(0.2058825, Color.web("#ECEEEACA")),
+				new Stop(0.6300251, Color.web("#BAC4B35E")),
+				new Stop(1.0, Color.web("8B9B7E00"))
+		};
+		
+		stopMap.put(StopIndizes.GLANZ_LCD_LINKS, stopArray);
+	
+		//x1="4.6328111" y1="13.7291164" x2="17.5494785" y2="17.7291164">
+		//x1 = centerX - 4.6328111 = 31,36718887 Strecke; 100/72 * 31,36718887 = 0.4356554009722222
+		//y1 = centerY - 13.7291164 = 22,2708836 Strecke; 100/72 * 22,2708836 = 0.3093178277777778
+		///X2 = centerX - 17.5494785 = 18,4505215 Strecke; 100/72 * 18,4505215 = 0.2562572430555556
+		//y2 = centerY - 17.7291164 = 18,2708836 Strecke; 100/72 * 18,2708836 = 0.2537622722222222
+		lgLCDLinks = new LinearGradient(centerX - (gaugeSize * 0.4356554009722222), 
+				centerY - (gaugeSize * 0.3093178277777778),
+				centerX - (gaugeSize *  0.2562572430555556), 
+				centerY - (gaugeSize * 0.2537622722222222), 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_LCD_OBEN));
+		
+		
+		overlayLCDLinks = new Arc();
+		overlayLCDLinks.setCenterX(centerX);
+		//3 px Abstand zu der gruenen Flaeche 100/128 * 3 = 2.34375 = 0.0234375
+		
+		overlayLCDLinks.setCenterY(centerY - (gaugeSize * 0.015635));
+		overlayLCDLinks.setRadiusX(radius2 *  0.90625);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		overlayLCDLinks.setRadiusY(radius2 * 0.90625 - (gaugeSize * 0.015635));
+		overlayLCDLinks.setStartAngle(135f);
+		overlayLCDLinks.setLength(90.0f);
+		overlayLCDLinks.setType(ArcType.ROUND);
+		overlayLCDLinks.setFill(lgLCDLinks);
+		
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#FFFFFF00")),
+				new Stop(0.2393466, Color.web("#FCFDFC3D")),
+				new Stop(0.4112191, Color.web("#F4F5F369")),
+				new Stop(0.5620199, Color.web("#E6E7E38F")),
+				new Stop(0.7006531, Color.web("#D2D4CDB3")),
+				new Stop(0.830981, Color.web("#B8BCB0D4")),
+				new Stop(0.9534147, Color.web("#999E8DF3")),
+				new Stop(1.0, Color.web("#8B917E00"))
+			};
+		stopMap.put(StopIndizes.GLANZ_LCD_RECHTS, stopArray);
+		
+		
+		//x1="22.6556263" y1="30.5080204" x2="60.9889603" y2="14.0080194"
+		//x1 = centerX - 22.6556263 = 13,3443737 Strecke; 100/72 * 13,3443737 = 0.1853385236111111
+		//y1 = centerY - 30.5080204 = 5,4919796 Strecke; 100/72 * 5,4919796 =  0.00762774944444444
+		//x2 = 60.9889603 - centerX = 24,9889603 Strecke; 100/72 * 24,9889603 = 0,3470688930555556
+		//y1 = centerY - 14.0080194 = 21,9919806 Strecke; 100/72 * 21,9919806 = 0,305444175
+		//TODO weiß nich ob das so stimmt, schaut komisch aus.
+		
+		//TODO es muss von einer äußeren rechten Ecke in den Mittelpunkt führen und nicht umgekehrt
+		
+		//TODO liegt es an den Stop Farben? 
+		lgLCDRechts = new LinearGradient(
+				centerX + (gaugeSize *  0.3470688930555556),
+				
+				centerY - (gaugeSize * 0.00762774944444444),
+				//hier plus weil ausgangsX größer als center X war
+				//centerX + (gaugeSize *  0.3470688930555556), 
+				centerX + (gaugeSize * 0.1853385236111111),
+				
+				centerY - (gaugeSize * 0.305444175), 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_LCD_RECHTS));
+		
+		overlayLCDRechts = new Arc();
+		overlayLCDRechts.setCenterX(centerX);
+		//3 px Abstand zu der gruenen Flaeche 100/128 * 3 = 2.34375 = 0.0234375
+		
+		overlayLCDRechts.setCenterY(centerY - (gaugeSize * 0.015635));
+		overlayLCDRechts.setRadiusX(radius2 *  0.90625);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		overlayLCDRechts.setRadiusY(radius2 * 0.90625 - (gaugeSize * 0.015635));
+		overlayLCDRechts.setStartAngle(0f);
+		overlayLCDRechts.setLength(90.0f);
+		overlayLCDRechts.setType(ArcType.ROUND);
+		overlayLCDRechts.setFill(lgLCDRechts);
+		
+		
+		//TODO hier fehlt noch der Circle mit der Leuchtdiode
+		
+		
+		this.getChildren().addAll(componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay, backgroundHalf, 
+				backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben, overlayLCDLinks);//, overlayLCDRechts);
 	}
 	
 
@@ -376,7 +489,7 @@ public class ButtonDisplay extends Region
 		
 		//LCD Bereich
 		
-		backgroundLCDBasis.setFill(Color.web("#808964FF"));
+		backgroundLCDBasis.setFill(Color.web("#a1a797"));
 		backgroundLCDBasis.setCenterX(centerX);
 		//3 px Abstand zu der gruenen Flaeche 100/128 * 3 = 2.34375 = 0.0234375
 		
@@ -394,8 +507,71 @@ public class ButtonDisplay extends Region
 		innerShadow.setOffsetY(15);
 		innerShadow.setColor(Color.web("#b0b7a550"));
 		
-		
+		//TODO eventl weg
 		backgroundLCDBasis.setEffect(innerShadow);
+		
+		lgLCDOben = new LinearGradient(centerX, centerY - (size * 0.5405092638888889) ,centerX, 
+				centerY - (size * 0.3101851388888889), false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_LCD_OBEN));
+		
+		overlayLCDOben.setFill(lgLCDOben);
+		overlayLCDOben.setCenterX(centerX);
+		//3 px Abstand zu der gruenen Flaeche 100/128 * 3 = 2.34375 = 0.0234375
+		
+		overlayLCDOben.setCenterY(centerY - (size * 0.015635));
+		overlayLCDOben.setRadiusX(radius *  0.90625);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		overlayLCDOben.setRadiusY(radius * 0.90625 - (size * 0.015635));
+		overlayLCDOben.setStartAngle(45f);
+		overlayLCDOben.setLength(90.0f);
+		overlayLCDOben.setType(ArcType.ROUND);
+		
+		
+		lgLCDLinks = new LinearGradient(centerX - (size * 0.4356554009722222), 
+				centerY - (size * 0.3093178277777778),
+				centerX - (size *  0.2562572430555556), 
+				centerY - (size * 0.2537622722222222), 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_LCD_OBEN));
+		
+		
+		
+		overlayLCDLinks.setCenterX(centerX);
+		//3 px Abstand zu der gruenen Flaeche 100/128 * 3 = 2.34375 = 0.0234375
+		
+		overlayLCDLinks.setCenterY(centerY - (size * 0.015635));
+		overlayLCDLinks.setRadiusX(radius *  0.90625);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		overlayLCDLinks.setRadiusY(radius * 0.90625 - (size * 0.015635));
+		overlayLCDLinks.setStartAngle(100f);
+		overlayLCDLinks.setLength(80.0f);
+		overlayLCDLinks.setType(ArcType.ROUND);
+		overlayLCDLinks.setFill(lgLCDLinks);
+		
+		/*
+		lgLCDRechts = new LinearGradient(
+				centerX + (size *  0.3470688930555556),
+				
+				
+				centerY - (size * 0.00762774944444444),
+				//hier plus weil ausgangsX größer als center X war
+				//centerX + (gaugeSize *  0.3470688930555556), 
+				centerX - (size * 0.1853385236111111),
+				
+				centerY - (size * 0.305444175), 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_LCD_RECHTS));
+		
+	
+		overlayLCDRechts.setCenterX(centerX);
+		//3 px Abstand zu der gruenen Flaeche 100/128 * 3 = 2.34375 = 0.0234375
+		
+		overlayLCDRechts.setCenterY(centerY - (size * 0.015635));
+		overlayLCDRechts.setRadiusX(radius *  0.90625);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		overlayLCDRechts.setRadiusY(radius * 0.90625 - (size * 0.015635));
+		overlayLCDRechts.setStartAngle(0f);
+		overlayLCDRechts.setLength(90.0f);
+		overlayLCDRechts.setType(ArcType.ROUND);
+		overlayLCDRechts.setFill(lgLCDRechts);
+		*/
 		
 		
 		
