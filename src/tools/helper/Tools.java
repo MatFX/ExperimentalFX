@@ -1,5 +1,10 @@
 package tools.helper;
 
+/**
+ * Alles was man sonst noch brauch
+ * @author Matthias
+ *
+ */
 public class Tools 
 {
 	public static String toHexString(int value, boolean fill)
