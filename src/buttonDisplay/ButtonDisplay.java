@@ -36,7 +36,7 @@ public class ButtonDisplay extends Region
 		
 		GLANZ_LCD_OBEN,
 		GLANZ_LCD_LINKS,
-		GLANZ_LCD_RECHTS, DIODE_BASIS_GLANZ;
+		GLANZ_LCD_RECHTS, DIODE_BASIS_GLANZ, DIODE_FARBE_RADIALGRADIENT, DIODE_FARBE_SCHEIN;
 		
 		
 		
@@ -47,7 +47,7 @@ public class ButtonDisplay extends Region
 	
 	private Circle componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay, componentCircle;
 	
-	private RadialGradient rgComponentBasisRahmen;
+	private RadialGradient rgComponentBasisRahmen, rgGlanzDiode, rgFarbeSchein;
 	
 	private LinearGradient lgComponentBasisGlanz, lgSchaltflaecheBasis, lgSchaltflaecheGlanz,
 		lgLCDOben, lgLCDLinks, lgLCDRechts, lgDiodeBasisGlanz;
@@ -61,6 +61,12 @@ public class ButtonDisplay extends Region
 	
 	private Circle diodeUntergrund, diodeBasisGlanz;
 	
+	/**
+	 * Die soll später mal austauschbar sein.
+	 */
+	private Circle diodeFarbe;
+	
+	private Circle glanzDiode, scheinDiode;
 	
 	public ButtonDisplay()
 	{
@@ -394,6 +400,18 @@ public class ButtonDisplay extends Region
 				new Stop(0.9495661, Color.web("#303030B4")),
 				new Stop(1.0, Color.web("#1A1A1AB3"))
 			};
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#FFFFFFCC")),
+				new Stop(0.1243167, Color.web("#FBFBFBC9")),
+				new Stop(0.2560624, Color.web("#EEEEEEC5")),
+				new Stop(0.3913673, Color.web("#D9D9D9C2")),
+				new Stop(0.5290745, Color.web("#BBBBBBBF")),
+				new Stop(0.6686305, Color.web("#959595BB")),
+				new Stop(0.8097913, Color.web("#666666B7")),
+				new Stop(0.9495661, Color.web("#303030B4")),
+				new Stop(1.0, Color.web("#1A1A1AB3"))
+			};
 		stopMap.put(StopIndizes.DIODE_BASIS_GLANZ, stopArray);
 		
 		//x1="61.5" y1="33.3333321" x2="61.5" y2="27.333334"
@@ -402,12 +420,47 @@ public class ButtonDisplay extends Region
 		
 		diodeBasisGlanz = new Circle();
 		//cx="61.5" cy="30.333334" r="3"
-		diodeBasisGlanz.setFill(lgDiodeBasisGlanz);
+		diodeBasisGlanz.setFill(Color.web("#FF0000"));
+		
+		diodeFarbe = new Circle();
+		diodeFarbe.setFill(Color.web("#BABA00"));
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#FFFFFFB3")),
+				new Stop(0.9629469, Color.web("#FFFFFF1F")),
+				new Stop(1.0, Color.web("#FFFFFF1A"))
+			};
+	
+		
+		stopMap.put(StopIndizes.DIODE_FARBE_RADIALGRADIENT, stopArray);
+		
+		rgGlanzDiode = new RadialGradient(0D, 0D, centerX, centerY, 2.5, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_FARBE_RADIALGRADIENT));
+		
+		glanzDiode = new Circle();
+		glanzDiode.setFill(rgGlanzDiode);
+		
+		
+		stopArray = new Stop[]{
+				new Stop(0.0486486, Color.web("#FCEE21B3")),
+				new Stop(0.4550311, Color.web("#FCEF1E66")),
+				new Stop(0.7107612, Color.web("#FDF41636")),
+				new Stop(0.9242952, Color.web("#FEFB070E")),
+				new Stop(1.0, Color.web("#FFFF0000"))
+			};
+		stopMap.put(StopIndizes.DIODE_FARBE_SCHEIN, stopArray);
+		
+		rgFarbeSchein = new RadialGradient(0D, 0D, centerX, centerY, 3.3541667, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_FARBE_SCHEIN));
+		
+		scheinDiode = new Circle();
+		scheinDiode.setFill(rgFarbeSchein);
+		
 		
 		
 		this.getChildren().addAll(componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay, backgroundHalf, 
 				backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben, overlayLCDLinks, /* overlayLCDRechts*/
-				diodeUntergrund, diodeBasisGlanz);
+				diodeUntergrund, diodeBasisGlanz, diodeFarbe, glanzDiode, scheinDiode);
 	}
 	
 
@@ -614,13 +667,61 @@ public class ButtonDisplay extends Region
 		
 		//x1="61.5" y1="33.3333321" x2="61.5" y2="27.333334"
 		//61.5 - 36 = 25,5 = 100/72 * 25,5 = 0.3541666666666667
+		
+		//36 - 33.3333321 = 2,6666679 = 100/72 * 2,6666679 = 0.03703705416666667
+		
+		//36 - 27.333334 = 8,666666 = 100/72 * 8,666666 = 0.1203703611111111
+		
 		//TODO hier gehts weiter
-		lgDiodeBasisGlanz = new LinearGradient(61.5, 33.3333321, 61.5,  27.333334,
+		lgDiodeBasisGlanz = new LinearGradient(centerX + (size *  0.3541666666666667),
+				centerY - (size * 0.03703705416666667), centerX + (size *  0.3541666666666667),  centerY - (size * 0.1203703611111111),
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_BASIS_GLANZ));
 		
-		diodeBasisGlanz = new Circle();
+		//diodeBasisGlanz = new Circle();
 		//cx="61.5" cy="30.333334" r="3"
+		
+		//61.5 - 36 = 25,5 = 100/72 * 25,5 = 0,3541666666666667
+		//36 - 30.333334 = 5,666666 = 100/72 * 5,666666 = 0,0787036944444444
+		
+		diodeBasisGlanz.setCenterX(centerX + (size *  0.3402777777777778));
+		diodeBasisGlanz.setCenterY(centerY - (size * 0.0787036944444444));
+		//100/72 * 3 = 4,166666666666667 = 0.04166666666666667
+		diodeBasisGlanz.setRadius(size * 0.04166666666666667);
 		diodeBasisGlanz.setFill(lgDiodeBasisGlanz);
+		
+		//	 cx="61.5" cy="30.333334" r="2.5"/>
+		//61.5 - 36 = 25,5 = 100/72 * 25,5 = 0.3541666666666667
+		//60.5 - 36 = 24,5 = 100/72 * 24.5 = 0.3402777777777778
+		diodeFarbe.setCenterX(centerX + (size *   0.3402777777777778));
+		//36 - 30.333334 = 5,666666 = 100/72 * 5,666666 = 0,0787036944444444
+		diodeFarbe.setCenterY(centerY - (size * 0.0787036944444444));
+		
+		//100/72 * 2.5 = 3,472222222222222 = 0.03472222222222222
+		diodeFarbe.setRadius(size * 0.03472222222222222);
+		
+		
+		rgGlanzDiode = new RadialGradient(0D, 0D, centerX + (size *   0.3402777777777778), centerY - (size * 0.0787036944444444), size * 0.03472222222222222, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_FARBE_RADIALGRADIENT));
+		
+		glanzDiode.setCenterX(centerX + (size *   0.3402777777777778));
+		//36 - 30.333334 = 5,666666 = 100/72 * 5,666666 = 0,0787036944444444
+		glanzDiode.setCenterY(centerY - (size * 0.0787036944444444));
+		//100/72 * 2.5 = 3,472222222222222 = 0.03472222222222222
+		glanzDiode.setRadius(size * 0.03472222222222222);
+		
+		glanzDiode.setFill(rgGlanzDiode);
+		
+		
+		// cx="61.015625" cy="29.848959" r="3.3541667"
+		//61.015625 - 36 = 25,015625 = 100/72 * 25,015625 = 34,74392361111111 = 0.3474392361111111
+		rgFarbeSchein = new RadialGradient(0D, 0D, centerX, centerY, 3.3541667, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_FARBE_SCHEIN));
+		
+		
+		
+		
+		scheinDiode.setFill(rgFarbeSchein);
+		
 		
 		
 		
