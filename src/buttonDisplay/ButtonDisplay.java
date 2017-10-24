@@ -3,6 +3,7 @@ package buttonDisplay;
 import java.util.HashMap;
 
 import javafx.scene.effect.BlurType;
+import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -14,6 +15,7 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.transform.Affine;
 
 /**
  * Eine Anzeige mit einer Schaltflaeche die einen toggle ermöglicht
@@ -57,7 +59,7 @@ public class ButtonDisplay extends Region
 	private double width = 72, height = 72;
 
 	private Arc backgroundHalf, backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben,
-		overlayLCDLinks, overlayLCDRechts;
+		overlayLCDLinks, overlayLCDRechts, rahmenObenGlanz, rahmenUntenGlanz;
 	
 	private Circle diodeUntergrund, diodeBasisGlanz;
 	
@@ -425,6 +427,7 @@ public class ButtonDisplay extends Region
 		diodeFarbe = new Circle();
 		diodeFarbe.setFill(Color.web("#BABA00"));
 		
+		
 		stopArray = new Stop[]{
 				new Stop(0.0, Color.web("#FFFFFFB3")),
 				new Stop(0.9629469, Color.web("#FFFFFF1F")),
@@ -455,6 +458,9 @@ public class ButtonDisplay extends Region
 		
 		scheinDiode = new Circle();
 		scheinDiode.setFill(rgFarbeSchein);
+		
+		//TODO die Ränder
+		//rahmenObenGlanz = new Arc();
 		
 		
 		
@@ -695,12 +701,18 @@ public class ButtonDisplay extends Region
 		diodeFarbe.setCenterX(centerX + (size *   0.3402777777777778));
 		//36 - 30.333334 = 5,666666 = 100/72 * 5,666666 = 0,0787036944444444
 		diodeFarbe.setCenterY(centerY - (size * 0.0787036944444444));
-		
+		//TODO raus
+		//diodeFarbe.setFill(Color.web("#FF0000"));
 		//100/72 * 2.5 = 3,472222222222222 = 0.03472222222222222
 		diodeFarbe.setRadius(size * 0.03472222222222222);
+		//wäre auch eine Möglichkeit für einen schein
+		Glow glow = new Glow();
+	    glow.setLevel(1);
+	   // diodeFarbe.setEffect(glow);
 		
 		
-		rgGlanzDiode = new RadialGradient(0D, 0D, centerX + (size *   0.3402777777777778), centerY - (size * 0.0787036944444444), size * 0.03472222222222222, 
+		rgGlanzDiode = new RadialGradient(0D, 0D, centerX + (size *   0.3402777777777778), 
+				centerY - (size * 0.0787036944444444), size * 0.03472222222222222, 
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_FARBE_RADIALGRADIENT));
 		
 		glanzDiode.setCenterX(centerX + (size *   0.3402777777777778));
@@ -710,17 +722,29 @@ public class ButtonDisplay extends Region
 		glanzDiode.setRadius(size * 0.03472222222222222);
 		
 		glanzDiode.setFill(rgGlanzDiode);
+
 		
 		
 		// cx="61.015625" cy="29.848959" r="3.3541667"
 		//61.015625 - 36 = 25,015625 = 100/72 * 25,015625 = 34,74392361111111 = 0.3474392361111111
-		rgFarbeSchein = new RadialGradient(0D, 0D, centerX, centerY, 3.3541667, 
+		rgFarbeSchein = new RadialGradient(0D, 0D, centerX + (size *   0.3402777777777778), centerY - (size * 0.0787036944444444),
+				size * 0.05555555555555556, 
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DIODE_FARBE_SCHEIN));
 		
+		//matrix(1.1925466 0 0 1.1925466 -11.2639751 -5.2629399)
+		Affine transform = new Affine(1.1925466, 0, 0, 1.1925466, -11.2639751, -5.2629399);
 		
 		
+		scheinDiode.setCenterX(centerX + (size *   0.3402777777777778));
+		//36 - 30.333334 = 5,666666 = 100/72 * 5,666666 = 0,0787036944444444
+		scheinDiode.setCenterY(centerY - (size * 0.0787036944444444));
+		//100/72 * 2.5 = 3,472222222222222 = 0.03472222222222222
+		//100/72 * 4 = 5,555555555555556 = 0.05555555555555556
+		scheinDiode.setRadius(size * 0.05555555555555556);
 		
 		scheinDiode.setFill(rgFarbeSchein);
+		
+		
 		
 		
 		
