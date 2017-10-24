@@ -14,6 +14,9 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.QuadCurveTo;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Affine;
 
@@ -59,7 +62,7 @@ public class ButtonDisplay extends Region
 	private double width = 72, height = 72;
 
 	private Arc backgroundHalf, backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben,
-		overlayLCDLinks, overlayLCDRechts, rahmenObenGlanz, rahmenUntenGlanz;
+		overlayLCDLinks, overlayLCDRechts;
 	
 	private Circle diodeUntergrund, diodeBasisGlanz;
 	
@@ -69,6 +72,8 @@ public class ButtonDisplay extends Region
 	private Circle diodeFarbe;
 	
 	private Circle glanzDiode, scheinDiode;
+	
+	//private SVGPath rahmenOben;
 	
 	public ButtonDisplay()
 	{
@@ -461,12 +466,19 @@ public class ButtonDisplay extends Region
 		
 		//TODO die Ränder
 		//rahmenObenGlanz = new Arc();
+		//rahmenOben = new SVGPath();
+		//rahmenOben.setFill(Color.web("#FF0000"));
+		//rahmenOben.setContent("M36,2.5C17.6349487,2.5,2.7293091,17.2800293,2.5103149,35.5931396h66.9793701"+
+		//"C69.2706909,17.2800293,54.3650513,2.5,36,2.5z M36,3.2524414c17.8223267,0,32.2874756,14.1079102,32.5,31.5882568h-65"+
+		//"C3.7125244,17.3603516,18.1776733,3.2524414,36,3.2524414z");
+		
+		
 		
 		
 		
 		this.getChildren().addAll(componentBasis, componentBasisRahmen, componentBasisGlanz, componentBasisInlay, backgroundHalf, 
 				backgroundHalfGlanz, backgroundLCDBasis, overlayLCDOben, overlayLCDLinks, /* overlayLCDRechts*/
-				diodeUntergrund, diodeBasisGlanz, diodeFarbe, glanzDiode, scheinDiode);
+				diodeUntergrund, diodeBasisGlanz, diodeFarbe, glanzDiode, scheinDiode /*, rahmenOben*/);
 	}
 	
 
@@ -744,10 +756,7 @@ public class ButtonDisplay extends Region
 		
 		scheinDiode.setFill(rgFarbeSchein);
 		
-		
-		
-		
-		
+	
 		
 	}
 
