@@ -45,6 +45,11 @@ public class SingleButtonDisplay extends Application
         	
         });
         */
+
+     
+        
+        buttonDisplay.setPrefWidth(250);
+        buttonDisplay.setPrefHeight(250);
         pane.setCenter(buttonDisplay);
         pane.setRight(test);
 
