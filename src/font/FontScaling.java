@@ -15,9 +15,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -31,9 +28,6 @@ import javafx.stage.Stage;
 public class FontScaling extends Application 
 {
 	private String msg = "Testtext";
-	private Text text = new Text(msg);
-	
-	private double width = 100, height = 75;
 	
 	private DoubleProperty fontSize = new SimpleDoubleProperty(24);
 	
@@ -135,7 +129,6 @@ public class FontScaling extends Application
 			fontSize = fontSize - 1;
 			if(fontSize <= 0)
 				return 1;
-			System.out.println("fontSize als nächstes " + fontSize);
 			return getLesserFont(fontSize);
 		}
 		return fontSize;
