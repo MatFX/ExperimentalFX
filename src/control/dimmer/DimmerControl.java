@@ -452,6 +452,7 @@ public class DimmerControl extends Region
 		int showTickNumber =  (int) Math.round((double)31d/100d * (double)neuerProzentWert);
 		int showTickNumberAktuell = (int) Math.round((double)31d/100d * (double)currentValue);
 	
+		double wertVonEinemTickInProzent = 100/31;
 		
 		if(!isInit)
 		{
@@ -465,7 +466,7 @@ public class DimmerControl extends Region
 					tickMap.get(startIndex).setStroke(Color.web("#CCC200"));
 					//jeder tick spiegelt einen Wert wieder der in auch zur Anzeige kommen muss
 					
-					double tempValue = 31d / 100d * (double)startIndex;
+					double tempValue = wertVonEinemTickInProzent * (double)startIndex;
 					this.currentValue = (int)Math.round(tempValue);
 					System.out.println("currentValue " + currentValue);
 					this.drawTextValues(true);
@@ -490,7 +491,7 @@ public class DimmerControl extends Region
 				{
 					tickMap.get(startIndex).setStroke(Color.web("#626262"));
 					
-					double tempValue = 31d / 100d * (double)startIndex;
+					double tempValue = wertVonEinemTickInProzent * (double)startIndex;
 					this.currentValue = (int)Math.round(tempValue);
 					System.out.println("currentValue " + currentValue);
 					this.drawTextValues(true);
