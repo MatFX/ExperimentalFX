@@ -49,11 +49,16 @@ public class SingleDimmerControl extends Application
         
         pane.setCenter(customCircle);
         pane.setRight(test);
-
+       
+        
         Scene scene = new Scene(pane);
+        
 
-        stage.setTitle("JavaFX First Gauge");
+        stage.setTitle("JavaFX First Dimmer Control");
         stage.setScene(scene);
+        stage.setWidth(400);
+        stage.setHeight(400);
+        
         stage.show();
         
         //closing event with stop animation
