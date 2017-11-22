@@ -1,7 +1,11 @@
 package control.dimmer;
 
 import java.util.HashMap;
-
+import java.util.Random;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.Glow;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -10,6 +14,8 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class DimmerControl extends Region
 {
@@ -29,13 +35,15 @@ public class DimmerControl extends Region
 	
 	private double RANGE_MAX = 100D;
 	
-	private double currentValue = 50D;
+	private double currentValue = 0D;
 	
 	private double nodeX, nodeY, nodeW, nodeH;
 	
 	private double width = 128, height = 128;
 	
 	private double centerX = 64, centerY = 64;
+	
+	private int startIndex = 0;
 	
 	private Circle basis1, basis2, basis3, glanzRand, schattierungDrehrad, drehrad, drehradGlanz, inhaltMonitor,
 		inhaltMonitorKopie, glanzMonitor, anfasser, anfasserGlanz;
@@ -50,7 +58,20 @@ public class DimmerControl extends Region
 	/**
 	 * Die Striche die auf der Oberfläche dargestellt werden sollen
 	 */
-	private HashMap<Integer, Line> tickMap = new HashMap<Integer, Line>();
+	private TreeMap<Integer, Line> tickMap = new TreeMap<Integer, Line>();
+	
+	private boolean isAnimation = false;
+	
+	private Thread animThread = null;
+	
+	private Text textCurrentValue;
+	
+	private Text masseinheit;
+	
+	/**
+	 * Hier erfolgt die Anzeige des zur Zeit dargestellten Wertes
+	 */
+	private Canvas textCanvas;
 	
 	
 	public DimmerControl()
@@ -146,13 +167,25 @@ public class DimmerControl extends Region
 		
 		anfasserGlanz = new Circle();
 		
+		textCanvas = new Canvas();
+		textCurrentValue = new Text();
+		//TODO vertl. stringproperty koppeln den Wert
+		textCurrentValue.setText(""+currentValue);
+		
+		masseinheit = new Text();
+		//TODO optional und variable machen
+		masseinheit.setText("%");
+		
 		
 		
 		this.getChildren().addAll(basis1, basis2, basis3, glanzRand 
 				,schattierungDrehrad, drehrad, drehradGlanz, /*TODO drehrad oben glanz */ 
-				inhaltMonitor, inhaltMonitorKopie, glanzMonitor
+				inhaltMonitor, inhaltMonitorKopie,  glanzMonitor, textCanvas
+				//TODO evtl. textCanvas noch nach vorne ziehen unterhalb von glanzMonitor
 				,anfasser, anfasserGlanz);
 		
+		
+		drawTextValues(true);
 		
 		//ticks setzen, dass geht erst immmer dann wenn alles andere hinzugefügt worden ist.
 		drawMinorTick(width, true);
@@ -190,7 +223,11 @@ public class DimmerControl extends Region
 		
 			 Line line = null;
 			 if(isInit)
+			 {
 				 line = new Line();
+				 //Darf hier nur einmalig gesetzt werden, weil zur Laufzeit sich die Farbe ändern kann.
+				 line.setStroke(Color.web("#626262"));
+			 }
 			 else
 				 line = tickMap.get(i);
 			 
@@ -199,9 +236,9 @@ public class DimmerControl extends Region
 		     line.setEndX((float)(centerX - cosValue*(r - tickLenMinor)));
 		     line.setEndY((float)(centerY - sinValue*(r - tickLenMinor)));
 		     line.setStrokeWidth(strokeWidth);
-		     line.setStroke(Color.web("#626262"));
+		     
 		     Glow glow = new Glow();
-		     glow.setLevel(0.3);
+		     glow.setLevel(0.5);
 		     line.setEffect(glow);
 		     //TODO evtl. die 36er Werte nicht zeichnen...mal sehen
 		     if(isInit)
@@ -342,10 +379,202 @@ public class DimmerControl extends Region
 		anfasserGlanz.setRadius(radius * 0.078125);
 		anfasserGlanz.setFill(linearGradientAnfasser);
 		
+		double w = size * 0.5;
+		double h = size * 0.171875;
+		double x = centerX - (w/2); 
+		double y = centerY - (h/2);
+		textCanvas.setWidth(w);
+		textCanvas.setHeight(h);
+	
+		textCanvas.relocate(x, y);
+		drawTextValues(true);
+		
+		
+		
 		
 		drawMinorTick(size, false);
 		
 			
+	}
+	
+	private void drawTextValues(boolean clearing) 
+	{
+		//Size wird für die Ausrichtung benötigt
+		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
+	//	System.out.println("gaugeSize " + gaugeSize);
+		double w = textCanvas.getWidth();
+		double h = textCanvas.getHeight();
+		double x = textCanvas.getLayoutX();
+		double y = textCanvas.getLayoutY();
+		GraphicsContext gc = textCanvas.getGraphicsContext2D();
+		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
+		if(clearing)
+		{
+		
+			gc.clearRect(0, 0, w, h);
+		}
+		gc.setFill(Color.web("#00000080"));
+		
+		Font masseinheitFont = new Font("Verdana", gaugeSize * 0.12);
+		
+		masseinheit.setText("%");
+		masseinheit.setFont(masseinheitFont);
+		
+		gc.setFont(masseinheitFont);
+		
+		double masseinheitX = w - (masseinheit.getLayoutBounds().getWidth() + (gaugeSize * 0.015635));
+		
+		//keien Ahnung wieso ich nicht den Mittelpunkt von H als Basis nehmen kann.
+		double masseinheitY = masseinheit.getLayoutBounds().getHeight() -  (gaugeSize * 0.015635);
+		gc.fillText(masseinheit.getText(), masseinheitX, masseinheitY);
+		
+		Font valueFont = new Font("Verdana", gaugeSize * 0.115);
+		//TODO evtl. noch verschieben ohne komma schaut es so weit rechtsläufig aus.
+		textCurrentValue.setText(String.format("%.0f", currentValue));
+		textCurrentValue.setFont(valueFont);
+		
+		double valueX = masseinheitX - (textCurrentValue.getLayoutBounds().getWidth()  + (gaugeSize * 0.015635));
+		double valueY = masseinheitY;
+		
+		gc.setFont(valueFont);
+		gc.fillText(textCurrentValue.getText(), valueX, valueY);
+	}
+	
+	/**
+	 * Methode für das Sezten des aktuellen Zustands
+	 * @param neuerWert
+	 */
+	public void setCurrentValue(int neuerProzentWert, boolean isInit) 
+	{
+		//wir haben 31 Ticks für die Beleuchtung
+		
+		//ermitteln wieviele ticks wir benötigen
+		int showTickNumber =  (int) Math.round((double)31d/100d * (double)neuerProzentWert);
+		int showTickNumberAktuell = (int) Math.round((double)31d/100d * (double)currentValue);
+	
+		
+		if(!isInit)
+		{
+			if(showTickNumber > showTickNumberAktuell)
+			{
+				
+				startIndex = showTickNumberAktuell + 1 ;
+				do
+				{
+					
+					tickMap.get(startIndex).setStroke(Color.web("#CCC200"));
+					//jeder tick spiegelt einen Wert wieder der in auch zur Anzeige kommen muss
+					
+					double tempValue = 31d / 100d * (double)startIndex;
+					this.currentValue = (int)Math.round(tempValue);
+					System.out.println("currentValue " + currentValue);
+					this.drawTextValues(true);
+					
+					try 
+					{
+						TimeUnit.MILLISECONDS.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					startIndex ++;
+				}
+				while(startIndex <= showTickNumber);
+			}
+			else if(showTickNumber < showTickNumberAktuell)
+			{
+				//hier werden die Ticks abgedunkelt, deswegen beginnen mir mit den vorhergehenden Wert
+				startIndex = showTickNumberAktuell;
+				
+				do
+				{
+					tickMap.get(startIndex).setStroke(Color.web("#626262"));
+					
+					double tempValue = 31d / 100d * (double)startIndex;
+					this.currentValue = (int)Math.round(tempValue);
+					System.out.println("currentValue " + currentValue);
+					this.drawTextValues(true);
+					try {
+						TimeUnit.MILLISECONDS.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					startIndex--;
+					
+				}
+				while(startIndex > showTickNumber);
+				
+				
+			}
+			//isAnimation =false;
+
+			//bei gleich wird nichts gemacht
+		}
+		
+		//Übernahme des aktuellen Wertes
+		this.currentValue = neuerProzentWert;
+		this.drawTextValues(true);
+		
+		
+	
+	
+	}
+
+	
+	public void startAnimation() 
+	{
+		if(animThread != null && animThread.isAlive())
+			animThread.stop();
+		
+		isAnimation = true;
+		int minValue = (int)RANGE_MIN;
+		int maxValue = (int)RANGE_MAX;
+		Runnable runnable = new Runnable(){
+
+			@Override
+			public void run() 
+			{
+				Random ran = new Random();
+			
+				while(isAnimation)
+				{
+					int neuerWert = ran.nextInt((maxValue - minValue) + 1);
+					
+					if(neuerWert != currentValue)
+					{
+		//				System.out.println("neuerWert " + neuerWert);
+						setCurrentValue(neuerWert, false);
+						//Platform.runLater(() ->setCurrentValue(neuerWert, false));
+			//			System.out.println("weitergehts ");
+					}
+					
+					try 
+					{
+						TimeUnit.SECONDS.sleep(2);
+					} 
+					catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					}
+					
+				}
+				
+				
+			}
+
+		};
+		animThread = new Thread(runnable);
+		animThread.start();
+		
+	}
+
+	public void stopAnimation()
+	{
+		isAnimation = false;
+		if(animThread != null)
+			animThread.stop();
+		
 	}
 	
 }

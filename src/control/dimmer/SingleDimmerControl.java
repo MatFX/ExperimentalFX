@@ -30,7 +30,6 @@ public class SingleDimmerControl extends Application
 			@Override
 			public void handle(ActionEvent event) 
 			{
-				/* TODO ?
 				if(test.isSelected())
 				{
 					
@@ -41,7 +40,7 @@ public class SingleDimmerControl extends Application
 				{
 					customCircle.stopAnimation();
 					test.setText("Start");
-				}*/
+				}
 			
 			}
         	
@@ -66,8 +65,7 @@ public class SingleDimmerControl extends Application
         {
             @Override
             public void handle(WindowEvent event) {
-            	//TODO?
-            	//customCircle.stopAnimation();
+            	customCircle.stopAnimation();
             }
         });
     }
