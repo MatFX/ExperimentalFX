@@ -1,0 +1,88 @@
+	
+	/**
+	 * Obere Kante
+	 */
+	private Path kanteOben;
+
+	/**
+	 * Initiale Werte die bei der Zeichnung vorgegeben waren
+	 */
+	private double KANTE_X = 64, KANTE_Y = 38.25, KANTE_W = 106, KANTE_H = 54.5;
+	
+	private SubtractedCircle subtractedCircle;
+	
+	
+	
+	subtractedCircle = new SubtractedCircle();
+		
+		//TODO raus
+		//kanteOben = new Path();
+		//kanteOben.setFill(Color.web("#7A7A7A"));
+		//kanteOben.setContent("M64,14c28.7680664,0,52.1657104,22.9244385,52.9620972,51.5C 116.9760132, 65.0003052, 117, 64.5030518, 117, 64        c0-29.2711182-23.7288818-53-53-53 S11,34.7288818,11,64c0,0.5030518,0.0239868,1.0003052,0.0379028,1.5 C11.8342896,36.9244385,35.2319336,14,64,14z");
+		//kanteOben.setFill(Color.web("#FF0000"));
+		//System.out.println("kante " + kanteOben);
+		
+		
+		
+		
+		
+		
+		//TODO hier die Kante die abgeflacht erscheint
+	
+		MoveTo moveTo = new MoveTo(64,14);
+		CubicCurveTo c1 = new CubicCurveTo(28.7680664,0,52.1657104,22.9244385,52.9620972,51.5);
+		c1.setAbsolute(false);
+		CubicCurveTo c2 = new CubicCurveTo(116.9760132,65.0003052,117,64.5030518,117,64);
+		
+		CubicCurveTo c3 = new CubicCurveTo(0,29.2711182,23.7288818,53,53,53);
+		
+		c3.setAbsolute(false);
+		
+		//CubicCurveTo c4 = new CubicCurveTo(11, 34.7288818, 11, 64);
+		
+		
+		CubicCurveTo c5 = new CubicCurveTo(0,0.5030518,0.0239868,1.0003052,0.0379028,1.5);	
+		c5.setAbsolute(false);
+		
+		CubicCurveTo c6 = new CubicCurveTo(11.8342896,36.9244385,35.2319336,14,64,14);	
+	
+		kanteOben.getElements().addAll(moveTo, c1, c2, c3);//, c5, c6);
+		
+		
+		
+		Circle test = new Circle();
+		test.subtract(new Circle(), new Circle());
+		//x 64 y 38,25
+		//b 106 h 54,5
+		//x = 100/128 * 64 = 50 = 0,5
+		//y = 100/128 * 38,25 = 29,8828125 = 0.298828125
+		//b = 100/128 * 106 = 82,8125 = 0.828125
+		//h = 100/128 * 54,5 = 42,578125 = 0.42578125
+		
+		//kanteOben.prefWidth(size * 0.828125);
+		//kanteOben.minWidth(size * 0.828125);
+		//kanteOben.prefHeight(size / 0.42578125);
+		//kanteOben.minHeight(size / 0.42578125);
+		
+		//gewünschte Größe
+		double x_Now = size * 0.5;
+		double y_Now = size * 0.298828125;
+		double w_Now = size * 0.828125;
+		double h_Now = size * 0.42578125;
+		
+		//ins Verhältnis setzen
+		double x_scale = KANTE_X / x_Now;
+		double y_scale = KANTE_Y / y_Now;
+		double w_scale = KANTE_W / w_Now;
+		double h_scale = KANTE_H / h_Now;
+		
+		KANTE_X = x_Now;
+		KANTE_Y = y_Now;
+		KANTE_W = w_Now;
+		KANTE_H = h_Now;
+		
+		//resize(kanteOben, w_Now, h_Now);
+	
+	
+		Scale scale = new Scale(x_scale, y_scale, w_scale, h_scale);
+		System.out.println("Scaale " + scale.toString());

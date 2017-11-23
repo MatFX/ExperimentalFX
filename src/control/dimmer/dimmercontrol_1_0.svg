@@ -167,7 +167,7 @@
 	<circle style="fill:url(#SVGID_2_);" cx="64" cy="64" r="53"/>
 </g>
 <g id="DrehradObenRand">
-	<path style="fill:#7A7A7A;" d="M64,14c28.7680664,0,52.1657104,22.9244385,52.9620972,51.5
+	<path style="fill:#848484;" d="M64,14c28.7680664,0,52.1657104,22.9244385,52.9620972,51.5
 		C116.9760132,65.0003052,117,64.5030518,117,64c0-29.2711182-23.7288818-53-53-53S11,34.7288818,11,64
 		c0,0.5030518,0.0239868,1.0003052,0.0379028,1.5C11.8342896,36.9244385,35.2319336,14,64,14z"/>
 </g>
@@ -187,14 +187,14 @@
 	<circle style="fill:url(#SVGID_3_);" cx="64" cy="64" r="37.5"/>
 </g>
 <g id="Anfasser">
-	<circle style="fill:#282828;" cx="23.75" cy="83.2325363" r="5.5"/>
+	<circle style="fill:#282828;" cx="24.946146" cy="86.5477524" r="5.5"/>
 </g>
 <g id="AnfasserGlanz">
-	<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="23.75" y1="78.2325363" x2="23.75" y2="88.2325363">
+	<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="24.946146" y1="81.5477524" x2="24.946146" y2="91.5477524">
 		<stop  offset="0.0195122" style="stop-color:#666666;stop-opacity:0.5"/>
 		<stop  offset="0.3291745" style="stop-color:#555555;stop-opacity:0.3420876"/>
 		<stop  offset="1" style="stop-color:#333333;stop-opacity:0"/>
 	</linearGradient>
-	<circle style="fill:url(#SVGID_4_);" cx="23.75" cy="83.2325363" r="5"/>
+	<circle style="fill:url(#SVGID_4_);" cx="24.946146" cy="86.5477524" r="5"/>
 </g>
 </svg>

@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+
+import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.Glow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -16,6 +19,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 
 public class DimmerControl extends Region
 {
@@ -23,7 +27,8 @@ public class DimmerControl extends Region
 	{
 		GLANZ_RAND
 		//Enums für die gespeicherten Farben
-		, DREHRAD_GLANZ, GLANZ_MONITOR, GLANZ_ANFASSER
+		, DREHRAD_GLANZ, GLANZ_MONITOR, GLANZ_ANFASSER,
+		GLANZ_KANTE_OBEN
 		
 	}
 	
@@ -37,7 +42,7 @@ public class DimmerControl extends Region
 	
 	private double currentValue = 0D;
 	
-	private double nodeX, nodeY, nodeW, nodeH;
+	//private double nodeX, nodeY, nodeW, nodeH;
 	
 	private double width = 128, height = 128;
 	
@@ -73,6 +78,12 @@ public class DimmerControl extends Region
 	 */
 	private Canvas textCanvas;
 	
+	/**
+	 * Den Anfasser drehen lassen unter bezugnahme der mittelachse
+	 */
+	private Rotate anfasserRotate;
+	
+	private double angleTest = 0;
 	
 	public DimmerControl()
 	{
@@ -85,6 +96,49 @@ public class DimmerControl extends Region
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
 	
+		drehradGlanz.setOnMousePressed(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				System.out.println("mosuePressed ");
+				
+			}
+			
+		});
+		drehradGlanz.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				//TODO hier die Drehung des Anfasser vollziehen.
+				System.out.println("mouseReleased ");
+				
+				System.out.println("event x " + event.getSceneX() + " y " + event.getSceneY());
+				
+				
+				
+			}
+			
+		});
+		
+		drehradGlanz.setOnMouseDragged(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
+		//TODO
+		//anfasserGlanz
+		
+		
+	}
+	
+	private void drehung(double x, double y)
+	{
 		
 	}
 
@@ -134,7 +188,8 @@ public class DimmerControl extends Region
 		stopMap.put(StopIndizes.DREHRAD_GLANZ, stopArray);
 		
 		drehradGlanz = new Circle();
-		//TODO drehradObenGlanz
+		
+		
 		
 		inhaltMonitor = new Circle();
 		inhaltMonitor.setFill(Color.web("#0F0F0F"));
@@ -153,6 +208,22 @@ public class DimmerControl extends Region
 		
 		stopMap.put(StopIndizes.GLANZ_MONITOR, stopArray);
 		glanzMonitor = new Circle();
+		
+		//glanz für Kante oben w
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#00000099")),
+				new Stop(0.145946, Color.web("#B3B3B3")),
+				new Stop(0.2731459, Color.web("#7C7C7C")),
+				new Stop(0.4117662, Color.web("#474747")),
+				new Stop(0.5160054, Color.web("#262626")),
+				new Stop(0.572973, Color.web("#1A1A1A")),
+				new Stop(0.6123148, Color.web("#202020")),
+				new Stop(0.6671478, Color.web("#323232")),
+				new Stop(0.7307787, Color.web("#505050")),
+				new Stop(0.7702703, Color.web("#666666")),
+				new Stop(1.0, Color.web("#1A1A1A99"))
+			};
+		stopMap.put(StopIndizes.GLANZ_KANTE_OBEN, stopArray);
 		
 	
 		anfasser = new Circle();
@@ -179,7 +250,7 @@ public class DimmerControl extends Region
 		
 		
 		this.getChildren().addAll(basis1, basis2, basis3, glanzRand 
-				,schattierungDrehrad, drehrad, drehradGlanz, /*TODO drehrad oben glanz */ 
+				,schattierungDrehrad, drehrad, drehradGlanz, /* glanzKante ? */
 				inhaltMonitor, inhaltMonitorKopie,  glanzMonitor, textCanvas
 				//TODO evtl. textCanvas noch nach vorne ziehen unterhalb von glanzMonitor
 				,anfasser, anfasserGlanz);
@@ -189,6 +260,12 @@ public class DimmerControl extends Region
 		
 		//ticks setzen, dass geht erst immmer dann wenn alles andere hinzugefügt worden ist.
 		drawMinorTick(width, true);
+		
+		//Vorbereitung der Rotation
+		//TODO keine Ahnung was zu beginn gesetzt werden muss
+		anfasserRotate = new Rotate(0);
+		this.anfasser.getTransforms().add(anfasserRotate);
+		this.anfasserGlanz.getTransforms().add(anfasserRotate);
 	}
 	
 	
@@ -209,14 +286,15 @@ public class DimmerControl extends Region
 		//strokewidth orginal 2 = 100 / 128 *2 => 1,5625 => 0.015625
 		double strokeWidth = sizeNow * 0.015625;
 		
-		double START_ANGLE = 315;
+		double START_ANGLE = 330;
 		
-		double stepAngle = 9; //(180 / (n-1))
+		double stepAngle = 7; //(180 / (n-1))
 		double nextAngle = START_ANGLE;
 		double cosValue;
 		double sinValue;
 		
-		 for(int i = 1; i <= 31; i++)
+		
+		 for(int i = 1; i <= 35; i++)
 		 {
 			 sinValue = Math.sin(Math.toRadians(nextAngle));
 			 cosValue = Math.cos(Math.toRadians(nextAngle));
@@ -317,7 +395,8 @@ public class DimmerControl extends Region
 		drehradGlanz.setRadius(radius * 0.828125);
 		drehradGlanz.setFill(linearGradDrehradGlanz);
 		
-		//TODO DrehradObenRand
+		
+		//kanteOben.getTransforms().add(scale);
 		
 		//cx="64" cy="64" r="38"
 		inhaltMonitor.setCenterX(centerX);
@@ -355,10 +434,15 @@ public class DimmerControl extends Region
 		//cx = 64 - 23,75 = 40,25 = das ist die Strecke die von x abgezogen werden soll
 		//differenz von center zu position
 		//100/128 * 40,25 = 31,4453125 = 0.314453125
-		anfasser.setCenterX(centerX - (size * 0.314453125));
+		
+		//cxNeu = 64 - 24,96 = 39,04 
+		//100/128 * 39,04 = 30,5 = 0,305
+		anfasser.setCenterX(centerX - (size * 0.305));
 		//83.2325363  - 64 = 19,2325363
 		//100/128 * 19,2325363 = 15,025418984375 = 0.15025418984375
-		anfasser.setCenterY(centerY + (size * 0.15025418984375));
+		//86,548 - 64 = 22,548 
+		//100/128 * 22,548 = 17,615625 = 0.17615625
+		anfasser.setCenterY(centerY + (size * 0.17615625));
 		//r = 5,5  100/64 * 5,5 = 8,59375 = 0.0859375
 		anfasser.setRadius(radius * 0.0859375);
 		
@@ -371,11 +455,12 @@ public class DimmerControl extends Region
 		linearGradientAnfasser = new LinearGradient(getWidth() * 0.185546875, getHeight() * 0.61119168984375,
 				getWidth() * 0.185546875, getHeight() * 0.68931668984375, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_ANFASSER));
 		
+		
 		//cx="23.75" cy="83.2325363" r="5"
 		
 		//r = 100/64 * 5 = 7,8125 = 0.078125
-		anfasserGlanz.setCenterX(centerX - (size * 0.314453125));
-		anfasserGlanz.setCenterY(centerY + (size * 0.15025418984375));
+		anfasserGlanz.setCenterX(centerX - (size * 0.305));
+		anfasserGlanz.setCenterY(centerY + (size * 0.17615625));
 		anfasserGlanz.setRadius(radius * 0.078125);
 		anfasserGlanz.setFill(linearGradientAnfasser);
 		
@@ -449,10 +534,10 @@ public class DimmerControl extends Region
 		//wir haben 31 Ticks für die Beleuchtung
 		
 		//ermitteln wieviele ticks wir benötigen
-		int showTickNumber =  (int) Math.round((double)31d/100d * (double)neuerProzentWert);
-		int showTickNumberAktuell = (int) Math.round((double)31d/100d * (double)currentValue);
+		int showTickNumber =  (int) Math.round((double)35d/100d * (double)neuerProzentWert);
+		int showTickNumberAktuell = (int) Math.round((double)35d/100d * (double)currentValue);
 	
-		double wertVonEinemTickInProzent = 100/31;
+		double wertVonEinemTickInProzent = 100/35;
 		
 		if(!isInit)
 		{
@@ -468,8 +553,12 @@ public class DimmerControl extends Region
 					
 					double tempValue = wertVonEinemTickInProzent * (double)startIndex;
 					this.currentValue = (int)Math.round(tempValue);
-					System.out.println("currentValue " + currentValue);
 					this.drawTextValues(true);
+					
+					//TODO überlegen ob man ständig mitaktualisiert oder erst zum schluss
+					this.setRotation();
+					
+					
 					
 					try 
 					{
@@ -493,8 +582,9 @@ public class DimmerControl extends Region
 					
 					double tempValue = wertVonEinemTickInProzent * (double)startIndex;
 					this.currentValue = (int)Math.round(tempValue);
-					System.out.println("currentValue " + currentValue);
 					this.drawTextValues(true);
+					
+					this.setRotation();
 					try {
 						TimeUnit.MILLISECONDS.sleep(25);
 					} catch (InterruptedException e) {
@@ -512,9 +602,10 @@ public class DimmerControl extends Region
 
 			//bei gleich wird nichts gemacht
 		}
-		
+	
 		//Übernahme des aktuellen Wertes
 		this.currentValue = neuerProzentWert;
+		this.setRotation();
 		this.drawTextValues(true);
 		
 		
@@ -523,6 +614,95 @@ public class DimmerControl extends Region
 	}
 
 	
+	private void setRotation()
+	{
+//		if(currentValue < 50)
+//			currentValue = 0;
+//		else
+//			currentValue = 100;
+		
+		//currentValue = 100;
+		double ANGLE_RANGE = 240;
+		double angleStep = ANGLE_RANGE / (RANGE_MAX - RANGE_MIN);
+		System.out.println("angleStep ist " + angleStep);
+		System.out.println("currentValue " + currentValue);
+		System.out.println("> " + ((currentValue - RANGE_MIN) * angleStep - ANGLE_RANGE));
+		anfasserRotate.setAngle(((currentValue - RANGE_MIN) * angleStep ));
+		
+		System.out.println("?:  " + ((currentValue - RANGE_MIN) * angleStep));
+		
+		anfasserRotate.setPivotX(centerX);
+		anfasserRotate.setPivotY(centerY);
+		
+	//	this.anfasser.getTransforms().clear();
+	//	this.anfasserGlanz.getTransforms().clear();
+		
+	//	this.anfasser.getTransforms().add(anfasserRotate);
+	//	this.anfasserGlanz.getTransforms().add(anfasserRotate);
+	}
+	
+	private void setRotationTest() 
+	{
+		
+		if(angleTest == 0)
+			angleTest =45;
+		else if(angleTest == 45)
+			angleTest = 90;
+		else if(angleTest == 90)
+			angleTest = 135;
+		else if(angleTest == 135)
+			angleTest = 180;
+		else if(angleTest == 180)
+			angleTest = 225;
+		else if(angleTest == 225)
+			angleTest = 270;
+		else if(angleTest == 270)
+			angleTest = 315;
+		else if(angleTest == 315)
+			angleTest = 360;
+		else if(angleTest == 360)
+			angleTest = 0;
+		
+		
+		
+		//double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
+		
+		//TODO
+		//double r = gaugeSize * 0.90625 / 2d;
+		
+		
+		//double r = gaugeSize * 0.305;
+		
+		//double laenge = gaugeSize * 0.40625;
+		
+		//double laenge = gaugeSize * 0.305;
+		
+		
+		double percentValueToCalc = (100D / (RANGE_MAX - RANGE_MIN) * currentValue) / 100D;
+		System.out.println("percentValueToCalc " + percentValueToCalc);
+		System.out.println("tickmap " + tickMap.size());
+		
+		//double angleValue = 180 * percentValueToCalc - 90;
+		
+		double angleValue = 300D * percentValueToCalc;
+		
+		
+		//System.out.println("Fange an bei " + anfasserRotate.getAngle());
+		//System.out.println("setze nun    " + angleValue);
+		System.out.println("angleTest " + angleValue);
+		anfasserRotate.setAngle(angleValue);
+		anfasserRotate.setPivotX(centerX);
+		anfasserRotate.setPivotY(centerY);
+		 
+		this.anfasser.getTransforms().clear();
+		this.anfasserGlanz.getTransforms().clear();
+		
+		this.anfasser.getTransforms().add(anfasserRotate);
+		this.anfasserGlanz.getTransforms().add(anfasserRotate);
+			
+		
+	}
+
 	public void startAnimation() 
 	{
 		if(animThread != null && animThread.isAlive())
