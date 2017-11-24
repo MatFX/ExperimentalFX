@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -115,13 +116,9 @@ public class DimmerControl extends Region
 
 			@Override
 			public void handle(MouseEvent event) {
-				//TODO hier die Drehung des Anfasser vollziehen.
-				System.out.println("mouseReleased ");
+			
+				drehung(event);
 				
-				System.out.println("event x " + event.getSceneX() + " y " + event.getSceneY());
-				
-				Point2D point = DimmerControl.this.sceneToLocal(new Point2D(event.getSceneX(), event.getScreenY()));
-				System.out.println("point " + point.toString());
 				
 				
 			}
@@ -133,12 +130,29 @@ public class DimmerControl extends Region
 			@Override
 			public void handle(MouseEvent event) 
 			{
+				System.out.println("dragege");
 				//TODO mauspressed und ziehen des rades
-				
+				drehung(event);
 				
 			}
 			
 		});
+		
+		
+		
+		anfasserGlanz.setOnMouseDragged(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				System.out.println("dragege");
+				//TODO mauspressed und ziehen des rades
+				drehung(event);
+				
+			}
+			
+		});
+		
 		
 		//TODO
 		//anfasserGlanz
@@ -146,8 +160,91 @@ public class DimmerControl extends Region
 		
 	}
 	
-	private void drehung(double x, double y)
+	
+	
+	
+	private void drehung(MouseEvent event)
 	{
+		
+		/*
+		System.out.println("event x " + event.getSceneX() + " y " + event.getSceneY());
+		System.out.println("center x " + centerX + " y " + centerY);
+		System.out.println("anfass x " + anfasser.getCenterX() + " y " + anfasser.getCenterY());
+		
+		double xCalc = Math.pow((Math.abs(centerX - event.getSceneX())), 2);
+		double yCalc = Math.pow((Math.abs(centerY - event.getSceneY())), 2);
+		
+		double laengeA = Math.sqrt(xCalc + yCalc);
+		
+		System.out.println("laenge " + laengeA);
+		
+		//jetzt laenge von anfasser
+		
+		xCalc = Math.pow((Math.abs(centerX - anfasser.getCenterX())), 2);
+		yCalc = Math.pow((Math.abs(centerY - anfasser.getCenterY())), 2);
+		
+		double laengeB = Math.sqrt(xCalc + yCalc);
+		System.out.println("laenge2> " + laengeB);
+		
+		xCalc = Math.pow((Math.abs(event.getSceneX() - anfasser.getCenterX())), 2);
+		yCalc = Math.pow((Math.abs(event.getSceneY() - anfasser.getCenterY())), 2);
+		double laengeC = Math.sqrt(xCalc + yCalc);
+		System.out.println("laenge3> " + laengeC);
+		
+		
+		double cosA =  (Math.pow(laengeA, 2) - Math.pow(laengeB, 2) - Math.pow(laengeC, 2)) / (-2d * laengeB * laengeC); 
+	
+		
+		
+		
+		//Math.acos(0.5);
+		double degress =  Math.toDegrees(Math.acos(cosA));
+		System.out.println("degress " + degress);
+		*/
+		
+		
+		
+		//Berücksichtigt wird bereits min ist aber zur Zeit noch nicht einstellbar
+		double schrittweite = ANGLE_RANGE_SELECTOR / (RANGE_MAX - RANGE_MIN);
+		//TODO hier die Drehung des Anfasser vollziehen.
+		System.out.println("mouseReleased ");
+		
+	
+		
+		//TODO raus brauch ich nicht
+		//Point2D point = DimmerControl.this.sceneToLocal(new Point2D(event.getSceneX(), event.getScreenY()));
+		//System.out.println("point " + point.toString());
+		
+		System.out.println("anfasser  " + anfasser.getCenterX()+ " " + anfasser.getCenterY());
+		
+		double deltaX = event.getSceneX() - (centerX);//  - (anfasser.getRadius());// - anfasser.getCenterX();
+		double deltaY = event.getSceneY() - (centerY);// - (anfasser.getRadius());// - anfasser.getCenterY();
+		
+		
+		  // double  deltaX = p.getX() - (pane.getLayoutX() + size * 0.5);
+	      //  double  deltaY = p.getY() - (pane.getLayoutY() + size * 0.5);
+        double  radius = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        //System.out.println("radius " + radius + " anfasser " + inhaltMonitor.getRadius());
+        double  nx     = deltaX / radius;
+        double  ny     = deltaY / radius;
+        double  theta  = Math.atan2(ny, nx);
+        System.out.println("theta " + theta);
+        theta         = Double.compare(theta, 0.0) >= 0 ? Math.toDegrees(theta) : Math.toDegrees((theta)) + 360.0;
+       double angle  = (theta + 230) % 360;
+        //double angle = degress;
+        System.out.println("angle " + angle);
+        if (angle > 320 && angle < 360) {
+            angle = 0;
+        } else if (angle <= 320 && angle > ANGLE_RANGE_SELECTOR) {
+            angle = ANGLE_RANGE_SELECTOR;
+        }
+        
+        double valueToSet = (angle / schrittweite + RANGE_MIN);
+        setCurrentValue((int) valueToSet, false);
+        
+        System.out.println("valueToSet " + valueToSet);
+        setRotation(angle / schrittweite + RANGE_MIN);
+		
 		
 	}
 
@@ -630,8 +727,8 @@ public class DimmerControl extends Region
 	private void setRotation(double valueToSet)
 	{
 		//Der Abzug von max und min spielt erstmal keine Rolle solange die Werte noch nicht variabel veränder bar sind...evtl. später
-		double angleStep = ANGLE_RANGE_SELECTOR / (RANGE_MAX - RANGE_MIN);
-		anfasserRotate.setAngle(((valueToSet - RANGE_MIN) * angleStep ));
+		double schrittweite = ANGLE_RANGE_SELECTOR / (RANGE_MAX - RANGE_MIN);
+		anfasserRotate.setAngle(((valueToSet - RANGE_MIN) * schrittweite ));
 		anfasserRotate.setPivotX(centerX);
 		anfasserRotate.setPivotY(centerY);
 	}
