@@ -86,3 +86,41 @@
 	
 		Scale scale = new Scale(x_scale, y_scale, w_scale, h_scale);
 		System.out.println("Scaale " + scale.toString());
+		
+		
+		/*
+		System.out.println("event x " + event.getSceneX() + " y " + event.getSceneY());
+		System.out.println("center x " + centerX + " y " + centerY);
+		System.out.println("anfass x " + anfasser.getCenterX() + " y " + anfasser.getCenterY());
+		
+		double xCalc = Math.pow((Math.abs(centerX - event.getSceneX())), 2);
+		double yCalc = Math.pow((Math.abs(centerY - event.getSceneY())), 2);
+		
+		double laengeA = Math.sqrt(xCalc + yCalc);
+		
+		System.out.println("laenge " + laengeA);
+		
+		//jetzt laenge von anfasser
+		
+		xCalc = Math.pow((Math.abs(centerX - anfasser.getCenterX())), 2);
+		yCalc = Math.pow((Math.abs(centerY - anfasser.getCenterY())), 2);
+		
+		double laengeB = Math.sqrt(xCalc + yCalc);
+		System.out.println("laenge2> " + laengeB);
+		
+		xCalc = Math.pow((Math.abs(event.getSceneX() - anfasser.getCenterX())), 2);
+		yCalc = Math.pow((Math.abs(event.getSceneY() - anfasser.getCenterY())), 2);
+		double laengeC = Math.sqrt(xCalc + yCalc);
+		System.out.println("laenge3> " + laengeC);
+		
+		
+		double cosA =  (Math.pow(laengeA, 2) - Math.pow(laengeB, 2) - Math.pow(laengeC, 2)) / (-2d * laengeB * laengeC); 
+	
+		
+		
+		
+		//Math.acos(0.5);
+		double degress =  Math.toDegrees(Math.acos(cosA));
+		System.out.println("degress " + degress);
+		*/
+		
