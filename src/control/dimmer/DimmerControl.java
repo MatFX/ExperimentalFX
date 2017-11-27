@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -42,7 +43,7 @@ public class DimmerControl extends Region
 	
 	private double currentValue = 0D;
 	
-	//private double nodeX, nodeY, nodeW, nodeH;
+	//private double nodeX, nodeY, nodeW, noOdeH;
 	
 	private double width = 128, height = 128;
 	
@@ -88,6 +89,9 @@ public class DimmerControl extends Region
 	 */
 	private final double  ANGLE_RANGE_SELECTOR = 240; 
 	
+	private InnerShadow highlight;
+	  
+	
 	public DimmerControl()
 	{
 		this.initGraphics();
@@ -99,6 +103,9 @@ public class DimmerControl extends Region
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
 	
+		
+		
+		
 		drehradGlanz.setOnMousePressed(new EventHandler<MouseEvent>(){
 
 			@Override
@@ -114,8 +121,12 @@ public class DimmerControl extends Region
 			@Override
 			public void handle(MouseEvent event) {
 			
-				drehung(event);
+				System.out.println("Event " + event.getX() +  " " + event.getY() +  " " + event.getSceneX() +  " " + event.getSceneY());
 				
+				//System.out.println("indicator " + anfasser.getCenterX() + " " + anfasser.getCenterY());
+				System.out.println("indicator " + anfasser.getCenterX() + " " + anfasser.getCenterY());
+				drehung(event);
+				System.out.println("indicator " + anfasser.getCenterX() + " " + anfasser.getCenterY());
 				
 				
 			}
@@ -164,23 +175,14 @@ public class DimmerControl extends Region
         double  ny     = deltaY / radius;
         double  theta  = Math.atan2(ny, nx);
         
-    //    System.out.println("> " + Double.compare(theta, 0.0));
-        
-        if(Double.compare(theta, 0.0) > 0)
-        {
-        	System.out.println(">0 = " + Math.toDegrees(theta));
-        }
-        else
-        {
-        	System.out.println("else = " + (Math.toDegrees((theta)) + 360.0));
-        }
-        
         theta = Double.compare(theta, 0.0) >= 0 ? Math.toDegrees(theta) : Math.toDegrees((theta)) + 360.0;
-        
-        double angle  = (theta + 230) % 360;
-        if (angle > 320 && angle < 360) {
+        double angle  = (theta + 210) % 360;
+        if (angle > 320 && angle < 360) 
+        {
             angle = 0;
-        } else if (angle <= 320 && angle > ANGLE_RANGE_SELECTOR) {
+        }
+        else if (angle <= 320 && angle > ANGLE_RANGE_SELECTOR) 
+        {
             angle = ANGLE_RANGE_SELECTOR;
         }
         
@@ -239,7 +241,6 @@ public class DimmerControl extends Region
 		stopMap.put(StopIndizes.DREHRAD_GLANZ, stopArray);
 		
 		drehradGlanz = new Circle();
-		
 		
 		
 		inhaltMonitor = new Circle();
@@ -443,6 +444,13 @@ public class DimmerControl extends Region
 		drehradGlanz.setCenterY(centerY);
 		drehradGlanz.setRadius(radius * 0.828125);
 		drehradGlanz.setFill(linearGradDrehradGlanz);
+		
+
+		//TODO oberhalb des Drehkranzes muss noch ein heller schein aufgelegt werden, damit es besser abgestuft ist.
+		//highlight   = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 255, 255, 0.4), (radius * 0.828125 /2) * 0.008, 0.0, 0, (radius * 0.828125/2) * 0.008);
+		//highlight   = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 0, 0, 0.4), (radius * 0.828125 /2) * 0.008, 3, 1, 1);
+		
+		//drehradGlanz.setEffect(highlight);
 		
 		
 		//kanteOben.getTransforms().add(scale);
@@ -674,7 +682,6 @@ public class DimmerControl extends Region
 		anfasserRotate.setAngle(((valueToSet - RANGE_MIN) * schrittweite ));
 		//anfasserRotate.setPivotX(centerX);
 		//anfasserRotate.setPivotY(centerY);
-		System.out.println("indicator " + anfasser.getCenterX() + " " + anfasser.getCenterY());
 		//clear ist wichtig, ansonsten wird beim letzten bekannten Punkt die neue Drehung vorgenommen
 		this.anfasser.getTransforms().clear();
 		this.anfasserGlanz.getTransforms().clear();
