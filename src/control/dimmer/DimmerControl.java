@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
@@ -16,6 +18,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
@@ -42,8 +46,6 @@ public class DimmerControl extends Region
 	private double RANGE_MAX = 100D;
 	
 	private double currentValue = 0D;
-	
-	//private double nodeX, nodeY, nodeW, noOdeH;
 	
 	private double width = 128, height = 128;
 	
@@ -89,8 +91,27 @@ public class DimmerControl extends Region
 	 */
 	private final double  ANGLE_RANGE_SELECTOR = 240; 
 	
-	private InnerShadow highlight;
-	  
+	
+	/**
+	 * Die obere "Schattierung" wird durch zwei Kreise dargestellt. 
+	 * <br>der highlightcircle ist der Bereich der später visuell sichtbar ist.
+	 * <br>der maskingcircle ist als Abdeckung des highlightCircle gedacht.
+	 * <br>Im SVG war es ein Pfad den ich aber leider nicht zur Laufzeit nach meinen wünschen skaliert bekomme. 
+	 */
+	//private Circle highlightCircle, maskingCircle;
+	
+	/**
+	 * der obere helle Schein war in der SVG ein komplexe SVG Pfad. Da diese aber nicht so einfach zu skalieren sind
+	 * <br>gibt es hier den Behelf diesen so nachzubauen wie er in Illustrater entstanden ist.
+	 */
+	private TopRegion topRegion;
+	
+	private Arc button_on, button_off, button_left, button_right, button_send;
+	
+	private DropShadow dropShadow;
+	
+	private InnerShadow innerShadow;
+	
 	
 	public DimmerControl()
 	{
@@ -102,33 +123,12 @@ public class DimmerControl extends Region
 	{
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
-	
 		
-		
-		
-		drehradGlanz.setOnMousePressed(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) 
-			{
-				
-				
-			}
-			
-		});
 		drehradGlanz.setOnMouseReleased(new EventHandler<MouseEvent>(){
 
 			@Override
 			public void handle(MouseEvent event) {
-			
-				System.out.println("Event " + event.getX() +  " " + event.getY() +  " " + event.getSceneX() +  " " + event.getSceneY());
-				
-				//System.out.println("indicator " + anfasser.getCenterX() + " " + anfasser.getCenterY());
-				System.out.println("indicator " + anfasser.getCenterX() + " " + anfasser.getCenterY());
 				drehung(event);
-				System.out.println("indicator " + anfasser.getCenterX() + " " + anfasser.getCenterY());
-				
-				
 			}
 			
 		});
@@ -139,13 +139,12 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				drehung(event);
-				
 			}
 			
 		});
 		
 		
-		
+		//direkt auf den Anfasser geklickt, dann gehts hier weiter
 		anfasserGlanz.setOnMouseDragged(new EventHandler<MouseEvent>(){
 
 			@Override
@@ -156,6 +155,122 @@ public class DimmerControl extends Region
 			}
 			
 		});
+		
+		
+		//TODO für die Buttons fehlt das antriggern einer Property; Bei der Property lauscht die Anwendung 
+		//und reagiert dementsprechend
+		button_on.setOnMousePressed(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				button_on.setEffect(innerShadow);
+				
+				
+			}
+			
+		});
+		
+		button_on.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+					button_on.setEffect(dropShadow);
+				
+			}
+			
+		});
+		
+		button_off.setOnMousePressed(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				button_off.setEffect(innerShadow);
+				
+				
+			}
+			
+		});
+		
+		button_off.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				button_off.setEffect(dropShadow);
+				
+			}
+			
+		});
+		
+		button_left.setOnMousePressed(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				button_left.setEffect(innerShadow);
+				
+				
+			}
+			
+		});
+		
+		button_left.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				button_left.setEffect(dropShadow);
+				
+			}
+			
+		});
+		
+		button_right.setOnMousePressed(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				button_right.setEffect(innerShadow);
+				
+				
+			}
+			
+		});
+		
+		button_right.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				button_right.setEffect(dropShadow);
+				
+			}
+			
+		});
+		
+		button_send.setOnMousePressed(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				button_send.setEffect(innerShadow);
+				
+				
+			}
+			
+		});
+		
+		button_send.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				button_send.setEffect(dropShadow);
+				
+			}
+			
+		});
+		
+		
+		
 	}
 	
 	
@@ -188,12 +303,7 @@ public class DimmerControl extends Region
         
         double valueToSet = (angle / schrittweite + RANGE_MIN);
         setCurrentValue((int) valueToSet, false);
-        
-        //ist in o.a. Methode
-       // setRotation(angle / schrittweite + RANGE_MIN);
-		
-		
-	}
+   }
 
 	private void initGraphics() 
 	{
@@ -299,14 +409,66 @@ public class DimmerControl extends Region
 		//TODO optional und variable machen
 		masseinheit.setText("%");
 		
+		Circle highlightColor = new Circle();
+		//diese Farbe ist später entscheidend für die Darstellung
+		highlightColor.setFill(Color.web("848484"));
+		Circle maskingCircle = new Circle();
 		
 		
-		this.getChildren().addAll(basis1, basis2, basis3, glanzRand 
-				,schattierungDrehrad, drehrad, drehradGlanz, /* glanzKante ? */
+		//TODO evtl. verfeinern
+		dropShadow = new DropShadow();
+	    dropShadow.setColor(Color.web("000000A0"));
+	   
+	    
+
+		innerShadow = new InnerShadow();
+		innerShadow.setBlurType(BlurType.GAUSSIAN);
+		innerShadow.setColor(Color.web("#000000A0"));
+	        
+		
+		button_on = new Arc();
+		//button_on = new Arc(centerX, centerY, 64, 64, 0, 120);
+		button_on.setFill(Color.web("404040"));
+		button_on.setType(ArcType.ROUND);
+		button_on.setEffect(dropShadow);
+
+	        
+		button_off = new Arc();
+		button_off.setFill(Color.web("404040"));
+		button_off.setType(ArcType.ROUND);
+		button_off.setEffect(dropShadow);
+		
+		button_left = new Arc();
+		button_left.setFill(Color.web("404040"));
+		button_left.setType(ArcType.ROUND);
+		button_left.setEffect(dropShadow);
+		
+		button_right = new Arc();
+		button_right.setFill(Color.web("404040"));
+		button_right.setType(ArcType.ROUND);
+		button_right.setEffect(dropShadow);
+		
+		button_send = new Arc();
+		button_send.setFill(Color.web("404040"));
+		button_send.setType(ArcType.ROUND);
+		button_send.setEffect(dropShadow);
+		
+		
+		topRegion = new TopRegion(highlightColor, maskingCircle);
+		
+		
+		this.getChildren().addAll(basis1, basis2, basis3,
+				
+				glanzRand, 
+				button_on, button_off, button_left, button_right, button_send
+				,schattierungDrehrad, drehrad,
+				//zwei kreise der masking anteil ist ein wenig abgesetzt vom highlight Anteil
+				//weiterhin ist der Maskingteil mit der Grundfarbe des drehrades belegt..alles in TopRegion
+				topRegion, 
+				drehradGlanz, /* glanzKante ? */
 				inhaltMonitor, inhaltMonitorKopie,  glanzMonitor, textCanvas
 				//TODO evtl. textCanvas noch nach vorne ziehen unterhalb von glanzMonitor
 				,anfasser, anfasserGlanz);
-		
 		
 		drawTextValues(true);
 		
@@ -433,6 +595,53 @@ public class DimmerControl extends Region
 		drehrad.setCenterY(centerY);
 		drehrad.setRadius(radius * 0.828125);
 		
+		button_on.setCenterX(centerX);
+		button_on.setCenterY(centerY);
+		
+		//abstand 62r beim Start
+		//62 = 100/64 * 62 = 96,875
+		button_on.setRadiusX(radius*0.96875);
+		button_on.setRadiusY(radius*0.96875);
+		button_on.setStartAngle(-120.0f);
+		button_on.setLength(-25.0f);
+		button_on.setType(ArcType.ROUND);
+		
+		
+		button_off.setCenterX(centerX);
+		button_off.setCenterY(centerY);
+		button_off.setRadiusX(radius*0.96875);
+		button_off.setRadiusY(radius*0.96875);
+		button_off.setStartAngle(-35.0f);
+		button_off.setLength(-25.0f);
+		button_off.setType(ArcType.ROUND);
+		
+		
+		button_left.setCenterX(centerX);
+		button_left.setCenterY(centerY);
+		button_left.setRadiusX(radius*0.96875);
+		button_left.setRadiusY(radius*0.96875);
+		button_left.setStartAngle(-98.5f);
+		button_left.setLength(-20.0f);
+		button_left.setType(ArcType.ROUND);
+		
+		
+		button_right.setCenterX(centerX);
+		button_right.setCenterY(centerY);
+		button_right.setRadiusX(radius*0.96875);
+		button_right.setRadiusY(radius*0.96875);
+		button_right.setStartAngle(-61.5f);
+		button_right.setLength(-20.0f);
+		button_right.setType(ArcType.ROUND);
+		
+		button_send.setCenterX(centerX);
+		button_send.setCenterY(centerY);
+		button_send.setRadiusX(radius*0.96875);
+		button_send.setRadiusY(radius*0.96875);
+		button_send.setStartAngle(-82.5f);
+		button_send.setLength(-15.0f);
+		button_send.setType(ArcType.ROUND);
+		
+		
 		//x1="64" y1="6.75" x2="64" y2="109.6470947"
 		//y1 = 100/128 * 6.75 = 5,2734375 = 0.052734375
 		//y2 = 100/128 * 109.6470947 = 85,661792734375 = 0.85661792734375
@@ -445,15 +654,6 @@ public class DimmerControl extends Region
 		drehradGlanz.setRadius(radius * 0.828125);
 		drehradGlanz.setFill(linearGradDrehradGlanz);
 		
-
-		//TODO oberhalb des Drehkranzes muss noch ein heller schein aufgelegt werden, damit es besser abgestuft ist.
-		//highlight   = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 255, 255, 0.4), (radius * 0.828125 /2) * 0.008, 0.0, 0, (radius * 0.828125/2) * 0.008);
-		//highlight   = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 0, 0, 0.4), (radius * 0.828125 /2) * 0.008, 3, 1, 1);
-		
-		//drehradGlanz.setEffect(highlight);
-		
-		
-		//kanteOben.getTransforms().add(scale);
 		
 		//cx="64" cy="64" r="38"
 		inhaltMonitor.setCenterX(centerX);
@@ -522,18 +722,22 @@ public class DimmerControl extends Region
 		anfasserGlanz.setRadius(radius * 0.078125);
 		anfasserGlanz.setFill(linearGradientAnfasser);
 		
+		
+		topRegion.setNewValues(centerX, centerY, radius * 0.828125, +5d);
+		topRegion.resize();
+
+		
+		
+		
+		
 		double w = size * 0.5;
 		double h = size * 0.171875;
 		double x = centerX - (w/2); 
 		double y = centerY - (h/2);
 		textCanvas.setWidth(w);
 		textCanvas.setHeight(h);
-	
 		textCanvas.relocate(x, y);
 		drawTextValues(true);
-		
-		
-		
 		
 		drawMinorTick(size, false);
 		
@@ -559,7 +763,8 @@ public class DimmerControl extends Region
 		
 		Font masseinheitFont = new Font("Verdana", gaugeSize * 0.12);
 		
-		masseinheit.setText("%");
+		//leerzeichen oder keines?
+		masseinheit.setText(" %");
 		masseinheit.setFont(masseinheitFont);
 		
 		gc.setFont(masseinheitFont);
@@ -680,15 +885,14 @@ public class DimmerControl extends Region
 		//Der Abzug von max und min spielt erstmal keine Rolle solange die Werte noch nicht variabel veränder bar sind...evtl. später
 		double schrittweite = ANGLE_RANGE_SELECTOR / (RANGE_MAX - RANGE_MIN);
 		anfasserRotate.setAngle(((valueToSet - RANGE_MIN) * schrittweite ));
-		//anfasserRotate.setPivotX(centerX);
-		//anfasserRotate.setPivotY(centerY);
 		//clear ist wichtig, ansonsten wird beim letzten bekannten Punkt die neue Drehung vorgenommen
-		this.anfasser.getTransforms().clear();
-		this.anfasserGlanz.getTransforms().clear();
+		//TODO kann evtl. raus
+		////this.anfasser.getTransforms().clear();
+		//this.anfasserGlanz.getTransforms().clear();
 
 
-		this.anfasser.getTransforms().add(anfasserRotate);
-		this.anfasserGlanz.getTransforms().add(anfasserRotate);
+		//this.anfasser.getTransforms().add(anfasserRotate);
+		//this.anfasserGlanz.getTransforms().add(anfasserRotate);
 				
 	}
 	
