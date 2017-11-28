@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,6 +30,16 @@ import javafx.scene.transform.Rotate;
 
 public class DimmerControl extends Region
 {
+	public enum Command
+	{
+		ON, OFF, SEND_PRESET, NEXT_PRESET, PREVIOUS_PRESET, SEND_VALUE, 
+		/**
+		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
+		 */
+		RESET_COMMAND;
+	}
+	
+	
 	public enum StopIndizes
 	{
 		GLANZ_RAND
@@ -91,15 +103,6 @@ public class DimmerControl extends Region
 	 */
 	private final double  ANGLE_RANGE_SELECTOR = 240; 
 	
-	
-	/**
-	 * Die obere "Schattierung" wird durch zwei Kreise dargestellt. 
-	 * <br>der highlightcircle ist der Bereich der später visuell sichtbar ist.
-	 * <br>der maskingcircle ist als Abdeckung des highlightCircle gedacht.
-	 * <br>Im SVG war es ein Pfad den ich aber leider nicht zur Laufzeit nach meinen wünschen skaliert bekomme. 
-	 */
-	//private Circle highlightCircle, maskingCircle;
-	
 	/**
 	 * der obere helle Schein war in der SVG ein komplexe SVG Pfad. Da diese aber nicht so einfach zu skalieren sind
 	 * <br>gibt es hier den Behelf diesen so nachzubauen wie er in Illustrater entstanden ist.
@@ -111,6 +114,36 @@ public class DimmerControl extends Region
 	private DropShadow dropShadow;
 	
 	private InnerShadow innerShadow;
+	
+	/**
+	 * 
+	 */
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
+	
+	/**
+	 * Diese sind optional und können von außerhalb gesezt werden.
+	 */
+	private double[] presetValues = new double[0];
+	
+	/**
+	 * der Index durch klick von vor und zurück wird dieser Wert verändert.
+	 */
+	private int presetIndex = 0;
+	
+	/**
+	 * Dieser Text wird nur dann dargestellt wenn der Anwender einen der Preset Button verwendet
+	 */
+	private Text textPreset;
+	
+	/**
+	 * Zeichnungsfläche für textPreset
+	 */
+	private Canvas textPresetCanvas;
+	
+	/**
+	 * sind presets in er Anzeige sichtbar?
+	 */
+	private boolean isPresetsOnScreen;
 	
 	
 	public DimmerControl()
@@ -129,6 +162,10 @@ public class DimmerControl extends Region
 			@Override
 			public void handle(MouseEvent event) {
 				drehung(event);
+
+				//jetzt Signalisierung an die Außenwelt, damit die nun die gewünschte Veränderung durchführt.
+				commandProperty.set(Command.SEND_VALUE);
+				
 			}
 			
 		});
@@ -156,6 +193,18 @@ public class DimmerControl extends Region
 			
 		});
 		
+		anfasserGlanz.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				drehung(event);
+				//jetzt Signalisierung an die Außenwelt, damit die nun die gewünschte Veränderung durchführt.
+				commandProperty.set(Command.SEND_VALUE);
+				
+			}
+			
+		});
+		
 		
 		//TODO für die Buttons fehlt das antriggern einer Property; Bei der Property lauscht die Anwendung 
 		//und reagiert dementsprechend
@@ -165,6 +214,7 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_on.setEffect(innerShadow);
+				commandProperty.set(Command.ON);
 				
 				
 			}
@@ -187,7 +237,7 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_off.setEffect(innerShadow);
-				
+				commandProperty.set(Command.OFF);
 				
 			}
 			
@@ -209,6 +259,8 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_left.setEffect(innerShadow);
+				previousPreset();
+				commandProperty.set(Command.PREVIOUS_PRESET);
 				
 				
 			}
@@ -231,7 +283,9 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_right.setEffect(innerShadow);
+				nextPreset();
 				
+				commandProperty.set(Command.NEXT_PRESET);
 				
 			}
 			
@@ -253,7 +307,10 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_send.setEffect(innerShadow);
-				
+				commandProperty.set(Command.SEND_PRESET);
+				//zurücksetzen 
+				isPresetsOnScreen = false;
+				drawTextPresetValue(false);
 				
 			}
 			
@@ -400,7 +457,15 @@ public class DimmerControl extends Region
 		
 		anfasserGlanz = new Circle();
 		
+
+		textPresetCanvas = new Canvas();
+		textPreset = new Text();
+		
+		
 		textCanvas = new Canvas();
+		
+		
+		
 		textCurrentValue = new Text();
 		//TODO vertl. stringproperty koppeln den Wert
 		textCurrentValue.setText(""+currentValue);
@@ -466,7 +531,7 @@ public class DimmerControl extends Region
 				//weiterhin ist der Maskingteil mit der Grundfarbe des drehrades belegt..alles in TopRegion
 				topRegion, 
 				drehradGlanz, /* glanzKante ? */
-				inhaltMonitor, inhaltMonitorKopie,  glanzMonitor, textCanvas
+				inhaltMonitor, inhaltMonitorKopie,  glanzMonitor, textPresetCanvas, textCanvas
 				//TODO evtl. textCanvas noch nach vorne ziehen unterhalb von glanzMonitor
 				,anfasser, anfasserGlanz);
 		
@@ -739,10 +804,58 @@ public class DimmerControl extends Region
 		textCanvas.relocate(x, y);
 		drawTextValues(true);
 		
-		drawMinorTick(size, false);
 		
-			
+		//resize der canvas für preset und der Anzeige
+		double p_w = size * 0.3;
+		double p_h = size * 0.171875;
+		
+		//auf y komme ich über die text_canvas
+		double p_y = y - p_h;
+		double p_x = centerX - (p_w/2);
+		textPresetCanvas.setWidth(p_w);
+		textPresetCanvas.setHeight(p_h);
+		textPresetCanvas.relocate(p_x, p_y);
+		
+		drawMinorTick(size, false);
 	}
+	
+	/**
+	 * Parameter im Regelfall true, außer man will die Sicht gelöscht haben
+	 * @param showValues
+	 */
+	private void drawTextPresetValue(boolean showValues)
+	{
+		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
+		double w = textPresetCanvas.getWidth();
+		double h = textPresetCanvas.getHeight();
+		GraphicsContext gc = textPresetCanvas.getGraphicsContext2D();
+		
+		gc.clearRect(0, 0, w, h);
+		
+		//bei löschung der Sicht gleich wieder zurück
+		if(!showValues)
+			return;
+		
+		gc.setFill(Color.web("#00000080"));
+		
+		//erstmal zum test preset drei auswählen
+		Font valueFont = new Font("Verdana", gaugeSize * 0.06);
+		
+		
+		String valueToShow = String.format("%.0f", presetValues[presetIndex]);
+		valueToShow = valueToShow + " %";
+		
+		textPreset.setText(valueToShow);
+		textPreset.setFont(valueFont);
+		
+		double valueX = (textPreset.getLayoutBounds().getWidth()  + (gaugeSize * 0.018635));
+		double valueY = (textPreset.getLayoutBounds().getHeight()  + (gaugeSize * 0.015635));
+		
+		gc.setFont(valueFont);
+		gc.fillText(textPreset.getText(), w - valueX  , valueY);
+	}
+	
+	
 	
 	private void drawTextValues(boolean clearing) 
 	{
@@ -791,7 +904,7 @@ public class DimmerControl extends Region
 	 * Methode für das Sezten des aktuellen Zustands
 	 * @param neuerWert
 	 */
-	public void setCurrentValue(int neuerProzentWert, boolean isInit) 
+	public void setCurrentValue(double neuerProzentWert, boolean isInit) 
 	{
 		//wir haben 31 Ticks für die Beleuchtung
 		
@@ -871,6 +984,7 @@ public class DimmerControl extends Region
 		this.drawTextValues(true);
 		
 		
+		
 	
 	
 	}
@@ -885,15 +999,27 @@ public class DimmerControl extends Region
 		//Der Abzug von max und min spielt erstmal keine Rolle solange die Werte noch nicht variabel veränder bar sind...evtl. später
 		double schrittweite = ANGLE_RANGE_SELECTOR / (RANGE_MAX - RANGE_MIN);
 		anfasserRotate.setAngle(((valueToSet - RANGE_MIN) * schrittweite ));
-		//clear ist wichtig, ansonsten wird beim letzten bekannten Punkt die neue Drehung vorgenommen
-		//TODO kann evtl. raus
-		////this.anfasser.getTransforms().clear();
-		//this.anfasserGlanz.getTransforms().clear();
-
-
-		//this.anfasser.getTransforms().add(anfasserRotate);
-		//this.anfasserGlanz.getTransforms().add(anfasserRotate);
+	}
+	
+	public void setAnimatiedCurrentValue(double value)
+	{
+		
+		Runnable runnable = new Runnable()
+		{
+			@Override
+			public void run() 
+			{
+				isAnimation = true;
+				setCurrentValue(value, false);
 				
+				
+			}
+			
+		};
+		
+		animThread = new Thread(runnable);
+		animThread.start();
+		
 	}
 	
 
@@ -948,5 +1074,76 @@ public class DimmerControl extends Region
 			animThread.stop();
 		
 	}
+	
+	public SimpleObjectProperty<Command> getCommandProperty()
+	{
+		return commandProperty;
+	}
+	
+	public double getCurrentValue()
+	{
+		return currentValue;
+	}
+
+	/**
+	 * von außerhalb können die Voreinstellungswerte übergeben werden.
+	 * @param presetValues
+	 */
+	public void setPresetValues(double ... presetValues) 
+	{
+		this.presetValues = presetValues;
+	}
+	
+	private void nextPreset()
+	{
+		//noch nicht auf screen, dann den aktuellen wert erstmal anzeigen
+		if(!isPresetsOnScreen)
+		{
+			drawTextPresetValue(true);
+			isPresetsOnScreen = true;
+			
+		}
+		else
+		{
+			
+			
+			//im anderen Fall hochsetzen und nächsten wert anzeigen
+			presetIndex++;
+			//wenn er größer als die Länge ist, dann wieder zurück auf den ersten Index
+			if(presetIndex >= presetValues.length)
+				presetIndex = 0;
+			drawTextPresetValue(true);
+		}
+		
+	}
+	
+	private void previousPreset()
+	{
+		//noch nicht auf screen, dann den aktuellen wert erstmal anzeigen
+		if(!isPresetsOnScreen)
+		{
+			drawTextPresetValue(true);
+			isPresetsOnScreen = true;
+		}
+		else
+		{
+			presetIndex--;
+			//wenn der preset unter einem gültigen index fällt
+			//dann zurück auf maximum
+			if(presetIndex < 0)
+			{
+				presetIndex = presetValues.length-1;
+			}
+			drawTextPresetValue(true);
+		}
+		
+	}
+	
+	public double getSelectedPresetValue()
+	{
+		return presetValues[presetIndex];
+	}
+	
+	
 	
 }
