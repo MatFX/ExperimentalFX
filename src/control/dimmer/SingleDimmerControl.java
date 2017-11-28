@@ -1,18 +1,21 @@
 package control.dimmer;
 
 import control.dimmer.DimmerControl.Command;
+import control.dimmer.IActivationIcon.Pos;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import tools.helper.ImageLoader;
 
 
 
@@ -27,7 +30,12 @@ public class SingleDimmerControl extends Application
         BorderPane pane = new BorderPane();
         //first gauge; center of borderpane
         DimmerControl customCircle = new DimmerControl();
-        customCircle.setPresetValues(new double[]{25d, 33d, 78d});
+        //Voreinstellungen die später mal von der Anwendung kommen
+        customCircle.setPresetValues(new double[]{0d, 25d, 33d, 78d, 100d});
+        //Blockierungsbild setzen auf die rechte Position
+        customCircle.initImage(Pos.RIGHT, ImageLoader.getImageFromIconFolder("schloss_schwarz"));
+        
+        
         
         Label kommandoLabel = new Label();
         //pseudo simulation, was später mal die eigentliche Anwendung übernimmt, also physikalisches Senden
@@ -63,6 +71,9 @@ public class SingleDimmerControl extends Application
         	
         });
         
+        VBox vBox = new VBox(2);
+        vBox.setPadding(new Insets(5, 5,0,0));
+        
         //start and stop animation with random values
         ToggleButton test = new ToggleButton("Start");
         test.setOnAction(new EventHandler<ActionEvent>(){
@@ -86,9 +97,46 @@ public class SingleDimmerControl extends Application
         	
         });
         
+        //Aktivierungs-/Deaktivierungsbeispiel
+        ToggleButton lockState = new ToggleButton("Change Lock");
+        lockState.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent event) 
+			{
+				if(lockState.isSelected())
+				{
+					
+					customCircle.setActivation(Pos.RIGHT);
+					
+				}
+				else
+				{
+					customCircle.setDeactivation(Pos.RIGHT);
+				}
+			
+			}
+        	
+        });
+        
+        
+        vBox.getChildren().addAll(test, lockState);
+        
         pane.setCenter(customCircle);
-        pane.setRight(test);
-        pane.setBottom(kommandoLabel);
+        pane.setRight(vBox);
+        
+        VBox commandArea = new VBox(2);
+        commandArea.setPadding(new Insets(5, 5, 5, 5));
+        commandArea.getChildren().addAll(kommandoLabel);
+        
+        pane.setBottom(commandArea);
+        
+        //Damit die Control nicht am Rand klebt
+        VBox emptyLeftArea = new VBox(0);
+        emptyLeftArea.setPadding(new Insets(0,15,0,0));
+        pane.setLeft(emptyLeftArea);
+        
+        
         
         Scene scene = new Scene(pane);
         

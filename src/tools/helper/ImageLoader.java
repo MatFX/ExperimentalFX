@@ -5,8 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import javafx.scene.image.Image;
+
 public class ImageLoader 
 {
+	
+	public static final String ICONS = "/resources/icons";
+	
 	public static final String SUFFIX_FILE = ".png";
 	
 	public static InputStream getResourceStream(String pkname, String fname) throws FileNotFoundException
@@ -21,5 +26,25 @@ public class ImageLoader
 	
 	
 	}
+	
+	public static Image getImageFromIconFolder(String fileName)
+	{
+		Image image = null;
+		
+		if(!fileName.contains(ImageLoader.SUFFIX_FILE))
+			fileName = fileName + ImageLoader.SUFFIX_FILE;
+		try
+		{
+			InputStream ins = ImageLoader.getResourceStream(ICONS, fileName);
+			image = new Image(ins);
+			ins.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return image;
+	}
+
 
 }

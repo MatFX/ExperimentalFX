@@ -5,8 +5,10 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
-
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,6 +16,7 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -27,8 +30,10 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
+import control.dimmer.IActivationIcon;
 
-public class DimmerControl extends Region
+public class DimmerControl extends Region implements IActivationIcon
 {
 	public enum Command
 	{
@@ -145,9 +150,28 @@ public class DimmerControl extends Region
 	 */
 	private boolean isPresetsOnScreen;
 	
+	private Text textOn, textOff, textLeft, textRight, textSend;
+	
+	//private Color textColor = Color.web("#FF0000");
+	//wobei rot hat schon sehr gut ausgesehen
+	private Color textColor = Color.web("#d2d74b");
+	
+	/**
+	 * Sorgt dafür, dass die gewählte Voreinstellung von der Oberfläche verschwindet wenn nach Zeit X der Anwender
+	 * <br>nicht den Sende button gedrückt hat.
+	 */
+	private Timeline presetViewReset;
+	
+	/**
+	 * für den Text wenn der button gedrückt wurde
+	 */
+	private Glow textGlow = new Glow(0.3);
+	
+	private OptionaImageBox optionalImageBox;
 	
 	public DimmerControl()
 	{
+		
 		this.initGraphics();
 		this.registerListener();
 	}
@@ -214,6 +238,7 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_on.setEffect(innerShadow);
+				textOn.setEffect(textGlow);
 				commandProperty.set(Command.ON);
 				
 				
@@ -225,7 +250,8 @@ public class DimmerControl extends Region
 
 			@Override
 			public void handle(MouseEvent event) {
-					button_on.setEffect(dropShadow);
+				button_on.setEffect(dropShadow);
+				textOn.setEffect(null);
 				
 			}
 			
@@ -237,8 +263,8 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_off.setEffect(innerShadow);
+				textOff.setEffect(textGlow);
 				commandProperty.set(Command.OFF);
-				
 			}
 			
 		});
@@ -248,7 +274,7 @@ public class DimmerControl extends Region
 			@Override
 			public void handle(MouseEvent event) {
 				button_off.setEffect(dropShadow);
-				
+				textOff.setEffect(null);
 			}
 			
 		});
@@ -261,7 +287,7 @@ public class DimmerControl extends Region
 				button_left.setEffect(innerShadow);
 				previousPreset();
 				commandProperty.set(Command.PREVIOUS_PRESET);
-				
+				textLeft.setEffect(textGlow);
 				
 			}
 			
@@ -272,6 +298,7 @@ public class DimmerControl extends Region
 			@Override
 			public void handle(MouseEvent event) {
 				button_left.setEffect(dropShadow);
+				textLeft.setEffect(null);
 				
 			}
 			
@@ -284,8 +311,9 @@ public class DimmerControl extends Region
 			{
 				button_right.setEffect(innerShadow);
 				nextPreset();
-				
+				textRight.setEffect(textGlow);
 				commandProperty.set(Command.NEXT_PRESET);
+			
 				
 			}
 			
@@ -296,7 +324,7 @@ public class DimmerControl extends Region
 			@Override
 			public void handle(MouseEvent event) {
 				button_right.setEffect(dropShadow);
-				
+				textRight.setEffect(null);
 			}
 			
 		});
@@ -307,10 +335,14 @@ public class DimmerControl extends Region
 			public void handle(MouseEvent event) 
 			{
 				button_send.setEffect(innerShadow);
+				textSend.setEffect(textGlow);
 				commandProperty.set(Command.SEND_PRESET);
 				//zurücksetzen 
 				isPresetsOnScreen = false;
+				//die timeline für den Reset kann hier gestoppt werden, weil Anwender den gewählten Wert gesendet hat.
+				stopPresetViewReset();
 				drawTextPresetValue(false);
+			
 				
 			}
 			
@@ -321,13 +353,9 @@ public class DimmerControl extends Region
 			@Override
 			public void handle(MouseEvent event) {
 				button_send.setEffect(dropShadow);
-				
+				textSend.setEffect(null);
 			}
-			
 		});
-		
-		
-		
 	}
 	
 	
@@ -456,15 +484,11 @@ public class DimmerControl extends Region
 		stopMap.put(StopIndizes.GLANZ_ANFASSER, stopArray);
 		
 		anfasserGlanz = new Circle();
-		
-
+	
 		textPresetCanvas = new Canvas();
 		textPreset = new Text();
-		
-		
+	
 		textCanvas = new Canvas();
-		
-		
 		
 		textCurrentValue = new Text();
 		//TODO vertl. stringproperty koppeln den Wert
@@ -518,6 +542,20 @@ public class DimmerControl extends Region
 		button_send.setType(ArcType.ROUND);
 		button_send.setEffect(dropShadow);
 		
+		//TODO wie mache ich es mit den zwei unterschiedlichen Sprachen?
+		textOn = new Text("On");
+		textOn.setMouseTransparent(true);
+		textOff = new Text("Off");
+		textOff.setMouseTransparent(true);
+		textLeft = new Text("<");
+		textLeft.setMouseTransparent(true);
+		textRight = new Text(">");
+		textRight.setMouseTransparent(true);
+		textSend = new Text("°");
+		textSend.setMouseTransparent(true);
+		
+		optionalImageBox = new OptionaImageBox();
+		
 		
 		topRegion = new TopRegion(highlightColor, maskingCircle);
 		
@@ -525,13 +563,16 @@ public class DimmerControl extends Region
 		this.getChildren().addAll(basis1, basis2, basis3,
 				
 				glanzRand, 
-				button_on, button_off, button_left, button_right, button_send
-				,schattierungDrehrad, drehrad,
+				button_on, button_off, button_left, button_right, button_send,
+				textOn, textOff, textLeft, textRight, textSend,
+				//TODO hier die textfelder
+				schattierungDrehrad, drehrad,
 				//zwei kreise der masking anteil ist ein wenig abgesetzt vom highlight Anteil
 				//weiterhin ist der Maskingteil mit der Grundfarbe des drehrades belegt..alles in TopRegion
 				topRegion, 
 				drehradGlanz, /* glanzKante ? */
 				inhaltMonitor, inhaltMonitorKopie,  glanzMonitor, textPresetCanvas, textCanvas
+				,optionalImageBox
 				//TODO evtl. textCanvas noch nach vorne ziehen unterhalb von glanzMonitor
 				,anfasser, anfasserGlanz);
 		
@@ -545,6 +586,8 @@ public class DimmerControl extends Region
 		anfasserRotate = new Rotate(0);
 		this.anfasser.getTransforms().add(anfasserRotate);
 		this.anfasserGlanz.getTransforms().add(anfasserRotate);
+		
+		
 	}
 	
 	
@@ -671,6 +714,33 @@ public class DimmerControl extends Region
 		button_on.setLength(-25.0f);
 		button_on.setType(ArcType.ROUND);
 		
+		Font valueFont = new Font("Verdana", size * 0.05);
+		textOn.setFill(textColor);
+		textOn.setFont(valueFont);
+		textOn.setRotate(35);
+		
+		textOn.relocate(centerX - (radius * 0.675), centerY + (radius * 0.61));
+
+		
+		textLeft.setFill(textColor);
+		textLeft.setFont(valueFont);
+		textLeft.setRotate(20);
+		textLeft.relocate(centerX - (radius * 0.345), centerY + (radius * 0.795));
+		
+		textSend.setFill(textColor);
+		textSend.setFont(valueFont);
+		textSend.relocate(centerX - (radius * 0.03), centerY + (radius * 0.87));
+		
+		textRight.setFill(textColor);
+		textRight.setFont(valueFont);
+		textRight.setRotate(-20);
+		textRight.relocate(centerX + (radius * 0.25), centerY + (radius * 0.795));
+
+		textOff.setFill(textColor);
+		textOff.setFont(valueFont);
+		textOff.setRotate(-45);
+		textOff.relocate(centerX + (radius * 0.54), centerY + (radius * 0.61));
+		
 		
 		button_off.setCenterX(centerX);
 		button_off.setCenterY(centerY);
@@ -707,6 +777,8 @@ public class DimmerControl extends Region
 		button_send.setType(ArcType.ROUND);
 		
 		
+		
+		
 		//x1="64" y1="6.75" x2="64" y2="109.6470947"
 		//y1 = 100/128 * 6.75 = 5,2734375 = 0.052734375
 		//y2 = 100/128 * 109.6470947 = 85,661792734375 = 0.85661792734375
@@ -738,6 +810,9 @@ public class DimmerControl extends Region
 		//y2 = 100/128 * 92,3024979 = 72,111326484375 = 0.72111326484375
 		linearGradientGlanzMonitor = new LinearGradient(centerX, getHeight() * 0.158203125, centerX, getHeight() * 0.72111326484375,
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_MONITOR));
+		
+		
+		
 		
 		glanzMonitor.setCenterX(centerX);
 		glanzMonitor.setCenterY(centerY);
@@ -805,6 +880,25 @@ public class DimmerControl extends Region
 		drawTextValues(true);
 		
 		
+		//in der Breite soll diese ca. 60 prozent von dem monitorkreis sein.
+		//in der höhe wird bei 128 Startsize ein Wert von 32 px skaliert
+		
+		//r war 37,5 * = 70 > 100/128 * 70  = 54,6875 = 54,6875 * ,6 =  32,4
+		double breiteImages = size * 0.546875 * 0.6;
+		
+		
+		//100/64 * 32 = 25 =0-25
+		double hoeheImages = size/2 * 0.25;
+		System.out.println("opt " + breiteImages + "  " + hoeheImages);
+		//optionalImageBox.setLayoutX(value);
+		
+		optionalImageBox.setMinSize(breiteImages, hoeheImages);
+		optionalImageBox.setLayoutX(centerX - (breiteImages/2));
+		optionalImageBox.setLayoutY(centerY + (textCanvas.getHeight()/2));
+		optionalImageBox.resize(hoeheImages);
+		//optionalImageBox.setStyle("-fx-background-color: #FF0000");
+		
+		
 		//resize der canvas für preset und der Anzeige
 		double p_w = size * 0.3;
 		double p_h = size * 0.171875;
@@ -825,7 +919,7 @@ public class DimmerControl extends Region
 	 */
 	private void drawTextPresetValue(boolean showValues)
 	{
-		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
+		double size  = getWidth() < getHeight() ? getWidth() : getHeight();
 		double w = textPresetCanvas.getWidth();
 		double h = textPresetCanvas.getHeight();
 		GraphicsContext gc = textPresetCanvas.getGraphicsContext2D();
@@ -839,7 +933,7 @@ public class DimmerControl extends Region
 		gc.setFill(Color.web("#00000080"));
 		
 		//erstmal zum test preset drei auswählen
-		Font valueFont = new Font("Verdana", gaugeSize * 0.06);
+		Font valueFont = new Font("Verdana", size * 0.06);
 		
 		
 		String valueToShow = String.format("%.0f", presetValues[presetIndex]);
@@ -848,8 +942,8 @@ public class DimmerControl extends Region
 		textPreset.setText(valueToShow);
 		textPreset.setFont(valueFont);
 		
-		double valueX = (textPreset.getLayoutBounds().getWidth()  + (gaugeSize * 0.018635));
-		double valueY = (textPreset.getLayoutBounds().getHeight()  + (gaugeSize * 0.015635));
+		double valueX = (textPreset.getLayoutBounds().getWidth()  + (size * 0.018635));
+		double valueY = (textPreset.getLayoutBounds().getHeight()  + (size * 0.015635));
 		
 		gc.setFont(valueFont);
 		gc.fillText(textPreset.getText(), w - valueX  , valueY);
@@ -1115,8 +1209,44 @@ public class DimmerControl extends Region
 			drawTextPresetValue(true);
 		}
 		
+		
+		restartPresetReset();
+		
+		
+		
+		
 	}
 	
+	private void stopPresetViewReset()
+	{
+		if(presetViewReset != null)
+		{
+			presetViewReset.stop();
+		}
+		
+	}
+	
+	private void restartPresetReset() 
+	{
+		stopPresetViewReset();
+		presetViewReset = new Timeline();
+		KeyFrame key = new KeyFrame(Duration.millis(3000));
+		presetViewReset.getKeyFrames().add(key);
+		presetViewReset.setOnFinished(new EventHandler<ActionEvent>()
+		{
+
+			@Override
+			public void handle(ActionEvent event) 
+			{
+				System.out.println("bin durch gelaufen");
+				drawTextPresetValue(false);
+			}
+	
+		});
+		presetViewReset.play();
+		
+	}
+
 	private void previousPreset()
 	{
 		//noch nicht auf screen, dann den aktuellen wert erstmal anzeigen
@@ -1136,12 +1266,31 @@ public class DimmerControl extends Region
 			}
 			drawTextPresetValue(true);
 		}
+		restartPresetReset();
 		
 	}
 	
 	public double getSelectedPresetValue()
 	{
 		return presetValues[presetIndex];
+	}
+
+	@Override
+	public void setActivation(Pos position) {
+		optionalImageBox.setActivation(position);
+		
+	}
+
+	@Override
+	public void setDeactivation(Pos position) {
+		optionalImageBox.setDeactivation(position);
+		
+	}
+
+	@Override
+	public void initImage(Pos position, Image image) {
+		optionalImageBox.initImage(position, image);
+		
 	}
 	
 	
