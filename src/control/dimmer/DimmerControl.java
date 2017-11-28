@@ -18,6 +18,7 @@ import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -230,8 +231,14 @@ public class DimmerControl extends Region implements IActivationIcon
 		});
 		
 		
+		button_on.setOnMousePressed(e -> setNodePressed(button_on, textOn, Command.ON));
+		button_on.setOnMouseReleased(e -> setNodeReleased(button_on, textOn));
+		button_on.setOnTouchPressed(e -> setNodePressed(button_on, textOn, Command.ON));
+		button_on.setOnTouchReleased(e -> setNodeReleased(button_on, textOn));
+		
 		//TODO für die Buttons fehlt das antriggern einer Property; Bei der Property lauscht die Anwendung 
 		//und reagiert dementsprechend
+		/*
 		button_on.setOnMousePressed(new EventHandler<MouseEvent>(){
 
 			@Override
@@ -256,6 +263,18 @@ public class DimmerControl extends Region implements IActivationIcon
 			}
 			
 		});
+		
+		button_on.setOnTouchPressed(new EventHandler<TouchEvent>() {
+
+			@Override
+			public void handle(TouchEvent event) 
+			{
+				// TODO Auto-generated method stub
+				System.out.println("touchEvent");	
+			}
+			
+		});*/
+		
 		
 		button_off.setOnMousePressed(new EventHandler<MouseEvent>(){
 
@@ -1293,6 +1312,33 @@ public class DimmerControl extends Region implements IActivationIcon
 		
 	}
 	
+	
+	/**
+	 * Die einzelnen Buttons werden alle gleich behandelt, war notwendig als ich feststelle, das ein Touch-Event 
+	 * <br>nicht hunderprozentig als MouseEvent interpretiert wird.
+	 * @param nodeBase
+	 * @param textNode
+	 */
+	public void setNodeReleased(Arc nodeBase, Text textNode)
+	{
+		nodeBase.setEffect(dropShadow);
+		textNode.setEffect(null);
+	}
+	
+	/**
+	 * analog zur o.a Erklärung
+	 * @param nodeBase
+	 * @param textNode
+	 * @param command
+	 */
+	public void setNodePressed(Arc nodeBase, Text textNode, Command command)
+	{
+		nodeBase.setEffect(innerShadow);
+		textNode.setEffect(textGlow);
+		commandProperty.set(command);
+		
+		
+	}
 	
 	
 }
