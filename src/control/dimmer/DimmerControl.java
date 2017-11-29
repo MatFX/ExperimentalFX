@@ -128,7 +128,7 @@ public class DimmerControl extends Region implements IActivationIcon
 	/**
 	 * Diese sind optional und können von außerhalb gesezt werden.
 	 */
-	private double[] presetValues = new double[0];
+	private double[] presetValues = new double[]{0};
 	
 	/**
 	 * der Index durch klick von vor und zurück wird dieser Wert verändert.
