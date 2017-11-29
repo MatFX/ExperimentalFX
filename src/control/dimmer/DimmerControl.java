@@ -231,20 +231,16 @@ public class DimmerControl extends Region implements IActivationIcon
 		});
 		
 		
+		//remark: Problems with change style on button, when the user will aplly touch functionality
+		//link: https://bugs.openjdk.java.net/browse/JDK-8139118
+		
+		//action listener für die Buttons
 		button_on.setOnMousePressed(e -> setNodePressed(button_on, textOn, Command.ON));
 		button_on.setOnMouseReleased(e -> setNodeReleased(button_on, textOn));
 
-		//Großes Problem war gedacht, damit auch bei einem Touch Kommando der passende Effekt auf den Button 
-		//gezaubert wird. Jedoch gibt es dann Probleme mit der Zeichnflaecher weil beide Events Mouse und Touch
-		//angetriggert werden.
-		//button_on.setOnTouchPressed(e -> setNodePressed(button_on, textOn, Command.ON));
-		//button_on.setOnTouchReleased(e -> setNodeReleased(button_on, textOn));
-		
-		//TODO für morgen
 		button_off.setOnMousePressed(e -> setNodePressed(button_off, textOff, Command.OFF));
 		button_off.setOnMouseReleased(e -> setNodeReleased(button_off, textOff));
 		
-		//TODO geht es weiter mit vorwärts rückwärst kommandos
 		button_left.setOnMousePressed(e -> setPreviousPresetNodePressed(button_left, textLeft, Command.PREVIOUS_PRESET));
 		button_left.setOnMouseReleased(e -> setNodeReleased(button_left, textLeft));
 		
@@ -253,109 +249,6 @@ public class DimmerControl extends Region implements IActivationIcon
 		
 		button_send.setOnMousePressed(e -> setNodePressed(button_send, textSend, Command.SEND_PRESET));
 		button_send.setOnMouseReleased(e -> setNodeReleased(button_send, textSend));
-		
-		
-		/* TODO raus
-		button_off.setOnMousePressed(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) 
-			{
-				button_off.setEffect(innerShadow);
-				textOff.setEffect(textGlow);
-				commandProperty.set(Command.OFF);
-			}
-			
-		});
-		
-		button_off.setOnMouseReleased(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) {
-				button_off.setEffect(dropShadow);
-				textOff.setEffect(null);
-			}
-			
-		});*/
-		
-		/*
-		button_left.setOnMousePressed(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) 
-			{
-				button_left.setEffect(innerShadow);
-				previousPreset();
-				commandProperty.set(Command.PREVIOUS_PRESET);
-				textLeft.setEffect(textGlow);
-				
-			}
-			
-		});
-		
-		button_left.setOnMouseReleased(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) {
-				button_left.setEffect(dropShadow);
-				textLeft.setEffect(null);
-				
-			}
-			
-		});
-		
-		button_right.setOnMousePressed(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) 
-			{
-				button_right.setEffect(innerShadow);
-				nextPreset();
-				textRight.setEffect(textGlow);
-				commandProperty.set(Command.NEXT_PRESET);
-			
-				
-			}
-			
-		});
-		
-		button_right.setOnMouseReleased(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) {
-				button_right.setEffect(dropShadow);
-				textRight.setEffect(null);
-			}
-			
-		});
-		
-		button_send.setOnMousePressed(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) 
-			{
-				button_send.setEffect(innerShadow);
-				textSend.setEffect(textGlow);
-				commandProperty.set(Command.SEND_PRESET);
-				//zurücksetzen 
-				isPresetsOnScreen = false;
-				//die timeline für den Reset kann hier gestoppt werden, weil Anwender den gewählten Wert gesendet hat.
-				stopPresetViewReset();
-				drawTextPresetValue(false);
-			
-				
-			}
-			
-		});
-		
-		button_send.setOnMouseReleased(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) {
-				button_send.setEffect(dropShadow);
-				textSend.setEffect(null);
-			}
-		});*/
 	}
 	
 	

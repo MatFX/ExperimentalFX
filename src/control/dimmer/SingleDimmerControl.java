@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
@@ -22,6 +23,18 @@ import tools.helper.ImageLoader;
 
 public class SingleDimmerControl extends Application 
 {
+	
+	public enum Man
+	{
+		STAND,
+		RUNNING,
+		SHRUG;
+	}
+	
+	/**
+	 * state helper for switchting the pics.
+	 */
+	private Man state = Man.STAND;
    
 
     @Override 
@@ -32,8 +45,12 @@ public class SingleDimmerControl extends Application
         DimmerControl customCircle = new DimmerControl();
         //Voreinstellungen die später mal von der Anwendung kommen
         customCircle.setPresetValues(new double[]{0d, 25d, 33d, 78d, 100d});
-        //Blockierungsbild setzen auf die rechte Position
+        //Blockierungsbild setzen auf die rechte Position (later deactivation/activation)
         customCircle.initImage(Pos.RIGHT, ImageLoader.getImageFromIconFolder("schloss_schwarz"));
+        //change pic init
+        customCircle.initImage(Pos.MIDDLE, ImageLoader.getImageFromIconFolder("man"));
+        //the middle pic change only the image content not the activation mode
+        customCircle.setActivation(Pos.MIDDLE);
         
         
         
@@ -119,8 +136,37 @@ public class SingleDimmerControl extends Application
         	
         });
         
+        Button threeState = new Button("Change Pic");
+        threeState.setOnAction(new EventHandler<ActionEvent>(){
+
+		
+
+			@Override
+			public void handle(ActionEvent event) 
+			{
+				if(state == Man.STAND)
+				{
+					state = Man.RUNNING;
+					customCircle.initImage(Pos.MIDDLE, ImageLoader.getImageFromIconFolder("runningMan"));
+					
+				}
+				else if(state == Man.RUNNING)
+				{
+					state = Man.SHRUG;
+					customCircle.initImage(Pos.MIDDLE, ImageLoader.getImageFromIconFolder("schulterzucken"));
+				}
+				else
+				{
+					state = Man.STAND;
+					 customCircle.initImage(Pos.MIDDLE, ImageLoader.getImageFromIconFolder("man"));
+				}
+			
+			}
+        	
+        });
         
-        vBox.getChildren().addAll(test, lockState);
+        
+        vBox.getChildren().addAll(test, lockState, threeState);
         
         pane.setCenter(customCircle);
         pane.setRight(vBox);
