@@ -18,7 +18,6 @@ import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -458,15 +457,13 @@ public class DimmerControl extends Region implements IActivationIcon
 				glanzRand, 
 				button_on, button_off, button_left, button_right, button_send,
 				textOn, textOff, textLeft, textRight, textSend,
-				//TODO hier die textfelder
 				schattierungDrehrad, drehrad,
 				//zwei kreise der masking anteil ist ein wenig abgesetzt vom highlight Anteil
 				//weiterhin ist der Maskingteil mit der Grundfarbe des drehrades belegt..alles in TopRegion
 				topRegion, 
-				drehradGlanz, /* glanzKante ? */
+				drehradGlanz, 
 				inhaltMonitor, inhaltMonitorKopie,  glanzMonitor, textPresetCanvas, textCanvas
 				,optionalImageBox
-				//TODO evtl. textCanvas noch nach vorne ziehen unterhalb von glanzMonitor
 				,anfasser, anfasserGlanz);
 		
 		drawTextValues(true);
@@ -475,7 +472,6 @@ public class DimmerControl extends Region implements IActivationIcon
 		drawMinorTick(width, true);
 		
 		//Vorbereitung der Rotation
-		//TODO keine Ahnung was zu beginn gesetzt werden muss
 		anfasserRotate = new Rotate(0);
 		this.anfasser.getTransforms().add(anfasserRotate);
 		this.anfasserGlanz.getTransforms().add(anfasserRotate);
@@ -533,7 +529,6 @@ public class DimmerControl extends Region implements IActivationIcon
 		     Glow glow = new Glow();
 		     glow.setLevel(0.5);
 		     line.setEffect(glow);
-		     //TODO evtl. die 36er Werte nicht zeichnen...mal sehen
 		     if(isInit)
 		     {
 		    	 this.getChildren().add(line);
@@ -925,8 +920,10 @@ public class DimmerControl extends Region implements IActivationIcon
 					try 
 					{
 						TimeUnit.MILLISECONDS.sleep(25);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
+					} 
+					catch (InterruptedException e) 
+					{
+					
 						e.printStackTrace();
 					}
 					startIndex ++;
@@ -947,10 +944,11 @@ public class DimmerControl extends Region implements IActivationIcon
 					this.drawTextValues(true);
 					
 					this.setRotation(currentValue);
-					try {
+					try 
+					{
 						TimeUnit.MILLISECONDS.sleep(25);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
+					} 
+					catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 					startIndex--;
