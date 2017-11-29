@@ -18,12 +18,17 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tools.helper.ImageLoader;
 
-
-
-
+/**
+ * Simple example to show some characteristic from this DimmerControl
+ * @author m.goerlich
+ *
+ */
 public class SingleDimmerControl extends Application 
 {
-	
+	/**
+	 * enum for the second picture change
+	 *
+	 */
 	public enum Man
 	{
 		STAND,
@@ -41,13 +46,15 @@ public class SingleDimmerControl extends Application
     public void start(Stage stage) 
     {
         BorderPane pane = new BorderPane();
-        //first gauge; center of borderpane
+        //center of borderpane, initialize
         DimmerControl customCircle = new DimmerControl();
         //Voreinstellungen die später mal von der Anwendung kommen
+        //some preset values for the quick selection.
         customCircle.setPresetValues(new double[]{0d, 25d, 33d, 78d, 100d});
         //Blockierungsbild setzen auf die rechte Position (later deactivation/activation)
+        //one image to show the activation/deactivation mode
         customCircle.initImage(Pos.RIGHT, ImageLoader.getImageFromIconFolder("schloss_schwarz"));
-        //change pic init
+        //another pic for the next mode
         customCircle.initImage(Pos.MIDDLE, ImageLoader.getImageFromIconFolder("man"));
         //the middle pic change only the image content not the activation mode
         customCircle.setActivation(Pos.MIDDLE);
@@ -56,6 +63,7 @@ public class SingleDimmerControl extends Application
         
         Label kommandoLabel = new Label();
         //pseudo simulation, was später mal die eigentliche Anwendung übernimmt, also physikalisches Senden
+        //this listener is needed to do something in your application
         customCircle.getCommandProperty().addListener(new ChangeListener<Command>()
         {
 
@@ -67,21 +75,19 @@ public class SingleDimmerControl extends Application
 					switch(newValue)
 					{
 						case ON:
-							//TODO weiß nicht oder direkt setzen
 							customCircle.setAnimatiedCurrentValue(100);
-							//Platform.runLater(() -> customCircle.setCurrentValue(100, false));
 							break;
 						case OFF:
 							customCircle.setAnimatiedCurrentValue(0);
-							//Platform.runLater(() -> customCircle.setCurrentValue(0, false));
 							break;
 						case SEND_PRESET:
 							customCircle.setAnimatiedCurrentValue(customCircle.getSelectedPresetValue());
-							
 							break;
 					}
-					
 					kommandoLabel.setText(newValue.toString());
+					
+					//reset the commandproperty! no reset no change to send the same command again 
+					//(example: send ON and the radiosignal dont receive the actuator, the user will try again with ON
 					customCircle.getCommandProperty().set(Command.RESET_COMMAND);
 				}
 			}
@@ -92,6 +98,7 @@ public class SingleDimmerControl extends Application
         vBox.setPadding(new Insets(5, 5,0,0));
         
         //start and stop animation with random values
+        //it simulate incoming signals from the actuator
         ToggleButton test = new ToggleButton("Start");
         test.setOnAction(new EventHandler<ActionEvent>(){
 
@@ -115,6 +122,7 @@ public class SingleDimmerControl extends Application
         });
         
         //Aktivierungs-/Deaktivierungsbeispiel
+        //activition/deactivation mode for the right pic on screen
         ToggleButton lockState = new ToggleButton("Change Lock");
         lockState.setOnAction(new EventHandler<ActionEvent>(){
 
@@ -136,10 +144,9 @@ public class SingleDimmerControl extends Application
         	
         });
         
+        //change the image at the middle imageview on screen...the other possible mode.
         Button threeState = new Button("Change Pic");
         threeState.setOnAction(new EventHandler<ActionEvent>(){
-
-		
 
 			@Override
 			public void handle(ActionEvent event) 

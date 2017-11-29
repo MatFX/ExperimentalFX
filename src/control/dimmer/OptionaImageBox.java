@@ -7,13 +7,12 @@ import tools.helper.UIToolBox;
 
 /**
  * Hier können bis zu drei Bilder abgelegt werden. Diese sind optional und müssen nicht befüllt werden
+ * <br>The image container for the max. three pictures on the screen.
  * @author m.goerlich
  *
  */
 public class OptionaImageBox extends HBox implements IActivationIcon
 {
-	
-	
 	
 	private ImageView left;
 	
@@ -41,10 +40,6 @@ public class OptionaImageBox extends HBox implements IActivationIcon
 		right = new ImageView();
 		right.setOpacity(DEACTIVATED);
 		right.setPreserveRatio(true);
-		
-		
-		
-		
 		
 		this.getChildren().addAll(left, UIToolBox.createHorizontalSpacer(), middle, UIToolBox.createHorizontalSpacer(), right);
 	}
@@ -76,6 +71,10 @@ public class OptionaImageBox extends HBox implements IActivationIcon
 		}
 	}
 	
+	/**
+	 * the height is the "master key" for the new size.
+	 * @param heightValue
+	 */
 	public void resize(double heightValue)
 	{
 		

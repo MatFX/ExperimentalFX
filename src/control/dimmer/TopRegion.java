@@ -4,6 +4,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
+/**
+ * simple highlighter for the top side of the circle.
+ * @author m.goerlich
+ *
+ */
 public class TopRegion extends Region
 {
 	private Shape toShow;
@@ -24,9 +29,6 @@ public class TopRegion extends Region
 	{
 		this.backgroundCircle = backgroundCircle;
 		this.overlaySubtract = overlaySubtract;
-		
-		
-		
 		this.resize();
 	}
 	

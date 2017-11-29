@@ -33,18 +33,39 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import control.dimmer.IActivationIcon;
 
+/**
+ * A control to the values from 0 to 100 percent. 
+ * <br>To listining at this control you must add a changelistener at the property object {@link #getCommandProperty()}.
+ * <br>It is possible to set max. three pictures at the middle view. Use the methods IActivationIcon methods
+ * <br>to change the image or activation/deactivation mode.
+ * <br>With the method {@link #setPresetValues(double...)} you can set defined values for quickselection.
+ * <br>The values are selectable with the "<" and ">" Button on screen. After selection send the value with the button "°".
+ * <br>
+ * <br>Remark: In this package you will find the svg file for the first steps. 
+ * @author m.goerlich
+ *
+ */
 public class DimmerControl extends Region implements IActivationIcon
 {
+	/**
+	 * possible command values 
+	 *
+	 */
 	public enum Command
 	{
 		ON, OFF, SEND_PRESET, NEXT_PRESET, PREVIOUS_PRESET, SEND_VALUE, 
 		/**
 		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
+		 * <br>you need the reset as a "acknowledge" from outside.
 		 */
 		RESET_COMMAND;
 	}
 	
 	
+	/**
+	 * Gradients will be stored in a map. That are the keys for the different colorization. 
+	 *
+	 */
 	public enum StopIndizes
 	{
 		GLANZ_RAND
@@ -781,14 +802,11 @@ public class DimmerControl extends Region implements IActivationIcon
 		
 		//100/64 * 32 = 25 =0-25
 		double hoeheImages = size/2 * 0.25;
-		System.out.println("opt " + breiteImages + "  " + hoeheImages);
-		//optionalImageBox.setLayoutX(value);
 		
 		optionalImageBox.setMinSize(breiteImages, hoeheImages);
 		optionalImageBox.setLayoutX(centerX - (breiteImages/2));
 		optionalImageBox.setLayoutY(centerY + (textCanvas.getHeight()/2));
 		optionalImageBox.resize(hoeheImages);
-		//optionalImageBox.setStyle("-fx-background-color: #FF0000");
 		
 		
 		//resize der canvas für preset und der Anzeige
@@ -1165,6 +1183,7 @@ public class DimmerControl extends Region implements IActivationIcon
 		
 	}
 	
+	
 	public double getSelectedPresetValue()
 	{
 		return presetValues[presetIndex];
@@ -1173,19 +1192,16 @@ public class DimmerControl extends Region implements IActivationIcon
 	@Override
 	public void setActivation(Pos position) {
 		optionalImageBox.setActivation(position);
-		
 	}
 
 	@Override
 	public void setDeactivation(Pos position) {
 		optionalImageBox.setDeactivation(position);
-		
 	}
 
 	@Override
 	public void initImage(Pos position, Image image) {
 		optionalImageBox.initImage(position, image);
-		
 	}
 	
 	
@@ -1230,7 +1246,6 @@ public class DimmerControl extends Region implements IActivationIcon
 		setNodePressed(nodeBase, textNode, command, e);
 		
 	}
-	
 	
 	public void setPreviousPresetNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
 	{
