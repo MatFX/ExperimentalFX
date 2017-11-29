@@ -233,49 +233,29 @@ public class DimmerControl extends Region implements IActivationIcon
 		
 		button_on.setOnMousePressed(e -> setNodePressed(button_on, textOn, Command.ON));
 		button_on.setOnMouseReleased(e -> setNodeReleased(button_on, textOn));
-		button_on.setOnTouchPressed(e -> setNodePressed(button_on, textOn, Command.ON));
-		button_on.setOnTouchReleased(e -> setNodeReleased(button_on, textOn));
-		
-		//TODO für die Buttons fehlt das antriggern einer Property; Bei der Property lauscht die Anwendung 
-		//und reagiert dementsprechend
-		/*
-		button_on.setOnMousePressed(new EventHandler<MouseEvent>(){
 
-			@Override
-			public void handle(MouseEvent event) 
-			{
-				button_on.setEffect(innerShadow);
-				textOn.setEffect(textGlow);
-				commandProperty.set(Command.ON);
-				
-				
-			}
-			
-		});
+		//Großes Problem war gedacht, damit auch bei einem Touch Kommando der passende Effekt auf den Button 
+		//gezaubert wird. Jedoch gibt es dann Probleme mit der Zeichnflaecher weil beide Events Mouse und Touch
+		//angetriggert werden.
+		//button_on.setOnTouchPressed(e -> setNodePressed(button_on, textOn, Command.ON));
+		//button_on.setOnTouchReleased(e -> setNodeReleased(button_on, textOn));
 		
-		button_on.setOnMouseReleased(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent event) {
-				button_on.setEffect(dropShadow);
-				textOn.setEffect(null);
-				
-			}
-			
-		});
+		//TODO für morgen
+		button_off.setOnMousePressed(e -> setNodePressed(button_off, textOff, Command.OFF));
+		button_off.setOnMouseReleased(e -> setNodeReleased(button_off, textOff));
 		
-		button_on.setOnTouchPressed(new EventHandler<TouchEvent>() {
-
-			@Override
-			public void handle(TouchEvent event) 
-			{
-				// TODO Auto-generated method stub
-				System.out.println("touchEvent");	
-			}
-			
-		});*/
+		//TODO geht es weiter mit vorwärts rückwärst kommandos
+		button_left.setOnMousePressed(e -> setPreviousPresetNodePressed(button_left, textLeft, Command.PREVIOUS_PRESET));
+		button_left.setOnMouseReleased(e -> setNodeReleased(button_left, textLeft));
+		
+		button_right.setOnMousePressed(e -> setNextPresetNodePressed(button_right, textRight, Command.NEXT_PRESET));
+		button_right.setOnMouseReleased(e -> setNodeReleased(button_right, textRight));
+		
+		button_send.setOnMousePressed(e -> setNodePressed(button_send, textSend, Command.SEND_PRESET));
+		button_send.setOnMouseReleased(e -> setNodeReleased(button_send, textSend));
 		
 		
+		/* TODO raus
 		button_off.setOnMousePressed(new EventHandler<MouseEvent>(){
 
 			@Override
@@ -296,8 +276,9 @@ public class DimmerControl extends Region implements IActivationIcon
 				textOff.setEffect(null);
 			}
 			
-		});
+		});*/
 		
+		/*
 		button_left.setOnMousePressed(new EventHandler<MouseEvent>(){
 
 			@Override
@@ -374,7 +355,7 @@ public class DimmerControl extends Region implements IActivationIcon
 				button_send.setEffect(dropShadow);
 				textSend.setEffect(null);
 			}
-		});
+		});*/
 	}
 	
 	
@@ -1340,5 +1321,24 @@ public class DimmerControl extends Region implements IActivationIcon
 		
 	}
 	
+	/**
+	 * Hier muss vor der Visualisierung noch auf die nächste Voreinstellung gegangen werden
+	 * @param nodeBase
+	 * @param textNode
+	 * @param command
+	 */
+	public void setNextPresetNodePressed(Arc nodeBase, Text textNode, Command command)
+	{
+		nextPreset();
+		setNodePressed(nodeBase, textNode, command);
+		
+	}
+	
+	
+	public void setPreviousPresetNodePressed(Arc nodeBase, Text textNode, Command command)
+	{
+		previousPreset();
+		setNodePressed(nodeBase, textNode, command);
+	}
 	
 }
