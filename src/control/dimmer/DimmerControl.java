@@ -189,6 +189,7 @@ public class DimmerControl extends Region implements IActivationIcon
 
 				//jetzt Signalisierung an die Außenwelt, damit die nun die gewünschte Veränderung durchführt.
 				commandProperty.set(Command.SEND_VALUE);
+				event.consume();
 				
 			}
 			
@@ -200,6 +201,7 @@ public class DimmerControl extends Region implements IActivationIcon
 			public void handle(MouseEvent event) 
 			{
 				drehung(event);
+				event.consume();
 			}
 			
 		});
@@ -212,6 +214,7 @@ public class DimmerControl extends Region implements IActivationIcon
 			public void handle(MouseEvent event) 
 			{
 				drehung(event);
+				event.consume();
 				
 			}
 			
@@ -224,6 +227,7 @@ public class DimmerControl extends Region implements IActivationIcon
 				drehung(event);
 				//jetzt Signalisierung an die Außenwelt, damit die nun die gewünschte Veränderung durchführt.
 				commandProperty.set(Command.SEND_VALUE);
+				event.consume();
 				
 			}
 			
@@ -234,20 +238,20 @@ public class DimmerControl extends Region implements IActivationIcon
 		//link: https://bugs.openjdk.java.net/browse/JDK-8139118
 		
 		//action listener für die Buttons
-		button_on.setOnMousePressed(e -> setNodePressed(button_on, textOn, Command.ON));
-		button_on.setOnMouseReleased(e -> setNodeReleased(button_on, textOn));
+		button_on.setOnMousePressed(e -> setNodePressed(button_on, textOn, Command.ON, e));
+		button_on.setOnMouseReleased(e -> setNodeReleased(button_on, textOn, e));
 
-		button_off.setOnMousePressed(e -> setNodePressed(button_off, textOff, Command.OFF));
-		button_off.setOnMouseReleased(e -> setNodeReleased(button_off, textOff));
+		button_off.setOnMousePressed(e -> setNodePressed(button_off, textOff, Command.OFF, e));
+		button_off.setOnMouseReleased(e -> setNodeReleased(button_off, textOff, e));
 		
-		button_left.setOnMousePressed(e -> setPreviousPresetNodePressed(button_left, textLeft, Command.PREVIOUS_PRESET));
-		button_left.setOnMouseReleased(e -> setNodeReleased(button_left, textLeft));
+		button_left.setOnMousePressed(e -> setPreviousPresetNodePressed(button_left, textLeft, Command.PREVIOUS_PRESET, e));
+		button_left.setOnMouseReleased(e -> setNodeReleased(button_left, textLeft, e));
 		
-		button_right.setOnMousePressed(e -> setNextPresetNodePressed(button_right, textRight, Command.NEXT_PRESET));
-		button_right.setOnMouseReleased(e -> setNodeReleased(button_right, textRight));
+		button_right.setOnMousePressed(e -> setNextPresetNodePressed(button_right, textRight, Command.NEXT_PRESET, e));
+		button_right.setOnMouseReleased(e -> setNodeReleased(button_right, textRight, e));
 		
-		button_send.setOnMousePressed(e -> setNodePressed(button_send, textSend, Command.SEND_PRESET));
-		button_send.setOnMouseReleased(e -> setNodeReleased(button_send, textSend));
+		button_send.setOnMousePressed(e -> setNodePressed(button_send, textSend, Command.SEND_PRESET, e));
+		button_send.setOnMouseReleased(e -> setNodeReleased(button_send, textSend, e));
 	}
 	
 	
@@ -1191,10 +1195,11 @@ public class DimmerControl extends Region implements IActivationIcon
 	 * @param nodeBase
 	 * @param textNode
 	 */
-	public void setNodeReleased(Arc nodeBase, Text textNode)
+	public void setNodeReleased(Arc nodeBase, Text textNode, MouseEvent e)
 	{
 		nodeBase.setEffect(dropShadow);
 		textNode.setEffect(null);
+		e.consume();
 	}
 	
 	/**
@@ -1203,11 +1208,12 @@ public class DimmerControl extends Region implements IActivationIcon
 	 * @param textNode
 	 * @param command
 	 */
-	public void setNodePressed(Arc nodeBase, Text textNode, Command command)
+	public void setNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
 	{
 		nodeBase.setEffect(innerShadow);
 		textNode.setEffect(textGlow);
 		commandProperty.set(command);
+		e.consume();
 		
 		
 	}
@@ -1218,18 +1224,18 @@ public class DimmerControl extends Region implements IActivationIcon
 	 * @param textNode
 	 * @param command
 	 */
-	public void setNextPresetNodePressed(Arc nodeBase, Text textNode, Command command)
+	public void setNextPresetNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
 	{
 		nextPreset();
-		setNodePressed(nodeBase, textNode, command);
+		setNodePressed(nodeBase, textNode, command, e);
 		
 	}
 	
 	
-	public void setPreviousPresetNodePressed(Arc nodeBase, Text textNode, Command command)
+	public void setPreviousPresetNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
 	{
 		previousPreset();
-		setNodePressed(nodeBase, textNode, command);
+		setNodePressed(nodeBase, textNode, command,e);
 	}
 	
 }
