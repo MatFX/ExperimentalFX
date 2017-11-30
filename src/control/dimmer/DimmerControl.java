@@ -103,6 +103,7 @@ public class DimmerControl extends Region implements IActivationIcon
 	
 	/**
 	 * Die Striche die auf der Oberfläche dargestellt werden sollen
+	 * <br>ticks on screen
 	 */
 	private TreeMap<Integer, Line> tickMap = new TreeMap<Integer, Line>();
 	
@@ -120,7 +121,8 @@ public class DimmerControl extends Region implements IActivationIcon
 	private Canvas textCanvas;
 	
 	/**
-	 * Den Anfasser drehen lassen unter bezugnahme der mittelachse
+	 * Den Anfasser drehen lassen unter bezugnahme des Mittelpunktes
+	 * <br>to rotate the "anfasser"
 	 */
 	private Rotate anfasserRotate;
 
@@ -148,16 +150,19 @@ public class DimmerControl extends Region implements IActivationIcon
 	
 	/**
 	 * Diese sind optional und können von außerhalb gesezt werden.
+	 * <br>{@link #setPresetValues(double...)} to set preset values
 	 */
 	private double[] presetValues = new double[]{0};
 	
 	/**
 	 * der Index durch klick von vor und zurück wird dieser Wert verändert.
+	 * <br>current selected preset index
 	 */
 	private int presetIndex = 0;
 	
 	/**
 	 * Dieser Text wird nur dann dargestellt wenn der Anwender einen der Preset Button verwendet
+	 * <br>this text is only shown, if user switch through the presets
 	 */
 	private Text textPreset;
 	
@@ -168,6 +173,7 @@ public class DimmerControl extends Region implements IActivationIcon
 	
 	/**
 	 * sind presets in er Anzeige sichtbar?
+	 * 
 	 */
 	private boolean isPresetsOnScreen;
 	
@@ -180,6 +186,7 @@ public class DimmerControl extends Region implements IActivationIcon
 	/**
 	 * Sorgt dafür, dass die gewählte Voreinstellung von der Oberfläche verschwindet wenn nach Zeit X der Anwender
 	 * <br>nicht den Sende button gedrückt hat.
+	 * <br>reset the preset text (clear text), if user has not pressed the send button
 	 */
 	private Timeline presetViewReset;
 	
@@ -188,6 +195,9 @@ public class DimmerControl extends Region implements IActivationIcon
 	 */
 	private Glow textGlow = new Glow(0.3);
 	
+	/**
+	 * fill this box with max three icons
+	 */
 	private OptionaImageBox optionalImageBox;
 	
 	public DimmerControl()
@@ -255,7 +265,7 @@ public class DimmerControl extends Region implements IActivationIcon
 		});
 		
 		
-		//remark: Problems with change style on button, when the user will aplly touch functionality
+		//remark: Problems with change style on button, if the user will apply touch functionality
 		//link: https://bugs.openjdk.java.net/browse/JDK-8139118
 		
 		//action listener für die Buttons
