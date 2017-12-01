@@ -10,6 +10,7 @@ import javafx.animation.Timeline;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlurType;
@@ -294,8 +295,10 @@ public class DimmerControl extends Region implements IActivationIcon
 		//Berücksichtigt wird bereits min ist aber zur Zeit noch nicht einstellbar
 		double schrittweite = ANGLE_RANGE_SELECTOR / (RANGE_MAX - RANGE_MIN);
 		
-		double deltaX = event.getSceneX() - (centerX);
-		double deltaY = event.getSceneY() - (centerY);
+		
+		Point2D p = DimmerControl.this.sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY()));
+		double deltaX = p.getX() - (centerX);
+		double deltaY = p.getY() - (centerY);
 	    double radius = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
     
 	    double  nx     = deltaX / radius;
