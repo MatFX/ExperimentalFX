@@ -1,4 +1,4 @@
-package control.temperature;
+package control.universaldisplay;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class SingleTemperatureControl extends Application {
+public class SingleUniversalDisplay extends Application {
 
 	@Override
 	public void start(Stage stage) 
@@ -15,7 +15,7 @@ public class SingleTemperatureControl extends Application {
 		 BorderPane pane = new BorderPane();
 	      
 		 //center of borderpane, initialize
-		 TemperatureControl tempControl = new TemperatureControl();
+		 UniversalDisplay tempControl = new UniversalDisplay();
 		
 		 pane.setCenter(tempControl);
 	        
@@ -23,7 +23,7 @@ public class SingleTemperatureControl extends Application {
 	     Scene scene = new Scene(pane);
 	        
 
-	     stage.setTitle("JavaFX SingleTemperaturControl");
+	     stage.setTitle("JavaFX Universelles Display");
 	     stage.setScene(scene);
 	     stage.setWidth(400);
 	     stage.setHeight(400);
