@@ -84,6 +84,7 @@
 	<path style="fill:url(#SVGID_3_);" d="M100.356,37.492C92.171,26.286,78.94,19,64,19c-21.516,0-39.495,15.105-43.937,35.286
 		C26.781,50.298,34.62,48,43,48c10.006,0,19.246,3.27,26.718,8.794C76.632,46.588,87.625,39.376,100.356,37.492z"/>
 </g>
+<!--
 <g id="Sicherung">
 	<g id="glanzObenTest" style="display:none;">
 		<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="38.8825" y1="-2.9851" x2="74.8825" y2="79.5149">
@@ -106,4 +107,5 @@
 		<circle style="fill:#0A7C79;" cx="107" cy="82" r="45"/>
 	</g>
 </g>
+-->
 </svg>
