@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 128 128" style="enable-background:new 0 0 128 128;" xml:space="preserve">
+<g id="Ebene_12" style="display:none;">
+	
+		<image style="display:inline;overflow:visible;" width="343" height="336" xlink:href="Vorlage_dimmer.png"  transform="matrix(1 0 0 1 -82 -104)">
+	</image>
+</g>
+<g id="Hintergrund">
+	<circle id="background" style="fill:#282828;" cx="64" cy="64" r="63"/>
+	<linearGradient id="backgroundCircle_1_" gradientUnits="userSpaceOnUse" x1="64" y1="127" x2="64" y2="1">
+		<stop  offset="0" style="stop-color:#1A1A1A;stop-opacity:0.9"/>
+		<stop  offset="0.297" style="stop-color:#000000"/>
+		<stop  offset="0.345" style="stop-color:#0F0F0F;stop-opacity:0.9037"/>
+		<stop  offset="0.4718" style="stop-color:#313131;stop-opacity:0.6494"/>
+		<stop  offset="0.5767" style="stop-color:#454545;stop-opacity:0.4391"/>
+		<stop  offset="0.646" style="stop-color:#4D4D4D;stop-opacity:0.3"/>
+		<stop  offset="0.6524" style="stop-color:#4B4B4B;stop-opacity:0.3099"/>
+		<stop  offset="0.7756" style="stop-color:#303030;stop-opacity:0.5013"/>
+		<stop  offset="0.8848" style="stop-color:#202020;stop-opacity:0.6709"/>
+		<stop  offset="0.9678" style="stop-color:#1A1A1A;stop-opacity:0.8"/>
+	</linearGradient>
+	<circle id="backgroundCircle" style="fill:url(#backgroundCircle_1_);" cx="64" cy="64" r="63"/>
+	<linearGradient id="innerBackground_1_" gradientUnits="userSpaceOnUse" x1="64" y1="103.4338" x2="64" y2="-2.0003">
+		<stop  offset="0" style="stop-color:#4D4D4D"/>
+		<stop  offset="1" style="stop-color:#666666"/>
+	</linearGradient>
+	<circle id="innerBackground" style="fill:url(#innerBackground_1_);" cx="64" cy="64" r="60"/>
+	<linearGradient id="innerBackgroundCircle_1_" gradientUnits="userSpaceOnUse" x1="64" y1="103.4338" x2="64" y2="-2.0003">
+		<stop  offset="0" style="stop-color:#999999"/>
+		<stop  offset="0.297" style="stop-color:#CCCCCC"/>
+		<stop  offset="0.5371" style="stop-color:#CCCCCC"/>
+		<stop  offset="0.5669" style="stop-color:#C9C9C9;stop-opacity:0.9654"/>
+		<stop  offset="0.7944" style="stop-color:#B9B9B9;stop-opacity:0.7013"/>
+		<stop  offset="0.9678" style="stop-color:#B3B3B3;stop-opacity:0.5"/>
+	</linearGradient>
+	<circle id="innerBackgroundCircle" style="fill:url(#innerBackgroundCircle_1_);" cx="64" cy="64" r="60"/>
+	<circle id="innerBorder" style="fill:#232323;" cx="64" cy="64" r="58"/>
+	<radialGradient id="topoverlay_1_" cx="64" cy="64" r="57" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#F2F2F2"/>
+		<stop  offset="0.4381" style="stop-color:#F0F0F0"/>
+		<stop  offset="0.5959" style="stop-color:#E9E9E9"/>
+		<stop  offset="0.7083" style="stop-color:#DEDEDE"/>
+		<stop  offset="0.7993" style="stop-color:#CDCDCD"/>
+		<stop  offset="0.8771" style="stop-color:#B7B7B7"/>
+		<stop  offset="0.9448" style="stop-color:#9C9C9C"/>
+		<stop  offset="1" style="stop-color:#808080"/>
+	</radialGradient>
+	<circle id="topoverlay" style="fill:url(#topoverlay_1_);" cx="64" cy="64" r="57"/>
+</g>
+<g id="RahmenInnenring">
+	<circle style="fill:#40423B;" cx="64" cy="64" r="45.5"/>
+</g>
+<g id="lcdDisplay">
+	<circle style="fill:#949C87;" cx="64" cy="64" r="45"/>
+</g>
+<g id="ScheinLcd">
+	<radialGradient id="SVGID_1_" cx="64" cy="64" r="45" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#949C87;stop-opacity:0"/>
+		<stop  offset="0.4297" style="stop-color:#929985;stop-opacity:0.3437"/>
+		<stop  offset="0.692" style="stop-color:#8A917F;stop-opacity:0.5536"/>
+		<stop  offset="0.9087" style="stop-color:#7D8374;stop-opacity:0.727"/>
+		<stop  offset="1" style="stop-color:#757A6D;stop-opacity:0.8"/>
+	</radialGradient>
+	<circle style="fill:url(#SVGID_1_);" cx="64" cy="64" r="45"/>
+</g>
+<g id="GlanzUnten">
+	<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="88.4346" y1="110.0651" x2="57.9346" y2="52.5651">
+		<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.5"/>
+		<stop  offset="0.3368" style="stop-color:#D7DAD2;stop-opacity:0.3316"/>
+		<stop  offset="0.7829" style="stop-color:#A7AD9C;stop-opacity:0.1085"/>
+		<stop  offset="1" style="stop-color:#949C87;stop-opacity:0"/>
+	</linearGradient>
+	<circle style="fill:url(#SVGID_2_);" cx="64" cy="64" r="45"/>
+</g>
+<g id="glanzOben">
+	<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="52.6787" y1="2.2106" x2="62.7276" y2="60.4944">
+		<stop  offset="0.1431" style="stop-color:#FFFFFF;stop-opacity:0.8"/>
+		<stop  offset="0.2704" style="stop-color:#F1F2EF;stop-opacity:0.655"/>
+		<stop  offset="0.5183" style="stop-color:#CCD0C6;stop-opacity:0.3725"/>
+		<stop  offset="0.8453" style="stop-color:#949C87;stop-opacity:0"/>
+	</linearGradient>
+	<path style="fill:url(#SVGID_3_);" d="M100.356,37.492C92.171,26.286,78.94,19,64,19c-21.516,0-39.495,15.105-43.937,35.286
+		C26.781,50.298,34.62,48,43,48c10.006,0,19.246,3.27,26.718,8.794C76.632,46.588,87.625,39.376,100.356,37.492z"/>
+</g>
+<g id="Sicherung">
+	<g id="glanzObenTest" style="display:none;">
+		<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="38.8825" y1="-2.9851" x2="74.8825" y2="79.5149">
+			<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.8"/>
+			<stop  offset="0.3368" style="stop-color:#D7DAD2;stop-opacity:0.5306"/>
+			<stop  offset="0.7829" style="stop-color:#A7AD9C;stop-opacity:0.1737"/>
+			<stop  offset="1" style="stop-color:#949C87;stop-opacity:0"/>
+		</linearGradient>
+		<path style="display:inline;fill:url(#SVGID_4_);" d="M100.356,37.492C92.171,26.286,78.94,19,64,19
+			c-21.516,0-39.495,15.105-43.937,35.286C26.781,50.298,34.62,48,43,48c10.006,0,19.246,3.27,26.718,8.794
+			C76.632,46.588,87.625,39.376,100.356,37.492z"/>
+	</g>
+	<g id="KreisBackground">
+		<circle style="fill:#40423B;" cx="64" cy="64" r="45"/>
+	</g>
+	<g id="KreisLinksSubtract">
+		<circle style="fill:#0A7C79;" cx="43" cy="93" r="45"/>
+	</g>
+	<g id="KreisRechtsSubtract">
+		<circle style="fill:#0A7C79;" cx="107" cy="82" r="45"/>
+	</g>
+</g>
+</svg>

@@ -61,8 +61,6 @@ public class TopRegion extends Region
 		toShow.setFill(backgroundCircle.getFill());
 		this.getChildren().add(toShow);
 		
-		
-		
 	}
 
 }
