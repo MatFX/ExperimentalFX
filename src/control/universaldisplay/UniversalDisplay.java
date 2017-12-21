@@ -195,16 +195,20 @@ public class UniversalDisplay extends Region
 		//r 100/64 * 45 =  70,3125 = 0.703125
 		PointXYR backgroundPoint = new PointXYR(centerX, centerY, radius * 0.703125);
 		
-		//x1="38.8825" y1="-2.9851" x2="74.8825" y2="79.5149"
-		//x1 64 - 38,8825 = 25,1175 = 100/128 * 25,1175 = 19,623046875 = 0.19623046875
-		//y2 64 - (-2.9851) = - 66.9851 > 100/128 * 66.9851 = -52,332109375 = 0.52332109375
-		//x2 74.8825 -64 = 10,8825 = 100/128 * 10,8825 =  8,501953125 = 0.08501953125
-		//y2 79.5149 - 64 = 15,5149 = 100/128 * 15,5149 = 12,121015625 = 0.12121015625
+		
+		//x1="52.6787" y1="2.2106" x2="62.7276" y2="60.4944"
+		
+		//x1 100/128 * 52.6787 = 41,155234375 = 0.41155234375
+		//y1 100/128 * 2.2106 = 1,72703125 = 0.0172703125
+		//x2 100/128 * 62.7276 = 49,0059375 = 0.490059375
+		//x3 100/128 * 60,4944 = 47,26125 = 0.4726125
+		
+		
 		LinearGradient lgTopShiny = new LinearGradient(
-				centerX - (size * 0.19623046875),
-				centerY - (size * 0.52332109375),
-				centerX + (size * 0.08501953125),
-				centerY + (size  *  0.12121015625), 
+				(size * 0.41155234375),
+				(size * 0.0172703125),
+				(size * 0.490059375),
+				 (size  *  0.4726125), 
 				false, 
 				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_OBEN));
 		
@@ -327,23 +331,13 @@ public class UniversalDisplay extends Region
 	   glanzUnten = new Circle();
 	   
 	   //muss die farben nochmals anpassen irgendwas stimmt nicht mit dem oberen Verlauf
+	  
 	   stopArray = new Stop[]{
-				new Stop(0.1431, Color.web("#FFFFFFCC")),
-				new Stop(0.2704, Color.web("#F1F2EF70")),
-				new Stop(0.5183, Color.web("#CCD0C620")),
-				new Stop(0.8453, Color.web("#949C8705"))
-			};
-	   //orginal war:
-	   /* TODO
-	   Stop[] stopArray = new Stop[]{
 				new Stop(0.1431, Color.web("#FFFFFFCC")),
 				new Stop(0.2704, Color.web("#F1F2EFA7")),
 				new Stop(0.5183, Color.web("#CCD0C65F")),
 				new Stop(0.8453, Color.web("#949C8700"))
 			};
-		*/	   
-			   
-				
 	   stopMap.put(StopIndizes.GLANZ_OBEN, stopArray);
 	   
 	   
