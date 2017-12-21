@@ -60,7 +60,6 @@ public class SingleDimmerControl extends Application
         customCircle.setActivation(Pos.MIDDLE);
         
         
-        
         Label kommandoLabel = new Label();
         //pseudo simulation, was später mal die eigentliche Anwendung übernimmt, also physikalisches Senden
         //this listener is needed to do something in your application

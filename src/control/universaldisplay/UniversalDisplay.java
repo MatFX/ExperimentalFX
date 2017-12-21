@@ -1,16 +1,48 @@
 package control.universaldisplay;
 
 import java.util.HashMap;
+
+import control.dimmer.OptionalImageBox;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public class UniversalDisplay extends Region
 {
+	
+	/**
+	 * possible command values 
+	 *
+	 */
+	public enum Command
+	{
+		PREVIOUS_SENSOR_VALUE, NEXT_SENSOR_VALUE, AUTO_CHANGE, SEND_PRESET, NEXT_PRESET, PREVIOUS_PRESET, SEND_VALUE, 
+		/**
+		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
+		 * <br>you need the reset as a "acknowledge" from outside.
+		 */
+		RESET_COMMAND;
+	}
+	
+	
+	
 	//Enums für die gespeicherten Farben
 	public enum StopIndizes
 	{
@@ -47,7 +79,55 @@ public class UniversalDisplay extends Region
 	
 	private TopRegion topRegion;
 	
+	private Arc buttonTopLeft, buttonTopRight, buttonTopAuto;
+	
+	private DropShadow dropShadow;
+	
+	/**
+	 * different sensoric states to show
+	 */
+	private boolean isMultiSensor = true;
+	
+	private Text textTopLeft, textTopAuto, textTopRight;
+	
+	private Color textColor = Color.web("#d2d74b");
+	
+	private InnerShadow innerShadow;
+	/**
+	 * für den Text wenn der button gedrückt wurde
+	 */
+	private Glow textGlow = new Glow(0.3);
+	
+	/**
+	 * Kammdos können hier empfangen werden (listener anschluss)
+	 */
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
+	
+	private OptionalImageBox optionalImageBox;
+	
 
+	/**
+	 * Hier erfolgt die Anzeige des zur Zeit dargestellten Wertes
+	 */
+	private Canvas textCanvas;
+	
+	/**
+	 * first Value or main value; Bigger from font size
+	 */
+	private Text textFirstValue;
+	
+	private Text masseinheit;
+	
+	/**
+	 * second value or minor value; top value other main value
+	 */
+	private Text textSecondValue;
+	
+	/**
+	 * Zeichnungsfläche für textPreset
+	 */
+	private Canvas textSecondValueCanvas;
+	
 	public UniversalDisplay()
 	{
 
@@ -55,11 +135,29 @@ public class UniversalDisplay extends Region
 		this.registerListener();
 	}
 
-	private void registerListener() {
+	private void registerListener() 
+	{
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
+	
 		
+		System.out.println("isMultiSensor " + isMultiSensor);
+		if(this.isMultiSensor)
+		{
+			
+			buttonTopLeft.setOnMousePressed(e -> setPreviousSensorValueNodePressed(buttonTopLeft, textTopLeft, Command.PREVIOUS_SENSOR_VALUE, e));
+			buttonTopLeft.setOnMouseReleased(e -> setNodeReleased(buttonTopLeft, textTopLeft, e));
+		
+			buttonTopAuto.setOnMousePressed(e -> setAutoSensorValueNodePressed(buttonTopAuto, textTopAuto, Command.AUTO_CHANGE, e));
+			buttonTopAuto.setOnMouseReleased(e -> setNodeReleased(buttonTopAuto, textTopAuto, e));
+			
+			buttonTopRight.setOnMousePressed(e -> setNextSensorValueNodePressed(buttonTopRight, textTopRight, Command.NEXT_SENSOR_VALUE, e));
+			buttonTopRight.setOnMouseReleased(e -> setNodeReleased(buttonTopRight, textTopRight, e));
+		
+		}
 	}
+
+
 
 	private void resize() 
 	{
@@ -203,7 +301,7 @@ public class UniversalDisplay extends Region
 		//x2 100/128 * 62.7276 = 49,0059375 = 0.490059375
 		//x3 100/128 * 60,4944 = 47,26125 = 0.4726125
 		
-		
+		/*
 		LinearGradient lgTopShiny = new LinearGradient(
 				(size * 0.41155234375),
 				(size * 0.0172703125),
@@ -211,8 +309,18 @@ public class UniversalDisplay extends Region
 				 (size  *  0.4726125), 
 				false, 
 				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_OBEN));
-		
-		
+		*/
+		//x1 = 64 - 52.6787 = 11,3213 > 100/128 * 11,3213 = 8,844765625 = 0.08844765625
+		//y1 = 64 - 2.2106 = 61,7894 > 100/128 * 61,7894 = 48,27296875 = 0.4827296875
+		//x2 = 64 - 62.7276 = 1,2724 > 100/128 * 1,2724 = 0,9940625 = 0.009940625
+		//y2 = 64 - 60,4944 = 3,5056 > 100/128 * 3,5056 = 2,73875 = 0.0273875
+		LinearGradient lgTopShiny = new LinearGradient(
+				centerX - (size * 0.08844765625),
+				centerY - (size *  0.4827296875),
+				centerX - (size * 0.009940625),
+				centerY -  (size  *  0.0273875), 
+				false, 
+				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_OBEN));
 		
 		
 		
@@ -239,6 +347,96 @@ public class UniversalDisplay extends Region
 		topRegion.resize();
 		
 		
+		//in der Breite soll diese ca. 60 prozent von dem monitorkreis sein.
+		//in der höhe wird bei 128 Startsize ein Wert von 32 px skaliert
+		
+		//r war 37,5 * = 70 > 100/128 * 70  = 54,6875 = 54,6875 * ,6 =  32,4
+		double breiteImages = size * 0.546875 * 0.6;
+		
+		//100/64 * 32 = 25 =0-25
+		double hoeheImages = size/2 * 0.25;
+		
+
+		
+		
+		double w = size * 0.5;
+		double h = size * 0.171875;
+		double x = centerX - (w/2); 
+		double y = centerY - (h/2);
+		textCanvas.setWidth(w);
+		textCanvas.setHeight(h);
+		textCanvas.relocate(x, y);
+		drawTextValues(true);
+		
+		optionalImageBox.setMinSize(breiteImages, hoeheImages);
+		optionalImageBox.setLayoutX(centerX - (breiteImages/2));
+		optionalImageBox.setLayoutY(centerY + (textCanvas.getHeight()/2));
+		optionalImageBox.resize(hoeheImages);
+		
+		
+		if(isMultiSensor)
+		{
+			buttonTopLeft.setCenterX(centerX);
+			buttonTopLeft.setCenterY(centerY);
+			buttonTopLeft.setRadiusX(radius*0.87);
+			buttonTopLeft.setRadiusY(radius*0.87);
+			buttonTopLeft.setStartAngle(122.0f);
+			buttonTopLeft.setLength(-20.0f);
+			buttonTopLeft.setType(ArcType.ROUND);
+			
+			
+			buttonTopAuto.setCenterX(centerX);
+			buttonTopAuto.setCenterY(centerY);
+			buttonTopAuto.setRadiusX(radius*0.87);
+			buttonTopAuto.setRadiusY(radius*0.87);
+			buttonTopAuto.setStartAngle(100.0f);
+			buttonTopAuto.setLength(-20.0f);
+			buttonTopAuto.setType(ArcType.ROUND);
+			
+
+			buttonTopRight.setCenterX(centerX);
+			buttonTopRight.setCenterY(centerY);
+			buttonTopRight.setRadiusX(radius*0.87);
+			buttonTopRight.setRadiusY(radius*0.87);
+			buttonTopRight.setStartAngle(78.0f);
+			buttonTopRight.setLength(-20.0f);
+			buttonTopRight.setType(ArcType.ROUND);
+			
+			Font valueFont = Font.font("Verdana", FontWeight.BOLD, size * 0.05);
+			
+			
+			textTopLeft.setFill(textColor);
+			textTopLeft.setFont(valueFont);
+			textTopLeft.setRotate(-20);
+			textTopLeft.relocate(centerX - (radius * 0.345), centerY - (radius * 0.795));
+			
+			Font valueFontAuto = Font.font("Verdana", FontWeight.BOLD, size * 0.04);
+			textTopAuto.setFill(textColor);
+			textTopAuto.setFont(valueFontAuto);
+			textTopAuto.setRotate(0);
+			textTopAuto.relocate(centerX - (radius * 0.1), centerY - (radius * 0.83));
+			
+			textTopRight.setFill(textColor);
+			textTopRight.setFont(valueFont);
+			textTopRight.setRotate(20);
+			textTopRight.relocate(centerX + (radius * 0.25), centerY - (radius * 0.795));
+			
+			
+		}
+		
+
+		//resize der canvas für preset und der Anzeige
+		double p_w = size * 0.25;
+		double p_h = size * 0.171875;
+		
+		//auf y komme ich über die text_canvas
+		double p_y = y - p_h;
+		double p_x = centerX - (p_w/2);
+		textSecondValueCanvas.setWidth(p_w);
+		textSecondValueCanvas.setHeight(p_h);
+		textSecondValueCanvas.relocate(p_x, p_y);
+		
+		drawSecondTextValue(true);
 		
 	}
 
@@ -340,13 +538,241 @@ public class UniversalDisplay extends Region
 			};
 	   stopMap.put(StopIndizes.GLANZ_OBEN, stopArray);
 	   
-	   
+	   //gradient wird dann immer bei resize gesetzt
 	   topRegion = new TopRegion(new Circle(), new Circle(), new Circle());
-	   //TODO gradient wie läuft es hier?
+	   //wird benötigt, ansonsten funktionieren die buttons nicht
+	   topRegion.setMouseTransparent(true);
 	   
-	   this.getChildren().addAll(background, backgroundCircle, innerBackground, innerBackgroundCircle, innerBorder, topoverlay,
-			   rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten, topRegion);
+
+		
+		textSecondValueCanvas = new Canvas();
+		textSecondValue = new Text();
+	
+		textCanvas = new Canvas();
+		
+		textFirstValue = new Text();
+		//TODO vertl. stringproperty koppeln den Wert
+		textFirstValue.setText("TODO Value");
+		
+		masseinheit = new Text();
+		//TODO optional und variable machen
+		masseinheit.setText("%");
+	   
+	   optionalImageBox = new OptionalImageBox();
+	   
+	   dropShadow = new DropShadow();
+	   dropShadow.setColor(Color.web("000000A0")); 
+	   
+	   innerShadow = new InnerShadow();
+	   innerShadow.setBlurType(BlurType.GAUSSIAN);
+	   innerShadow.setColor(Color.web("#000000A0"));
+	        
+	    
+	    if(this.isMultiSensor)
+	    {
+	      //TODO color
+	 	   buttonTopLeft = new Arc();
+	 	   buttonTopLeft.setFill(Color.web("525252"));
+	 	   buttonTopLeft.setType(ArcType.ROUND);
+	 	   buttonTopLeft.setEffect(dropShadow);
+	 	   
+	 	   buttonTopAuto = new Arc();
+	 	   //404040
+	 	   buttonTopAuto.setFill(Color.web("525252"));
+	 	   buttonTopAuto.setType(ArcType.ROUND);
+	 	   buttonTopAuto.setEffect(dropShadow);
+	 	   
+	 	   buttonTopRight = new Arc();
+	 	   buttonTopRight.setFill(Color.web("525252"));
+	 	   buttonTopRight.setType(ArcType.ROUND);
+	 	   buttonTopRight.setEffect(dropShadow);
+	 	   
+	 	   textTopLeft = new Text("<");
+	 	   textTopLeft.setMouseTransparent(true);
+	 	   textTopAuto = new Text("Auto");
+	 	   textTopAuto.setMouseTransparent(true);
+	 	   textTopRight = new Text(">");
+	 	   textTopRight.setMouseTransparent(true);
+	 	   
+		   this.getChildren().addAll(background, backgroundCircle, 
+				   innerBackground, innerBackgroundCircle, innerBorder, topoverlay,
+				   buttonTopLeft, buttonTopAuto, buttonTopRight,
+				   textTopLeft, textTopAuto, textTopRight,
+				   rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten,
+				   textSecondValueCanvas, textCanvas,
+				   topRegion, optionalImageBox
+				   
+				  
+				   
+				   );
+	    }
+	    else
+	    {
+    	  
+		   this.getChildren().addAll(background, backgroundCircle, 
+				   innerBackground, innerBackgroundCircle, innerBorder, topoverlay,
+				   rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten,
+				   textSecondValueCanvas, textCanvas,
+				   topRegion, optionalImageBox
+				   );
+	    }
+	    
+	    drawTextValues(true);
+	    
+	 
+	 
+	}
+	
+	public void setMultiSensor(boolean isMultiSensor)
+	{
+		this.isMultiSensor = isMultiSensor;
+	}
+	
+	public boolean isMultiSensor()
+	{
+		return isMultiSensor;
+	}
+	
+	private void setNextSensorValueNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
+	{
+		nextSensorValue();
+		setNodePressed(nodeBase, textNode, command, e);
+	}
+	
+	
+
+	public void setPreviousSensorValueNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
+	{
+		previousSensorValue();
+		setNodePressed(nodeBase, textNode, command,e);
+	}
+	
+	
+	public void setAutoSensorValueNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
+	{
+		toggleAutoValue();
+		setNodePressed(nodeBase, textNode, command,e);
+	}
+	
+
+	private void toggleAutoValue() {
+		// TODO Auto-generated method stub
+		
 	}
 
+	private void nextSensorValue() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+	private void previousSensorValue() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void setNodePressed(Arc nodeBase , Text textNode, Command command, MouseEvent e) 
+	{
+		nodeBase.setEffect(innerShadow);
+		textNode.setEffect(textGlow);
+		commandProperty.set(command);
+		e.consume();
+		
+		
+	
+	}
+
+	private void setNodeReleased(Arc nodeBase, Text textNode, MouseEvent e) 
+	{
+		nodeBase.setEffect(dropShadow);
+		textNode.setEffect(null);
+		e.consume();
+		
+	}
+	
+	public SimpleObjectProperty<Command> getCommandProperty()
+	{
+		return commandProperty;
+	}
+	
+	private void drawTextValues(boolean clearing) 
+	{
+		//Size wird für die Ausrichtung benötigt
+		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
+		double w = textCanvas.getWidth();
+		double h = textCanvas.getHeight();
+		double x = textCanvas.getLayoutX();
+		double y = textCanvas.getLayoutY();
+		GraphicsContext gc = textCanvas.getGraphicsContext2D();
+		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
+		if(clearing)
+		{
+		
+			gc.clearRect(0, 0, w, h);
+		}
+		gc.setFill(Color.web("#00000080"));
+		
+		Font masseinheitFont = new Font("Verdana", gaugeSize * 0.12);
+		
+		//leerzeichen oder keines?
+		masseinheit.setText(" %");
+		masseinheit.setFont(masseinheitFont);
+		
+		gc.setFont(masseinheitFont);
+		
+		double masseinheitX = w - (masseinheit.getLayoutBounds().getWidth() + (gaugeSize * 0.015635));
+		
+		//keien Ahnung wieso ich nicht den Mittelpunkt von H als Basis nehmen kann.
+		double masseinheitY = masseinheit.getLayoutBounds().getHeight() -  (gaugeSize * 0.015635);
+		gc.fillText(masseinheit.getText(), masseinheitX, masseinheitY);
+		
+		Font valueFont = new Font("Verdana", gaugeSize * 0.115);
+		//TODO wert fehlt noch
+		textFirstValue.setText(String.format("%.0f", 75.0));
+		textFirstValue.setFont(valueFont);
+		
+		double valueX = masseinheitX - (textFirstValue.getLayoutBounds().getWidth()  + (gaugeSize * 0.015635));
+		double valueY = masseinheitY;
+		
+		gc.setFont(valueFont);
+		gc.fillText(textFirstValue.getText(), valueX, valueY);
+	}
+	
+	/**
+	 * Parameter im Regelfall true, außer man will die Sicht gelöscht haben
+	 * @param showValues
+	 */
+	private void drawSecondTextValue(boolean showValues)
+	{
+		double size  = getWidth() < getHeight() ? getWidth() : getHeight();
+		double w = textSecondValueCanvas.getWidth();
+		double h = textSecondValueCanvas.getHeight();
+		GraphicsContext gc = textSecondValueCanvas.getGraphicsContext2D();
+		
+		gc.clearRect(0, 0, w, h);
+		
+		//bei löschung der Sicht gleich wieder zurück
+		if(!showValues)
+			return;
+		
+		gc.setFill(Color.web("#00000080"));
+		
+		//erstmal zum test preset drei auswählen
+		Font valueFont = new Font("Verdana", size * 0.06);
+		
+		
+		String valueToShow = String.format("%.0f", 24D);
+		valueToShow = valueToShow + " %";
+		
+		textSecondValue.setText(valueToShow);
+		textSecondValue.setFont(valueFont);
+		
+		double valueX = (textSecondValue.getLayoutBounds().getWidth()  + (size * 0.018635));
+		double valueY = (textSecondValue.getLayoutBounds().getHeight()  + (size * 0.015635));
+		
+		gc.setFont(valueFont);
+		gc.fillText(textSecondValue.getText(), w - valueX  , valueY);
+	}
+	
 
 }

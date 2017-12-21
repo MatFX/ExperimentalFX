@@ -11,7 +11,7 @@ import tools.helper.UIToolBox;
  * @author m.goerlich
  *
  */
-public class OptionaImageBox extends HBox implements IActivationIcon
+public class OptionalImageBox extends HBox implements IActivationIcon
 {
 	
 	private ImageView left;
@@ -26,7 +26,7 @@ public class OptionaImageBox extends HBox implements IActivationIcon
 	private final double ACTIVATED = 0.6;
 	
 	
-	public OptionaImageBox()
+	public OptionalImageBox()
 	{
 		super();
 		left = new ImageView();

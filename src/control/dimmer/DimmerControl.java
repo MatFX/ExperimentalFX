@@ -34,6 +34,7 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import control.dimmer.IActivationIcon;
 
+
 /**
  * A control to the values from 0 to 100 percent. 
  * <br>To listining at this control you must add a changelistener at the property object {@link #getCommandProperty()}.
@@ -199,7 +200,7 @@ public class DimmerControl extends Region implements IActivationIcon
 	/**
 	 * fill this box with max three icons
 	 */
-	private OptionaImageBox optionalImageBox;
+	private OptionalImageBox optionalImageBox;
 	
 	public DimmerControl()
 	{
@@ -484,7 +485,7 @@ public class DimmerControl extends Region implements IActivationIcon
 		textSend = new Text("°");
 		textSend.setMouseTransparent(true);
 		
-		optionalImageBox = new OptionaImageBox();
+		optionalImageBox = new OptionalImageBox();
 		
 		
 		topRegion = new TopRegion(highlightColor, maskingCircle);
