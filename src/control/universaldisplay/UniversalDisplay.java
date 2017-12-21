@@ -128,11 +128,20 @@ public class UniversalDisplay extends Region
 	 */
 	private Canvas textSecondValueCanvas;
 	
-	public UniversalDisplay()
+	/**
+	 * maxSizeOfViews ist needed to flip to next or previous views.
+	 */
+	private int maxSizeOfViews = 1;
+	
+	private int indexOfView = 0;
+	
+	
+	public UniversalDisplay(int maxSizeOfViews)
 	{
-
 		this.initGraphics();
 		this.registerListener();
+		this.maxSizeOfViews = maxSizeOfViews;
+		
 	}
 
 	private void registerListener() 
@@ -507,7 +516,8 @@ public class UniversalDisplay extends Region
 	   
 	   lcdDisplay = new Circle();
 	   lcdDisplay.setFill(Color.web("#949C87"));
-	   
+	  //lcdDisplay.setFill(Color.web("#87989c"));
+	  //lcdDisplay.setFill(Color.web("#4d7da3"));
 	   
 	   stopArray = new Stop[]{
 				new Stop(0.0, Color.web("#949C8700")),
@@ -660,16 +670,31 @@ public class UniversalDisplay extends Region
 		
 	}
 
-	private void nextSensorValue() {
-		// TODO Auto-generated method stub
+	private void nextSensorValue() 
+	{
+		this.indexOfView++;
+		if(indexOfView >= this.maxSizeOfViews)
+			indexOfView = 0;
 		
 	}
 	
 
 	private void previousSensorValue() {
-		// TODO Auto-generated method stub
-		
+		this.indexOfView--;
+		if(indexOfView < 0)
+			indexOfView = this.maxSizeOfViews-1;
 	}
+	
+	/**
+	 * to get the selected index from view and change the content from outside
+	 * @return
+	 */
+	public int getIndexOfView()
+	{
+		return this.indexOfView;
+	}
+	
+	
 
 	private void setNodePressed(Arc nodeBase , Text textNode, Command command, MouseEvent e) 
 	{

@@ -1,5 +1,9 @@
 package control.universaldisplay;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import control.universaldisplay.UniversalDisplay.Command;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -17,6 +21,70 @@ import javafx.stage.WindowEvent;
 
 public class SingleUniversalDisplay extends Application 
 {
+	public static final int TEMPERATURE = 0;
+	
+	public static final int HUMIDITY = 1;
+	public static final int BRIGHTNESS = 2;
+	
+	//simulations map; list index 0 = istwert, index 1 = setpoint wenn vorhanden
+	private HashMap<Integer, List<SensorValue>> sensorMap = new HashMap<Integer, List<SensorValue>>();
+	
+	
+	/**
+	 * helper class to store and change values
+	 * @author m.goerlich
+	 *
+	 */
+	public class SensorValue
+	{
+		private double von;
+		
+		private double bis;
+		
+		private double currentValue;
+		
+		private String measurementUnit;
+		
+		public SensorValue(double currentValue, double von, double bis, String measurementUnit)
+		{
+			this.currentValue = currentValue;
+			this.von = von;
+			this.bis = bis;
+			this.measurementUnit = measurementUnit;
+		}
+
+		public double getVon() {
+			return von;
+		}
+
+		public void setVon(double von) {
+			this.von = von;
+		}
+
+		public double getBis() {
+			return bis;
+		}
+
+		public void setBis(double bis) {
+			this.bis = bis;
+		}
+
+		public double getCurrentValue() {
+			return currentValue;
+		}
+
+		public void setCurrentValue(double currentValue) {
+			this.currentValue = currentValue;
+		}
+
+		public String getMeasurementUnit() {
+			return measurementUnit;
+		}
+
+		public void setMeasurementUnit(String measurementUnit) {
+			this.measurementUnit = measurementUnit;
+		}
+	}
 	
 	
 
@@ -26,10 +94,26 @@ public class SingleUniversalDisplay extends Application
 	@Override
 	public void start(Stage stage) 
 	{
+		List<SensorValue> sensorList = new ArrayList<SensorValue>();
+		sensorList.add(new SensorValue(25, 0, 40, "°C"));
+		sensorList.add(new SensorValue(24, 8, 40, "°C"));
+		sensorMap.put(TEMPERATURE, sensorList);
+		
+		sensorList = new ArrayList<SensorValue>();
+		sensorList.add(new SensorValue(75, 0, 100, "%"));
+		sensorMap.put(HUMIDITY, sensorList);
+		
+		sensorList = new ArrayList<SensorValue>();
+		sensorList.add(new SensorValue(1750, 0, 3000, "Lux"));
+		sensorMap.put(BRIGHTNESS, sensorList);
+		
+		
 		 BorderPane pane = new BorderPane();
 	      
 		 //center of borderpane, initialize
-		 UniversalDisplay tempControl = new UniversalDisplay();
+		 UniversalDisplay tempControl = new UniversalDisplay(3);
+		 
+		 
 		 pane.setCenter(tempControl);
 	     
 		 Label kommandoLabel = new Label();
