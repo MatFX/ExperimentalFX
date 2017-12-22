@@ -40,7 +40,7 @@ public class SingleUniversalDisplay extends Application
 	{
 		List<SensorValue> sensorList = new ArrayList<SensorValue>();
 		sensorList.add(new SensorValue(25, 0, 40, "°C"));
-		sensorList.add(new SensorValue(24, 8, 40, "°C"));
+		sensorList.add(new SensorValue(22.5, 8, 40, "°C"));
 		sensorMap.put(TEMPERATURE, sensorList);
 		
 		sensorList = new ArrayList<SensorValue>();
