@@ -164,6 +164,10 @@ public class SingleUniversalDisplay extends Application
 
 	private void startRandomValues() 
 	{
+		//TODO animation
+		//if(animThread != null && animThread.)
+		
+		
 		if(animThread == null)
 		{
 			
