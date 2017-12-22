@@ -39,16 +39,16 @@ public class SingleUniversalDisplay extends Application
 	public void start(Stage stage) 
 	{
 		List<SensorValue> sensorList = new ArrayList<SensorValue>();
-		sensorList.add(new SensorValue(25, 0, 40, "°C"));
-		sensorList.add(new SensorValue(22.5, 8, 40, "°C"));
+		sensorList.add(new SensorValue(25, 0, 40, "°C", "img_temperatur"));
+		sensorList.add(new SensorValue(22.5, 8, 40, "°C", ""));
 		sensorMap.put(TEMPERATURE, sensorList);
 		
 		sensorList = new ArrayList<SensorValue>();
-		sensorList.add(new SensorValue(75, 0, 100, "%"));
+		sensorList.add(new SensorValue(75, 0, 100, "%", "img_feuchtigkeit"));
 		sensorMap.put(HUMIDITY, sensorList);
 		
 		sensorList = new ArrayList<SensorValue>();
-		sensorList.add(new SensorValue(2500, 0, 3000, "Lux"));
+		sensorList.add(new SensorValue(2500, 0, 3000, "Lux", "img_helligkeit"));
 		sensorMap.put(BRIGHTNESS, sensorList);
 		
 		
@@ -97,7 +97,7 @@ public class SingleUniversalDisplay extends Application
 			}});
 		 uniDisplay.setMainContent(sensorMap.get(0).get(0));
 		 uniDisplay.setMinorContent(sensorMap.get(0).get(1));
-		 
+		 uniDisplay.repaintValues();
 		 
 		 VBox commandArea = new VBox(2);
 	     commandArea.setPadding(new Insets(5, 5, 5, 5));

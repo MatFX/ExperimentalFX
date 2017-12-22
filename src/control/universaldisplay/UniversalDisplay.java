@@ -3,6 +3,7 @@ package control.universaldisplay;
 import java.util.HashMap;
 
 import control.dimmer.OptionalImageBox;
+import control.dimmer.IActivationIcon.Pos;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -28,6 +29,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import tools.helper.ImageLoader;
 
 public class UniversalDisplay extends Region
 {
@@ -137,7 +139,7 @@ public class UniversalDisplay extends Region
 	private int maxSizeOfViews = 1;
 	
 	private int indexOfView = 0;
-	
+	 
 	private SensorValue mainValueToShow;
 	
 	private SensorValue minorValueToShow;
@@ -990,51 +992,6 @@ public class UniversalDisplay extends Region
 		}
 		gc.setFont(font);
 		
-		
-		Text textSecondMeasuringUnit = new Text();
-		if(minorValueToShow == null)
-		{
-			textSecondMeasuringUnit.setText("");
-		}
-		else
-			textSecondMeasuringUnit.setText(" "+minorValueToShow.getMeasurementUnit());
-		
-		/*
-		
-		double masseinheitX = w - (textSecondMeasuringUnit.getLayoutBounds().getWidth());// + (gaugeSize * 0.015635));
-		
-		double haelfte =  textSecondMeasuringUnit.getLayoutBounds().getHeight() / 2d;
-		double masseinheitY = h/2d +  (haelfte);
-		gc.fillText(textSecondMeasuringUnit.getText(), masseinheitX, masseinheitY);
-		
-		
-		Text textSecondValue = new Text();
-		if(minorValueToShow == null)
-			textSecondValue.setText("");
-		else
-			textSecondValue.setText(String.format("%.1f", minorValueToShow.getCurrentValue()));
-		textSecondValue.setFont(font);
-		
-		double valueX = masseinheitX - (textSecondValue.getLayoutBounds().getWidth());//  + (gaugeSize * 0.015635));
-		double valueY = masseinheitY;
-		
-		gc.setFont(font);
-		gc.fillText(textSecondValue.getText(), valueX, valueY);
-		
-		
-		
-		
-		String valueToShow = "";
-		if(minorValueToShow != null)
-		{
-			valueToShow = String.format("%.1f", minorValueToShow.getCurrentValue());
-			valueToShow = valueToShow + " " + minorValueToShow.getMeasurementUnit();
-		}*/
-		
-		
-		//erstmal zum test preset drei auswählen
-		//Font valueFont = new Font("Verdana", size * 0.06);
-		
 		String valueToShow = "";
 		if(minorValueToShow != null)
 		{
@@ -1049,8 +1006,6 @@ public class UniversalDisplay extends Region
 		double valueX = w - (textSecondValue.getLayoutBounds().getWidth());//  + (size * 0.018635));
 		double haelfte =  textFirstMeasuringUnit.getLayoutBounds().getHeight() / 2d;
 		double valueY = h/2d +  (haelfte/2d);
-	
-		//sdouble valueY = (textSecondValue.getLayoutBounds().getHeight()  + (size * 0.015635));
 		
 		gc.setFont(font);
 		gc.fillText(textSecondValue.getText(), valueX  , valueY);
@@ -1075,6 +1030,21 @@ public class UniversalDisplay extends Region
 	{
 		this.drawTextValues(true);
 		this.drawSecondTextValue(true);
+		
+		this.drawImages();
+		
+		
+	}
+
+	private void drawImages() 
+	{
+		if(mainValueToShow != null && mainValueToShow.getImageBezeichnung().length() > 0 )
+		{
+			optionalImageBox.initImage(Pos.MIDDLE, ImageLoader.getImageFromIconFolder(mainValueToShow.getImageBezeichnung()));
+			optionalImageBox.setActivation(Pos.MIDDLE);
+		}
+		else
+			optionalImageBox.delImage(Pos.MIDDLE);
 		
 	}
 	

@@ -21,12 +21,18 @@ public class SensorValue
 	 */
 	private double stepping = 0.5;
 	
-	public SensorValue(double currentValue, double von, double bis, String measurementUnit)
+	/**
+	 * Zusätzliches Feld für die Bildbezeichnung die auch zur Anzeige kommmt
+	 */
+	private String imageName = "";
+	
+	public SensorValue(double currentValue, double von, double bis, String measurementUnit, String imageName)
 	{
 		this.currentValue = currentValue;
 		this.von = von;
 		this.bis = bis;
 		this.measurementUnit = measurementUnit;
+		this.imageName = imageName;
 	}
 
 	public double getVon() {
@@ -59,5 +65,10 @@ public class SensorValue
 
 	public void setMeasurementUnit(String measurementUnit) {
 		this.measurementUnit = measurementUnit;
+	}
+	
+	public String getImageBezeichnung()
+	{
+		return this.imageName;
 	}
 }

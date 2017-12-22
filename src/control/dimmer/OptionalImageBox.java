@@ -1,5 +1,6 @@
 package control.dimmer;
 
+import control.dimmer.IActivationIcon.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -113,6 +114,24 @@ public class OptionalImageBox extends HBox implements IActivationIcon
 				right.setOpacity(DEACTIVATED);
 				break;
 		}
+	}
+
+	public void delImage(Pos pos)
+	{
+		switch(pos)
+		{
+			case LEFT:
+				left.setImage(null);
+				break;
+			case MIDDLE:
+				middle.setImage(null);
+				break;
+			case RIGHT:
+				right.setImage(null);
+				break;
+		
+		}
+		
 	}
 	
 
