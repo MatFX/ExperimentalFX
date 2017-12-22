@@ -148,6 +148,8 @@ public class UniversalDisplay extends Region
 	
 	private DoubleProperty scaleableFontSize = null, scaleableMinorFontSize;
 	
+	private boolean isAutoChange = false;
+	
 	
 	public UniversalDisplay(int maxSizeOfViews)
 	{
@@ -660,11 +662,28 @@ public class UniversalDisplay extends Region
 	{
 		toggleAutoValue();
 		setNodePressed(nodeBase, textNode, command,e);
+		
+		
+		
 	}
 	
 
-	private void toggleAutoValue() {
-		// TODO Auto-generated method stub
+	private void toggleAutoValue() 
+	{
+		this.isAutoChange = !this.isAutoChange;
+		
+		//TODO
+		if(isAutoChange)
+		{
+			//dann starte denn wechsel mechanismus
+			
+		}
+		else
+		{
+			//dann beende den wechsel mechanismus
+			
+			
+		}
 		
 	}
 

@@ -41,41 +41,25 @@ public class TopRegion extends Region
 		
 		if(this.getChildren().size() == 1)
 			this.getChildren().remove(0);
-		
-		/*
-		if(this.getChildren().size() > 0)
-		{
-			this.getChildren().remove(2);
-			this.getChildren().remove(1);
-			this.getChildren().remove(0);
-			
-		}*/
-		
-		
+	
 		backgroundCircle.setCenterX(mainCoords.getX());
 		backgroundCircle.setCenterY(mainCoords.getY());
 		backgroundCircle.setRadius(mainCoords.getR());
-		//backgroundCircle.setFill(Color.RED);
 		
 		overlaySubtract.setCenterX(pointXYRSub1.getX());
 		overlaySubtract.setCenterY(pointXYRSub1.getY());
 		overlaySubtract.setRadius(pointXYRSub1.getR());
-		//overlaySubtract.setFill(Color.BISQUE);
 		
 		overlaySubtract2.setCenterX(pointXYRSub2.getX());
 		overlaySubtract2.setCenterY(pointXYRSub2.getY());
 		overlaySubtract2.setRadius(pointXYRSub2.getR());
-		//overlaySubtract2.setFill(Color.BLUE);
 		
 		toShow = Shape.subtract(backgroundCircle, overlaySubtract);
 		toShow = Shape.subtract(toShow, overlaySubtract2);
-		//Farbe noch setzen vom backgroundcircle
-		//TODO
-		toShow.setFill(mainCoords.getfillPaint());
-		//toShow.setFill(Color.web("#FF0000"));
-		this.getChildren().add(toShow);
-		//this.getChildren().addAll(backgroundCircle, overlaySubtract, overlaySubtract2);
 		
+		//Farbe immer von main
+		toShow.setFill(mainCoords.getfillPaint());
+		this.getChildren().add(toShow);
 	}
 
 }

@@ -30,14 +30,21 @@ public class SingleUniversalDisplay extends Application
 	private HashMap<Integer, List<SensorValue>> sensorMap = new HashMap<Integer, List<SensorValue>>();
 	
 	
+	private static boolean isAnimation = false;
 	
-
+	private static Thread animThread = null;
 	
 	
 	
 	@Override
 	public void start(Stage stage) 
 	{
+		
+		
+		
+		
+		
+		
 		List<SensorValue> sensorList = new ArrayList<SensorValue>();
 		sensorList.add(new SensorValue(25, 0, 40, "°C", "img_temperatur"));
 		sensorList.add(new SensorValue(22.5, 8, 40, "°C", ""));
@@ -116,32 +123,24 @@ public class SingleUniversalDisplay extends Application
 				{
 					if(test.isSelected())
 					{
-						
-						//tempControl.startAnimation();
-						test.setText("Ende");
+						test.setText("End");
+						startRandomValues();
 					}
 					else
 					{
-						//tempControl.stopAnimation();
 						test.setText("Start");
+						endRandomValues();
 					}
 				
 				}
-	        	
+
 	        });
 	    vBox.getChildren().add(test);
 	        
 	     
 	     
 	    pane.setRight(vBox);
-	     
-	        
-	     
-	     
-	     
-	     
-	     
-		 
+	    
 	     Scene scene = new Scene(pane);
 	    
 	     stage.setTitle("JavaFX Universelles Display");
@@ -161,6 +160,26 @@ public class SingleUniversalDisplay extends Application
 	     });
 		
 	}
+	
+
+	private void startRandomValues() 
+	{
+		if(animThread == null)
+		{
+			
+		}
+		
+		
+	}
+	
+	
+
+	private void endRandomValues() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 	public static void main(String[] args) {
 		launch(args);
