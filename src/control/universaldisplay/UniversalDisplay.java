@@ -3,9 +3,14 @@ package control.universaldisplay;
 import java.util.HashMap;
 
 import control.dimmer.OptionalImageBox;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
@@ -57,6 +62,10 @@ public class UniversalDisplay extends Region
 		GLANZ_OBEN
 		
 	}
+
+
+
+	private static final double GAP_PERCENT = 0.1;
 	
 	
 	
@@ -116,12 +125,14 @@ public class UniversalDisplay extends Region
 	 */
 	private Text textFirstValue;
 	
-	private Text masseinheit;
+	private Text textFirstMeasuringUnit;
 	
 	/**
 	 * second value or minor value; top value other main value
 	 */
 	private Text textSecondValue;
+	
+	private Text textSecondMeasuringUnit;
 	
 	/**
 	 * Zeichnungsfläche für textPreset
@@ -134,6 +145,14 @@ public class UniversalDisplay extends Region
 	private int maxSizeOfViews = 1;
 	
 	private int indexOfView = 0;
+	
+	private SensorValue mainValueToShow;
+	
+	private SensorValue minorValueToShow;
+	
+	private Font fontVorgabe = null, fontMinorVorgabe = null;
+	
+	private DoubleProperty scaleableFontSize = null, scaleableMinorFontSize;
 	
 	
 	public UniversalDisplay(int maxSizeOfViews)
@@ -304,21 +323,6 @@ public class UniversalDisplay extends Region
 		
 		
 		//x1="52.6787" y1="2.2106" x2="62.7276" y2="60.4944"
-		
-		//x1 100/128 * 52.6787 = 41,155234375 = 0.41155234375
-		//y1 100/128 * 2.2106 = 1,72703125 = 0.0172703125
-		//x2 100/128 * 62.7276 = 49,0059375 = 0.490059375
-		//x3 100/128 * 60,4944 = 47,26125 = 0.4726125
-		
-		/*
-		LinearGradient lgTopShiny = new LinearGradient(
-				(size * 0.41155234375),
-				(size * 0.0172703125),
-				(size * 0.490059375),
-				 (size  *  0.4726125), 
-				false, 
-				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.GLANZ_OBEN));
-		*/
 		//x1 = 64 - 52.6787 = 11,3213 > 100/128 * 11,3213 = 8,844765625 = 0.08844765625
 		//y1 = 64 - 2.2106 = 61,7894 > 100/128 * 61,7894 = 48,27296875 = 0.4827296875
 		//x2 = 64 - 62.7276 = 1,2724 > 100/128 * 1,2724 = 0,9940625 = 0.009940625
@@ -375,6 +379,7 @@ public class UniversalDisplay extends Region
 		textCanvas.setWidth(w);
 		textCanvas.setHeight(h);
 		textCanvas.relocate(x, y);
+		
 		drawTextValues(true);
 		
 		optionalImageBox.setMinSize(breiteImages, hoeheImages);
@@ -564,9 +569,9 @@ public class UniversalDisplay extends Region
 		//TODO vertl. stringproperty koppeln den Wert
 		textFirstValue.setText("TODO Value");
 		
-		masseinheit = new Text();
+		textFirstMeasuringUnit = new Text();
 		//TODO optional und variable machen
-		masseinheit.setText("%");
+		textFirstMeasuringUnit.setText("%");
 	   
 	   optionalImageBox = new OptionalImageBox();
 	   
@@ -729,40 +734,219 @@ public class UniversalDisplay extends Region
 		double x = textCanvas.getLayoutX();
 		double y = textCanvas.getLayoutY();
 		GraphicsContext gc = textCanvas.getGraphicsContext2D();
+		
+		
+		if(scaleableFontSize == null)
+		{
+			scaleableFontSize = new SimpleDoubleProperty(gaugeSize * 0.12);
+		}
+		else
+			scaleableFontSize.set(gaugeSize * 0.12);
+		
+		if(fontVorgabe == null)
+		{
+			fontVorgabe = new Label().getFont();
+		}
+		
+		
+		
+		Font font = Font.font(fontVorgabe.getName(), scaleableFontSize.get());
+		
+		
 		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
 		if(clearing)
 		{
 		
 			gc.clearRect(0, 0, w, h);
 		}
+		
+
+		//TODO raus
+		gc.setFill(Color.RED);
+		gc.fillRect(0, 0, w,h);
+		
+		
+		
+		
+		
 		gc.setFill(Color.web("#00000080"));
 		
-		Font masseinheitFont = new Font("Verdana", gaugeSize * 0.12);
 		
-		//leerzeichen oder keines?
-		masseinheit.setText(" %");
-		masseinheit.setFont(masseinheitFont);
+		//Fontsize muss ermittelt werden anhand des größten values
 		
-		gc.setFont(masseinheitFont);
 		
-		double masseinheitX = w - (masseinheit.getLayoutBounds().getWidth() + (gaugeSize * 0.015635));
 		
-		//keien Ahnung wieso ich nicht den Mittelpunkt von H als Basis nehmen kann.
-		double masseinheitY = masseinheit.getLayoutBounds().getHeight() -  (gaugeSize * 0.015635);
-		gc.fillText(masseinheit.getText(), masseinheitX, masseinheitY);
+		if(mainValueToShow != null)
+		{
+			
+			
+			
+			
+			//initial
+			 //Ermittlung nach dem maximal möglichen Zustand
+			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.mainValueToShow);
+			 
+			 System.out.println("fontsize vorher " + getFontSize().get());
+			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
+			 {
+				 double tempSize = getGreaterFont(gaugeSize * 0.12, w, h, mainValueToShow);
+					if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+				 
+			 }
+			 else
+			 {
+				 double tempSize = getLesserFont(getFontSize().get(), w, h, mainValueToShow);
+					if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+			 }
+			 font = Font.font(fontVorgabe.getName(), getFontSize().get());
+			
+			 
+			 System.out.println("textAbmasse " + maxTextAbmasse.getWidth() + " " + maxTextAbmasse.getHeight());
+			 System.out.println("textcanvas size w " + w + " h "+ h);
+			 System.out.println("fontsize nachher " + getFontSize().get());
+			 
+			 
+			 
+			 
+			
+		}
+		gc.setFont(font);
 		
-		Font valueFont = new Font("Verdana", gaugeSize * 0.115);
-		//TODO wert fehlt noch
-		textFirstValue.setText(String.format("%.0f", 75.0));
-		textFirstValue.setFont(valueFont);
+		if(mainValueToShow == null)
+			textFirstMeasuringUnit.setText("");
+		else
+			textFirstMeasuringUnit.setText(" "+mainValueToShow.getMeasurementUnit());
+		textFirstMeasuringUnit.setFont(font);
 		
-		double valueX = masseinheitX - (textFirstValue.getLayoutBounds().getWidth()  + (gaugeSize * 0.015635));
+		//TODO doch aufteilen in zwei Felder?
+		
+		double masseinheitX = w - (textFirstMeasuringUnit.getLayoutBounds().getWidth());// + (gaugeSize * 0.015635));
+	
+		double haelfte =  textFirstMeasuringUnit.getLayoutBounds().getHeight() / 2d;
+		double masseinheitY = h/2d +  (haelfte/2d);
+		gc.fillText(textFirstMeasuringUnit.getText(), masseinheitX, masseinheitY);
+			
+		if(mainValueToShow == null)
+			textFirstValue.setText("");
+		else
+			textFirstValue.setText(String.format("%.1f", mainValueToShow.getCurrentValue()));
+		textFirstValue.setFont(font);
+		
+		double valueX = masseinheitX - (textFirstValue.getLayoutBounds().getWidth());//  + (gaugeSize * 0.015635));
 		double valueY = masseinheitY;
 		
-		gc.setFont(valueFont);
+		gc.setFont(font);
 		gc.fillText(textFirstValue.getText(), valueX, valueY);
 	}
 	
+	
+	public DoubleProperty getFontSize()
+	{
+		return scaleableFontSize;
+	}
+	
+
+	public double getGAPPercent()
+	{
+		return GAP_PERCENT;
+	}
+	
+
+	private Bounds textWidth(double size, SensorValue sensorValue)
+	{
+		//hier muss die bounds aufgebaut werden anhand der zwei darzustellenden Werte 
+		
+		String showValue = sensorValue.getCurrentValue() + " " + sensorValue.getMeasurementUnit();
+		
+		if(fontVorgabe == null)
+			fontVorgabe = new Label().getFont();
+		
+		
+		
+		
+		
+		Text text = new Text(showValue);
+		Font font =  Font.font(fontVorgabe.getFamily(), size);
+        text.setFont(font);
+        return text.getBoundsInLocal();
+	}
+
+	
+	protected double getGreaterFont(double fontSize, double w, double h, SensorValue sensorValue)
+	{	
+		double gapBreite = w * getGAPPercent() * 2;
+		double gapHoehe = h * getGAPPercent() * 2;
+		
+		fontSize = fontSize + 1;
+		Bounds futureBounds = textWidth(fontSize, sensorValue);
+		if((futureBounds.getHeight() + gapHoehe) < h && (futureBounds.getWidth() + gapBreite) < w)
+		{
+			return getGreaterFont(fontSize, w, h, sensorValue);
+		}
+		//eines wieder zurück weil die Abfrage nicht gegriffen hat
+		return fontSize-1;
+	}
+
+
+	protected double getLesserFont(double fontSize, double w, double h, SensorValue sensorValue)
+	{	
+		Bounds futureBounds = textWidth(fontSize, sensorValue);
+		double gapBreite = w * getGAPPercent() * 2;
+		double gapHoehe = h * getGAPPercent() * 2;
+		//wenn eines von beiden über das Ziel hinaus ist, so ist eine kleiner Fontgröße zu ermitteln
+		if((futureBounds.getHeight() + (gapHoehe)) > h || (futureBounds.getWidth() + (gapBreite)) > w)
+		{
+			fontSize = fontSize - 1;
+			if(fontSize <= 0)
+				return 1;
+			return getLesserFont(fontSize, w, h, sensorValue);
+		}
+		return fontSize;
+	}
+	
+	
+	private Bounds getMaxTextWidth(Font font, SensorValue valueSensor) 
+	{
+		String minValue = String.format("%.1f", valueSensor.getVon());
+		String maxValue = String.format("%.1f", valueSensor.getBis());
+		
+		String measuringUnit = " " + valueSensor.getMeasurementUnit();
+		
+		Text valTextMin = new Text(minValue);
+		valTextMin.setFont(font);
+		
+		Bounds valMinBounds = valTextMin.getBoundsInLocal();
+		
+		Text valTextMax = new Text(maxValue);
+		valTextMax.setFont(font);
+		
+		Bounds valMaxBounds = valTextMax.getBoundsInLocal();
+		
+		Text messText = new Text(measuringUnit);
+		messText.setFont(font);
+		
+		Bounds einheitBounds = messText.getBoundsInLocal();
+		
+		double width = valMinBounds.getWidth();
+		if(width < valMaxBounds.getWidth())
+			width = valMaxBounds.getWidth();
+		
+		double height = valMinBounds.getHeight();
+		if(height < valMaxBounds.getHeight())
+			height = valMaxBounds.getHeight();
+		
+		if(height < einheitBounds.getHeight())
+			height = einheitBounds.getHeight();
+		
+		width = width + einheitBounds.getWidth();
+		
+		System.out.println("min " + valMinBounds.getWidth() + " max " + valMaxBounds.getWidth());
+		
+		return new BoundingBox(0,0, width, height);
+	}
+
 	/**
 	 * Parameter im Regelfall true, außer man will die Sicht gelöscht haben
 	 * @param showValues
@@ -780,23 +964,106 @@ public class UniversalDisplay extends Region
 		if(!showValues)
 			return;
 		
+		//TODO raus
+		gc.setFill(Color.ALICEBLUE);
+		gc.fillRect(0, 0, w,h);
+
+		
+		
+		if(scaleableMinorFontSize == null)
+		{
+			scaleableMinorFontSize = new SimpleDoubleProperty(size * 0.06);
+		}
+		else
+			scaleableMinorFontSize.set(size * 0.06);
+		
+		if(fontMinorVorgabe == null)
+		{
+			fontMinorVorgabe = new Label().getFont();
+		}
+		
+		Font font = Font.font(fontMinorVorgabe.getName(), scaleableMinorFontSize.get());
+		
 		gc.setFill(Color.web("#00000080"));
 		
+		if(minorValueToShow != null)
+		{
+			//initial
+			 //Ermittlung nach dem maximal möglichen Zustand
+			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.minorValueToShow);
+			 
+			 System.out.println("fontsize vorher " + getFontSize().get());
+			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
+			 {
+				 double tempSize = getGreaterFont(scaleableMinorFontSize.get(), w, h, mainValueToShow);
+					if(tempSize != scaleableMinorFontSize.get())
+						scaleableMinorFontSize.set(tempSize);
+				 
+			 }
+			 else
+			 {
+				 double tempSize = getLesserFont(scaleableMinorFontSize.get(), w, h, mainValueToShow);
+					if(tempSize != scaleableMinorFontSize.get())
+						scaleableMinorFontSize.set(tempSize);
+			 }
+			 font = Font.font(fontVorgabe.getName(), getFontSize().get());
+			
+			 
+			
+		}
+		gc.setFont(font);
+		
+		String valueToShow = "";
+		if(minorValueToShow != null)
+		{
+			valueToShow = String.format("%.0f", minorValueToShow.getCurrentValue());
+			valueToShow = valueToShow + " " + minorValueToShow.getMeasurementUnit();
+		}
+		
+		
 		//erstmal zum test preset drei auswählen
-		Font valueFont = new Font("Verdana", size * 0.06);
+		//Font valueFont = new Font("Verdana", size * 0.06);
 		
+		//String valueToShow = "";
+		//if(minorValueToShow != null)
+		//{
+		//	valueToShow = String.format("%.0f", minorValueToShow.getCurrentValue());
+		//	valueToShow = valueToShow + " " + minorValueToShow.getMeasurementUnit();
+		//}
 		
-		String valueToShow = String.format("%.0f", 24D);
-		valueToShow = valueToShow + " %";
 		
 		textSecondValue.setText(valueToShow);
-		textSecondValue.setFont(valueFont);
+		textSecondValue.setFont(font);
 		
-		double valueX = (textSecondValue.getLayoutBounds().getWidth()  + (size * 0.018635));
-		double valueY = (textSecondValue.getLayoutBounds().getHeight()  + (size * 0.015635));
+		double valueX = w - (textSecondValue.getLayoutBounds().getWidth());//  + (size * 0.018635));
+		double haelfte =  textFirstMeasuringUnit.getLayoutBounds().getHeight() / 2d;
+		double valueY = h/2d +  (haelfte/2d);
+	
+		//sdouble valueY = (textSecondValue.getLayoutBounds().getHeight()  + (size * 0.015635));
 		
-		gc.setFont(valueFont);
-		gc.fillText(textSecondValue.getText(), w - valueX  , valueY);
+		gc.setFont(font);
+		gc.fillText(textSecondValue.getText(), valueX  , valueY);
+	}
+
+	
+
+	public void setMainContent(SensorValue sensorValue) {
+		mainValueToShow = sensorValue;
+	}
+
+	public void setMinorContent(control.universaldisplay.SensorValue sensorValue){
+		//kann auch zur Laufzeit null sein, dann wird nichts angezeigt.
+		minorValueToShow = sensorValue;
+	}
+
+	/**
+	 * von außerhalb kann ein repaint der werte erzwungen werden.
+	 */
+	public void repaintValues() 
+	{
+		this.drawTextValues(true);
+		this.drawSecondTextValue(true);
+		
 	}
 	
 

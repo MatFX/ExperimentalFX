@@ -30,62 +30,6 @@ public class SingleUniversalDisplay extends Application
 	private HashMap<Integer, List<SensorValue>> sensorMap = new HashMap<Integer, List<SensorValue>>();
 	
 	
-	/**
-	 * helper class to store and change values
-	 * @author m.goerlich
-	 *
-	 */
-	public class SensorValue
-	{
-		private double von;
-		
-		private double bis;
-		
-		private double currentValue;
-		
-		private String measurementUnit;
-		
-		public SensorValue(double currentValue, double von, double bis, String measurementUnit)
-		{
-			this.currentValue = currentValue;
-			this.von = von;
-			this.bis = bis;
-			this.measurementUnit = measurementUnit;
-		}
-
-		public double getVon() {
-			return von;
-		}
-
-		public void setVon(double von) {
-			this.von = von;
-		}
-
-		public double getBis() {
-			return bis;
-		}
-
-		public void setBis(double bis) {
-			this.bis = bis;
-		}
-
-		public double getCurrentValue() {
-			return currentValue;
-		}
-
-		public void setCurrentValue(double currentValue) {
-			this.currentValue = currentValue;
-		}
-
-		public String getMeasurementUnit() {
-			return measurementUnit;
-		}
-
-		public void setMeasurementUnit(String measurementUnit) {
-			this.measurementUnit = measurementUnit;
-		}
-	}
-	
 	
 
 	
@@ -104,33 +48,57 @@ public class SingleUniversalDisplay extends Application
 		sensorMap.put(HUMIDITY, sensorList);
 		
 		sensorList = new ArrayList<SensorValue>();
-		sensorList.add(new SensorValue(1750, 0, 3000, "Lux"));
+		sensorList.add(new SensorValue(2500, 0, 3000, "Lux"));
 		sensorMap.put(BRIGHTNESS, sensorList);
 		
 		
 		 BorderPane pane = new BorderPane();
 	      
 		 //center of borderpane, initialize
-		 UniversalDisplay tempControl = new UniversalDisplay(3);
+		 UniversalDisplay uniDisplay = new UniversalDisplay(3);
 		 
 		 
-		 pane.setCenter(tempControl);
+		 pane.setCenter(uniDisplay);
 	     
 		 Label kommandoLabel = new Label();
 		 
-		 tempControl.getCommandProperty().addListener(new ChangeListener<Command>(){
+		 uniDisplay.getCommandProperty().addListener(new ChangeListener<Command>(){
 
 			@Override
 			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
 			{
+				int indexView;
 				if(newValue != Command.RESET_COMMAND)
 				{
+					switch(newValue)
+					{
+						case PREVIOUS_SENSOR_VALUE:
+						case NEXT_SENSOR_VALUE:
+							indexView= uniDisplay.getIndexOfView();
+							//hole die values und befülle die Anzeige
+							List<SensorValue> sensorList = sensorMap.get(indexView);
+							uniDisplay.setMainContent(sensorList.get(0));
+							if(sensorList.size() > 1)
+								uniDisplay.setMinorContent(sensorList.get(1));
+							else
+								uniDisplay.setMinorContent(null);
+							uniDisplay.repaintValues();
+							
+							
+							break;
+					}
+					
+					
 					kommandoLabel.setText(newValue.toString());
-					tempControl.getCommandProperty().set(Command.RESET_COMMAND);
+					uniDisplay.getCommandProperty().set(Command.RESET_COMMAND);
 				}
 				
 				
 			}});
+		 uniDisplay.setMainContent(sensorMap.get(0).get(0));
+		 uniDisplay.setMinorContent(sensorMap.get(0).get(1));
+		 
+		 
 		 VBox commandArea = new VBox(2);
 	     commandArea.setPadding(new Insets(5, 5, 5, 5));
 	     commandArea.getChildren().addAll(kommandoLabel);
