@@ -4,9 +4,13 @@ import java.util.HashMap;
 
 import control.dimmer.OptionalImageBox;
 import control.dimmer.IActivationIcon.Pos;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
@@ -29,6 +33,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import tools.helper.ImageLoader;
 
 public class UniversalDisplay extends Region
@@ -150,6 +155,15 @@ public class UniversalDisplay extends Region
 	
 	private boolean isAutoChange = false;
 	
+	/**
+	 * to switch automatically the view.
+	 */
+	private Timeline autoDisplay = null;
+	
+	/**
+	 * every x seconds the view will be changed
+	 */
+	private int DELAY_IN_SECONDS = 4;
 	
 	public UniversalDisplay(int maxSizeOfViews)
 	{
@@ -173,7 +187,7 @@ public class UniversalDisplay extends Region
 			buttonTopLeft.setOnMouseReleased(e -> setNodeReleased(buttonTopLeft, textTopLeft, e));
 		
 			buttonTopAuto.setOnMousePressed(e -> setAutoSensorValueNodePressed(buttonTopAuto, textTopAuto, Command.AUTO_CHANGE, e));
-			buttonTopAuto.setOnMouseReleased(e -> setNodeReleased(buttonTopAuto, textTopAuto, e));
+			//ein release gibt es hier nicht, weil der Button als toggle verwendet wird.
 			
 			buttonTopRight.setOnMousePressed(e -> setNextSensorValueNodePressed(buttonTopRight, textTopRight, Command.NEXT_SENSOR_VALUE, e));
 			buttonTopRight.setOnMouseReleased(e -> setNodeReleased(buttonTopRight, textTopRight, e));
@@ -569,6 +583,11 @@ public class UniversalDisplay extends Region
 		textFirstMeasuringUnit.setText("%");
 	   
 	   optionalImageBox = new OptionalImageBox();
+	   //links kommt das rotate zeichen
+	   
+	   optionalImageBox.initImage(Pos.LEFT, ImageLoader.getImageFromIconFolder("img_rotation_a"));
+	   optionalImageBox.setDeactivation(Pos.LEFT);
+	   
 	   
 	   dropShadow = new DropShadow();
 	   dropShadow.setColor(Color.web("000000A0")); 
@@ -660,28 +679,55 @@ public class UniversalDisplay extends Region
 	
 	public void setAutoSensorValueNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
 	{
-		toggleAutoValue();
-		setNodePressed(nodeBase, textNode, command,e);
-		
-		
-		
+		toggleAutoValue(nodeBase, textNode, command, e);
 	}
 	
 
-	private void toggleAutoValue() 
+	private void toggleAutoValue(Arc nodeBase, Text textNode, Command command, MouseEvent e) 
 	{
 		this.isAutoChange = !this.isAutoChange;
 		
 		//TODO
 		if(isAutoChange)
 		{
+			
+			this.setNodePressed(nodeBase, textNode, command, e);
+			
+			
 			//dann starte denn wechsel mechanismus
+			
+			if(autoDisplay != null)
+			{
+				autoDisplay.stop();
+			}
+			
+			//alle drei Sekunden einen wechsel nach vorwärts unternehmen
+			autoDisplay = new Timeline(new KeyFrame(Duration.seconds(DELAY_IN_SECONDS), new EventHandler<ActionEvent>() {
+
+			    @Override
+			    public void handle(ActionEvent event) {
+			    	nextSensorValue();
+			    	commandProperty.set(Command.NEXT_SENSOR_VALUE);
+			    	
+			    }
+			}));
+			autoDisplay.setCycleCount(Timeline.INDEFINITE);
+			autoDisplay.play();
+			
+			optionalImageBox.setActivation(Pos.LEFT);
+			
 			
 		}
 		else
 		{
-			//dann beende den wechsel mechanismus
+			if(autoDisplay != null)
+			{
+				autoDisplay.stop();
+			}
+			optionalImageBox.setDeactivation(Pos.LEFT);
 			
+			//dann beende den wechsel mechanismus
+			this.setNodeReleased(nodeBase, textNode, e);
 			
 		}
 		
@@ -1050,10 +1096,12 @@ public class UniversalDisplay extends Region
 		this.drawTextValues(true);
 		this.drawSecondTextValue(true);
 		
+		
 		this.drawImages();
 		
 		
 	}
+
 
 	private void drawImages() 
 	{
