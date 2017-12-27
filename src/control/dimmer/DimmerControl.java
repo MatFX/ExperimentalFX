@@ -1135,13 +1135,7 @@ public class DimmerControl extends Region implements IActivationIcon
 				presetIndex = 0;
 			drawTextPresetValue(true);
 		}
-		
-		
 		restartPresetReset();
-		
-		
-		
-		
 	}
 	
 	private void stopPresetViewReset()

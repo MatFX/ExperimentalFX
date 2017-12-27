@@ -34,6 +34,7 @@ public class SingleUniversalDisplay extends Application
 	
 	private static Thread animThread = null;
 	
+	private UniversalDisplay uniDisplay = null;
 	
 	
 	@Override
@@ -51,7 +52,7 @@ public class SingleUniversalDisplay extends Application
 		sensorMap.put(TEMPERATURE, sensorList);
 		
 		sensorList = new ArrayList<SensorValue>();
-		sensorList.add(new SensorValue(75, 0, 100, "%", "img_feuchtigkeit"));
+		sensorList.add(new SensorValue(25.4, 0, 100, "%", "img_feuchtigkeit"));
 		sensorMap.put(HUMIDITY, sensorList);
 		
 		sensorList = new ArrayList<SensorValue>();
@@ -62,7 +63,7 @@ public class SingleUniversalDisplay extends Application
 		 BorderPane pane = new BorderPane();
 	      
 		 //center of borderpane, initialize
-		 UniversalDisplay uniDisplay = new UniversalDisplay(3);
+		 uniDisplay = new UniversalDisplay(3, true, true);
 		 
 		 
 		 pane.setCenter(uniDisplay);
@@ -164,23 +165,62 @@ public class SingleUniversalDisplay extends Application
 
 	private void startRandomValues() 
 	{
-		//TODO animation
-		//if(animThread != null && animThread.)
-		
-		
-		if(animThread == null)
+		if(animThread != null)
 		{
-			
+			animThread.stop();
 		}
+		
+		animThread = new Thread(new Runnable(){
+
+			@Override
+			public void run() 
+			{
+				while(true)
+				{
+					//per zufall index ermitteln
+					int zufallsIndex = (int)(Math.random() * sensorMap.size()); 
+					
+					//dort das element 0 aus liste holen
+					SensorValue sensorValue = sensorMap.get(zufallsIndex).get(0);
+					//neuen wert ermitteln mit
+					
+					
+					double spanne = sensorValue.getBis() - sensorValue.getVon();
+					//rundung ansonsten gibt es Probleme bei der Ansicht, weil die Nachkommstellen auch entscheidend 
+					//für die spätere fontsize ist.
+					double zufallsWert = Math.round((Math.random() * spanne) * 10D)/10D;
+					sensorValue.setCurrentValue(zufallsWert);
+					
+					//evtl. sicht aktualiseren
+					if(zufallsIndex == uniDisplay.getIndexOfView())
+					{
+						uniDisplay.repaintValues();
+					}
+					
+					
+					try 
+					{
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					}
+				}
+				
+			}});
+		animThread.start();
+		
 		
 		
 	}
 	
 	
 
-	private void endRandomValues() {
-		// TODO Auto-generated method stub
-		
+	private void endRandomValues() 
+	{
+		if(animThread != null)
+			animThread.stop();
 	}
 
 	

@@ -3,6 +3,7 @@ package control.universaldisplay;
 import java.util.HashMap;
 
 import control.dimmer.OptionalImageBox;
+import control.dimmer.DimmerControl.Command;
 import control.dimmer.IActivationIcon.Pos;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -45,7 +46,10 @@ public class UniversalDisplay extends Region
 	 */
 	public enum Command
 	{
-		PREVIOUS_SENSOR_VALUE, NEXT_SENSOR_VALUE, AUTO_CHANGE, SEND_PRESET, NEXT_PRESET, PREVIOUS_PRESET, SEND_VALUE, 
+		PREVIOUS_SENSOR_VALUE, NEXT_SENSOR_VALUE, AUTO_CHANGE, SEND_PRESET, NEXT_PRESET, PREVIOUS_PRESET, SEND_VALUE,
+		UP, DOWN,
+		
+		
 		/**
 		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
 		 * <br>you need the reset as a "acknowledge" from outside.
@@ -95,7 +99,16 @@ public class UniversalDisplay extends Region
 	
 	private TopRegion topRegion;
 	
+	/**
+	 * Top button to change the view
+	 */
 	private Arc buttonTopLeft, buttonTopRight, buttonTopAuto;
+	
+	/**
+	 * Optional button to change a setting f.e. temperature setpoint
+	 */
+	private Arc button_up, button_down, button_left, button_right, button_send;
+	
 	
 	private DropShadow dropShadow;
 	
@@ -104,7 +117,14 @@ public class UniversalDisplay extends Region
 	 */
 	private boolean isMultiSensor = true;
 	
+	/**
+	 * 
+	 */
+	private boolean isAdjustable = true;
+	
 	private Text textTopLeft, textTopAuto, textTopRight;
+	
+	private Text textUp, textDown, textLeft, textRight, textSend;
 	
 	private Color textColor = Color.web("#d2d74b");
 	
@@ -165,8 +185,17 @@ public class UniversalDisplay extends Region
 	 */
 	private int DELAY_IN_SECONDS = 4;
 	
-	public UniversalDisplay(int maxSizeOfViews)
+	/**
+	 * slide through the presets from a sensor value.
+	 */
+	private int presetIndex = 0;
+	
+	
+	
+	public UniversalDisplay(int maxSizeOfViews, boolean isMultiSensor, boolean isAdjustable)
 	{
+		this.isMultiSensor = isMultiSensor;
+		this.isAdjustable = isAdjustable;
 		this.initGraphics();
 		this.registerListener();
 		this.maxSizeOfViews = maxSizeOfViews;
@@ -191,7 +220,25 @@ public class UniversalDisplay extends Region
 			
 			buttonTopRight.setOnMousePressed(e -> setNextSensorValueNodePressed(buttonTopRight, textTopRight, Command.NEXT_SENSOR_VALUE, e));
 			buttonTopRight.setOnMouseReleased(e -> setNodeReleased(buttonTopRight, textTopRight, e));
+			
+		}
 		
+		if(this.isAdjustable)
+		{
+			button_up.setOnMousePressed(e -> setNodePressed(button_up, textUp, Command.UP, e));
+			button_up.setOnMouseReleased(e -> setNodeReleased(button_up, textUp, e));
+
+			button_down.setOnMousePressed(e -> setNodePressed(button_down, textDown, Command.DOWN, e));
+			button_down.setOnMouseReleased(e -> setNodeReleased(button_down, textDown, e));
+			
+			button_left.setOnMousePressed(e -> setPreviousPresetNodePressed(button_left, textLeft, Command.PREVIOUS_PRESET, e));
+			button_left.setOnMouseReleased(e -> setNodeReleased(button_left, textLeft, e));
+			
+			button_right.setOnMousePressed(e -> setNextPresetNodePressed(button_right, textRight, Command.NEXT_PRESET, e));
+			button_right.setOnMouseReleased(e -> setNodeReleased(button_right, textRight, e));
+			
+			button_send.setOnMousePressed(e -> setNodePressed(button_send, textSend, Command.SEND_PRESET, e));
+			button_send.setOnMouseReleased(e -> setNodeReleased(button_send, textSend, e));
 		}
 	}
 
@@ -448,6 +495,90 @@ public class UniversalDisplay extends Region
 			
 		}
 		
+		//kann an dem Sensor eine Veränderung vorgenommen werden.
+		if(isAdjustable)
+		{
+			Font valueFont = Font.font("Verdana", FontWeight.BOLD, size * 0.05);
+			//TODO
+			button_up.setCenterX(centerX);
+			button_up.setCenterY(centerY);
+			button_up.setRadiusX(radius* 0.87);
+			button_up.setRadiusY(radius * 0.87);
+			button_up.setStartAngle(-124.0f);
+			button_up.setLength(-20.0f);
+			button_up.setType(ArcType.ROUND);
+			
+			
+			button_down.setCenterX(centerX);
+			button_down.setCenterY(centerY);
+			button_down.setRadiusX(radius* 0.87);
+			button_down.setRadiusY(radius * 0.87);
+			button_down.setStartAngle(-36.0f);
+			button_down.setLength(-20.0f);
+			button_down.setType(ArcType.ROUND);
+			
+			
+			button_left.setCenterX(centerX);
+			button_left.setCenterY(centerY);
+			button_left.setRadiusX(radius* 0.87);
+			button_left.setRadiusY(radius * 0.87);
+			button_left.setStartAngle(-102.0f);
+			button_left.setLength(-20.0f);
+			button_left.setType(ArcType.ROUND);
+			
+			
+			button_send.setCenterX(centerX);
+			button_send.setCenterY(centerY);
+			button_send.setRadiusX(radius* 0.87);
+			button_send.setRadiusY(radius * 0.87);
+			button_send.setStartAngle(-80.0f);
+			button_send.setLength(-20.0f);
+			button_send.setType(ArcType.ROUND);
+			
+
+			button_right.setCenterX(centerX);
+			button_right.setCenterY(centerY);
+			button_right.setRadiusX(radius* 0.87);
+			button_right.setRadiusY(radius * 0.87);
+			button_right.setStartAngle(-58.0f);
+			button_right.setLength(-20.0f);
+			button_right.setType(ArcType.ROUND);
+			
+			textUp.setFill(textColor);
+			textUp.setFont(valueFont);
+			textUp.setRotate(90);
+			textUp.relocate(centerX - (radius * 0.585), centerY + (radius * 0.520));
+			
+			
+			textDown.setFill(textColor);
+			textDown.setFont(valueFont);
+			textDown.setRotate(-90);
+			textDown.relocate(centerX + (radius * 0.495), centerY + (radius * 0.520));
+			
+			textSend.setFill(textColor);
+			textSend.setFont(valueFont);
+			textSend.relocate(centerX - (radius * 0.03), centerY + (radius * 0.737));
+			
+			textLeft.setFill(textColor);
+			textLeft.setFont(valueFont);
+			textLeft.setRotate(20);
+			textLeft.relocate(centerX - (radius * 0.345), centerY + (radius * 0.665));
+			
+			textRight.setFill(textColor);
+			textRight.setFont(valueFont);
+			textRight.setRotate(-20);
+			textRight.relocate(centerX + (radius * 0.25), centerY + (radius * 0.665));
+			
+		}
+		
+		
+		setOpacityOfAdjustButton();
+		
+	
+		
+		
+		
+		
 
 		//resize der canvas für preset und der Anzeige
 		double p_w = size * 0.25;
@@ -462,6 +593,75 @@ public class UniversalDisplay extends Region
 		
 		drawSecondTextValue(true);
 		
+	}
+
+	private void setOpacityOfAdjustButton() 
+	{
+		//Beim Sensor muss eine Einstellungsmöglichkeit gegeben sein.
+		if(this.isAdjustable)
+		{
+			
+			
+			//anschließend ist zu prüfen ob bei der aktuellen Sicht eine Veränderung vorgenommen werden kann.
+			if(isCurrentViewAdjustable())
+			{
+				button_up.setOpacity(1.0);	
+				button_up.setMouseTransparent(false);
+				button_down.setOpacity(1.0);
+				button_down.setMouseTransparent(false);
+				button_left.setOpacity(1.0);
+				button_left.setMouseTransparent(false);
+				button_right.setOpacity(1.0);
+				button_right.setMouseTransparent(false);
+				button_send.setOpacity(1.0);
+				button_send.setMouseTransparent(false);
+				
+				textUp.setOpacity(1.0);
+				textDown.setOpacity(1.0);
+				textLeft.setOpacity(1.0);
+				textRight.setOpacity(1.0);
+				textSend.setOpacity(1.0);
+				
+				
+				
+			}
+			else
+			{
+				button_up.setOpacity(0);	
+				button_up.setMouseTransparent(true);
+				button_down.setOpacity(0);
+				button_down.setMouseTransparent(true);
+				button_left.setOpacity(0);
+				button_left.setMouseTransparent(true);
+				button_right.setOpacity(0);
+				button_right.setMouseTransparent(true);
+				button_send.setOpacity(0);
+				button_send.setMouseTransparent(true);
+				
+				textUp.setOpacity(0);
+				textDown.setOpacity(0);
+				textLeft.setOpacity(0);
+				textRight.setOpacity(0);
+				textSend.setOpacity(0);
+				
+			}
+			
+			
+			
+		}
+		
+	}
+
+	/**
+	 * ist the sensor value adjustable.
+	 * <br>at the current you can set a new value, when minurValueToShow is not null
+	 * @return
+	 */
+	private boolean isCurrentViewAdjustable() 
+	{
+		if(this.minorValueToShow != null)
+			return true;
+		return false;
 	}
 
 	private void initGraphics() 
@@ -596,7 +796,11 @@ public class UniversalDisplay extends Region
 	   innerShadow.setBlurType(BlurType.GAUSSIAN);
 	   innerShadow.setColor(Color.web("#000000A0"));
 	        
+	   //erster schwung 
+	   this.getChildren().addAll(background, backgroundCircle, 
+			   innerBackground, innerBackgroundCircle, innerBorder, topoverlay);
 	    
+	   //dann noch optional welche hinzufügen.
 	    if(this.isMultiSensor)
 	    {
 	      //TODO color
@@ -623,28 +827,74 @@ public class UniversalDisplay extends Region
 	 	   textTopRight = new Text(">");
 	 	   textTopRight.setMouseTransparent(true);
 	 	   
-		   this.getChildren().addAll(background, backgroundCircle, 
-				   innerBackground, innerBackgroundCircle, innerBorder, topoverlay,
+		   this.getChildren().addAll(			   
 				   buttonTopLeft, buttonTopAuto, buttonTopRight,
-				   textTopLeft, textTopAuto, textTopRight,
-				   rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten,
-				   textSecondValueCanvas, textCanvas,
-				   topRegion, optionalImageBox
-				   
-				  
-				   
-				   );
+				   textTopLeft, textTopAuto, textTopRight
+				 );
 	    }
-	    else
+	    
+	    
+	    //jetzt optional die weiteren Buttons hinzfügen
+	    if(this.isAdjustable)
 	    {
-    	  
-		   this.getChildren().addAll(background, backgroundCircle, 
-				   innerBackground, innerBackgroundCircle, innerBorder, topoverlay,
-				   rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten,
-				   textSecondValueCanvas, textCanvas,
-				   topRegion, optionalImageBox
-				   );
+	    	button_up = new Arc();
+			//button_on = new Arc(centerX, centerY, 64, 64, 0, 120);
+			button_up.setFill(Color.web("404040"));
+			button_up.setType(ArcType.ROUND);
+			button_up.setEffect(dropShadow);
+
+		        
+			button_down = new Arc();
+			button_down.setFill(Color.web("404040"));
+			button_down.setType(ArcType.ROUND);
+			button_down.setEffect(dropShadow);
+			
+			button_left = new Arc();
+			button_left.setFill(Color.web("404040"));
+			button_left.setType(ArcType.ROUND);
+			button_left.setEffect(dropShadow);
+			
+			button_right = new Arc();
+			button_right.setFill(Color.web("404040"));
+			button_right.setType(ArcType.ROUND);
+			button_right.setEffect(dropShadow);
+			
+			button_send = new Arc();
+			button_send.setFill(Color.web("404040"));
+			button_send.setType(ArcType.ROUND);
+			button_send.setEffect(dropShadow);
+			
+			//TODO wie mache ich es mit den zwei unterschiedlichen Sprachen?
+			
+			
+			textUp = new Text("<");
+			textUp.setMouseTransparent(true);
+			textDown = new Text("<");
+			textDown.setMouseTransparent(true);
+			
+			textLeft = new Text("<");
+			textLeft.setMouseTransparent(true);
+			textRight = new Text(">");
+			textRight.setMouseTransparent(true);
+			textSend = new Text("°");
+			textSend.setMouseTransparent(true);
+	    	
+			System.out.println("füge hinzu");
+			this.getChildren().addAll(			   
+					button_up, button_left, button_send, button_right, button_down,
+					textUp, textDown, textLeft, textRight, textSend
+					 );
 	    }
+	    
+	    
+	    
+	    
+	    //rest vom schützenfest
+	    this.getChildren().addAll(
+			   rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten,
+			   textSecondValueCanvas, textCanvas,
+			   topRegion, optionalImageBox
+			   );
 	    
 	    drawTextValues(true);
 	    
@@ -983,10 +1233,7 @@ public class UniversalDisplay extends Region
 			height = einheitBounds.getHeight();
 		
 		width = width + einheitBounds.getWidth();
-		
-		System.out.println("min " + valMinBounds.getWidth() + " max " + valMaxBounds.getWidth());
-		System.out.println("cur " + valueSensor.getCurrentValue());
-		
+	
 		
 		return new BoundingBox(0,0, width, height);
 	}
@@ -1093,10 +1340,10 @@ public class UniversalDisplay extends Region
 	 */
 	public void repaintValues() 
 	{
+		this.setOpacityOfAdjustButton();
+		
 		this.drawTextValues(true);
 		this.drawSecondTextValue(true);
-		
-		
 		this.drawImages();
 		
 		
@@ -1114,6 +1361,42 @@ public class UniversalDisplay extends Region
 			optionalImageBox.delImage(Pos.MIDDLE);
 		
 	}
+	
+
+	/**
+	 * Hier muss vor der Visualisierung noch auf die nächste Voreinstellung gegangen werden
+	 * @param nodeBase
+	 * @param textNode
+	 * @param command
+	 */
+	public void setNextPresetNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
+	{
+		nextPreset();
+		setNodePressed(nodeBase, textNode, command, e);
+		
+	}
+	
+	private void nextPreset()
+	{
+		//im anderen Fall hochsetzen und nächsten wert anzeigen
+		presetIndex++;
+		/* TODO 
+		//wenn er größer als die Länge ist, dann wieder zurück auf den ersten Index
+		if(presetIndex >= presetValues.length)
+			presetIndex = 0;
+		drawTextPresetValue(true);
+		restartPresetReset();
+		*/
+	}
+	
+
+	public void setPreviousPresetNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
+	{
+		//TODO
+		//previousPreset();
+		setNodePressed(nodeBase, textNode, command,e);
+	}
+	
 	
 
 }
