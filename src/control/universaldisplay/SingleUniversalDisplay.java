@@ -11,6 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -41,11 +42,6 @@ public class SingleUniversalDisplay extends Application
 	public void start(Stage stage) 
 	{
 		
-		
-		
-		
-		
-		
 		List<SensorValue> sensorList = new ArrayList<SensorValue>();
 		sensorList.add(new SensorValue(25, 0, 40, "°C", "img_temperatur"));
 		sensorList.add(new SensorValue(22.5, 8, 40, "°C", ""));
@@ -75,16 +71,17 @@ public class SingleUniversalDisplay extends Application
 			@Override
 			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
 			{
-				int indexView;
+				int indexView= uniDisplay.getIndexOfView();
+				List<SensorValue> sensorList;
 				if(newValue != Command.RESET_COMMAND)
 				{
 					switch(newValue)
 					{
 						case PREVIOUS_SENSOR_VALUE:
 						case NEXT_SENSOR_VALUE:
-							indexView= uniDisplay.getIndexOfView();
+							
 							//hole die values und befülle die Anzeige
-							List<SensorValue> sensorList = sensorMap.get(indexView);
+							sensorList = sensorMap.get(indexView);
 							uniDisplay.setMainContent(sensorList.get(0));
 							if(sensorList.size() > 1)
 								uniDisplay.setMinorContent(sensorList.get(1));
@@ -93,6 +90,38 @@ public class SingleUniversalDisplay extends Application
 							uniDisplay.repaintValues();
 							
 							
+							break;
+						case UP:
+							sensorList = sensorMap.get(indexView);
+							if(sensorList.get(1) != null)
+							{
+								//change setpoint value; one stepü
+								double stepping = sensorList.get(1).getStepValue();
+								double currentValue = sensorList.get(1).getCurrentValue();
+								currentValue = currentValue + stepping;
+								if(currentValue > sensorList.get(1).getBis())
+									currentValue = sensorList.get(1).getBis();
+								
+								sensorList.get(1).setCurrentValue(currentValue);
+								uniDisplay.repaintValues();
+							}
+							
+							
+							
+							break;
+						case DOWN:
+							sensorList = sensorMap.get(indexView);
+							if(sensorList.get(1) != null)
+							{
+								//hier rückwärts um die stepping size
+								double stepping = sensorList.get(1).getStepValue();
+								double currentValue = sensorList.get(1).getCurrentValue();
+								currentValue = currentValue - stepping;
+								if(currentValue < sensorList.get(1).getVon())
+									currentValue = sensorList.get(1).getBis();
+								sensorList.get(1).setCurrentValue(currentValue);
+								uniDisplay.repaintValues();
+							}
 							break;
 					}
 					
@@ -140,25 +169,25 @@ public class SingleUniversalDisplay extends Application
 	        
 	     
 	     
+	  
 	    pane.setRight(vBox);
 	    
-	     Scene scene = new Scene(pane);
-	    
-	     stage.setTitle("JavaFX Universelles Display");
-	     stage.setScene(scene);
-	     stage.setWidth(400);
-	     stage.setHeight(400);
-	        
-	     stage.show();
-	        
-	        //closing event with stop animation
-	     stage.setOnCloseRequest(new EventHandler<WindowEvent>() 
-	     {
-	            @Override
-	            public void handle(WindowEvent event) {
-	            	//customCircle.stopAnimation();
-	            }
-	     });
+		Scene scene = new Scene(pane);
+		stage.setTitle("JavaFX Universelles Display");
+		stage.setScene(scene);
+		stage.setWidth(400);
+		stage.setHeight(400);
+		    
+		stage.show();
+		    
+		    //closing event with stop animation
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() 
+		{
+		        @Override
+		        public void handle(WindowEvent event) {
+		        	//customCircle.stopAnimation();
+		        }
+		});
 		
 	}
 	

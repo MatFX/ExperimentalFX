@@ -3,7 +3,6 @@ package control.universaldisplay;
 import java.util.HashMap;
 
 import control.dimmer.OptionalImageBox;
-import control.dimmer.DimmerControl.Command;
 import control.dimmer.IActivationIcon.Pos;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -46,7 +45,7 @@ public class UniversalDisplay extends Region
 	 */
 	public enum Command
 	{
-		PREVIOUS_SENSOR_VALUE, NEXT_SENSOR_VALUE, AUTO_CHANGE, SEND_PRESET, NEXT_PRESET, PREVIOUS_PRESET, SEND_VALUE,
+		PREVIOUS_SENSOR_VALUE, NEXT_SENSOR_VALUE, AUTO_CHANGE, NEXT_PRESET, PREVIOUS_PRESET, SEND_VALUE,
 		UP, DOWN,
 		
 		
@@ -237,7 +236,8 @@ public class UniversalDisplay extends Region
 			button_right.setOnMousePressed(e -> setNextPresetNodePressed(button_right, textRight, Command.NEXT_PRESET, e));
 			button_right.setOnMouseReleased(e -> setNodeReleased(button_right, textRight, e));
 			
-			button_send.setOnMousePressed(e -> setNodePressed(button_send, textSend, Command.SEND_PRESET, e));
+			//überträgt die aktuelle sollwerteinstellung
+			button_send.setOnMousePressed(e -> setNodePressed(button_send, textSend, Command.SEND_VALUE, e));
 			button_send.setOnMouseReleased(e -> setNodeReleased(button_send, textSend, e));
 		}
 	}

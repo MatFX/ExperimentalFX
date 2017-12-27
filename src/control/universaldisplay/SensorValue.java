@@ -26,6 +26,17 @@ public class SensorValue
 	 */
 	private String imageName = "";
 	
+	private double[] presetValues = null;
+	
+	
+	public SensorValue(double currentValue, double von, double bis, String measurementUnit, String imageName, double[] presetValues)
+	{
+		this(currentValue, von, bis, measurementUnit, imageName);
+		this.presetValues = presetValues;
+	}
+	
+	
+	
 	public SensorValue(double currentValue, double von, double bis, String measurementUnit, String imageName)
 	{
 		this.currentValue = currentValue;
@@ -70,5 +81,18 @@ public class SensorValue
 	public String getImageBezeichnung()
 	{
 		return this.imageName;
+	}
+	
+	public double getStepValue()
+	{
+		return stepping;
+	}
+	
+	public boolean hasPresetValues()
+	{
+		if(presetValues != null && presetValues.length > 0)
+			return true;
+		else
+			return false;
 	}
 }
