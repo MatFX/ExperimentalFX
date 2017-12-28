@@ -211,8 +211,6 @@ public class UniversalDisplay extends Region
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
 	
-		
-		System.out.println("isMultiSensor " + isMultiSensor);
 		if(this.isMultiSensor)
 		{
 			
@@ -400,7 +398,6 @@ public class UniversalDisplay extends Region
 		
 		
 		backgroundPoint.setPaint(lgTopShiny);
-		System.out.println("backgroundPaint " + backgroundPoint.toString());
 		
 		//coords jeweils von den fixen Punkten ermitteln
 		//cx = 64 - 43 = 21 davon % 100/128 * 21 = 16,40625 = 0.1640625
@@ -408,15 +405,10 @@ public class UniversalDisplay extends Region
 		//r = ist immer gleich
 		PointXYR linksPoint = new PointXYR(centerX - (size * 0.1640625), centerY +(size * 0.2265625), radius * 0.703125);
 		
-		//PointXYR linksPoint = new PointXYR(43, 93, radius * 0.703125);
-		
-		
-		System.out.println("linksPoint " + linksPoint.toString());
 		
 		//cx 107 - 64 = 43; 100/128 * 43 = 33,59375 = 0.3359375
 		//cy 82 - 64 = 18; 100/128 * 18  =14,0625 = 0.140625
 		PointXYR rechtsPoint = new PointXYR(centerX + (size * 0.3359375), centerY + (size *  0.140625), radius * 0.703125);
-		System.out.println("rechtsPoint " + rechtsPoint.toString());
 		
 		topRegion.setNewValues(backgroundPoint, linksPoint, rechtsPoint);
 		topRegion.resize();
@@ -884,7 +876,6 @@ public class UniversalDisplay extends Region
 			textSend = new Text("°");
 			textSend.setMouseTransparent(true);
 	    	
-			System.out.println("füge hinzu");
 			this.getChildren().addAll(			   
 					button_up, button_left, button_send, button_right, button_down,
 					textUp, textDown, textLeft, textRight, textSend
@@ -1421,7 +1412,6 @@ public class UniversalDisplay extends Region
 		if(presetIndex < 0)
 		{
 			presetIndex = minorValueToShow.getPresetValues().length-1;
-			System.out.println("presetIndex nun " + presetIndex);
 		}
 		drawSecondTextValue(true);
 	}

@@ -1159,7 +1159,6 @@ public class DimmerControl extends Region implements IActivationIcon
 			@Override
 			public void handle(ActionEvent event) 
 			{
-				System.out.println("bin durch gelaufen");
 				drawTextPresetValue(false);
 			}
 	
