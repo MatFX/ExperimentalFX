@@ -26,7 +26,6 @@ public class TopRegion extends Region
 		this.backgroundCircle = backgroundCircle;
 		this.overlaySubtract = overlaySubtract;
 		this.overlaySubtract2 = overlaySubtract2;
-		//this.resize();
 	}
 	
 	public void setNewValues(PointXYR mainCoords, PointXYR pointXYRSub1, PointXYR  pointXYRSub2)

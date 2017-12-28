@@ -83,9 +83,11 @@ public class UniversalDisplay extends Region
 	
 	private Circle background, backgroundCircle, innerBackground, innerBackgroundCircle, innerBorder, topoverlay, 
 		//jetzt die monitorkreise
-		rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten, glanzOben;
+		rahmenInnenring, lcdDisplay, scheinLCD, glanzUnten;
 	
-	//hier die Startkoordinaten
+	/*
+	 * start coords
+	 */
 	private double width = 128, height = 128;
 	
 	private double centerX = 64, centerY = 64;
@@ -96,6 +98,9 @@ public class UniversalDisplay extends Region
 	 */
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
+	/**
+	 * highlighter on top 
+	 */
 	private TopRegion topRegion;
 	
 	/**
@@ -117,7 +122,7 @@ public class UniversalDisplay extends Region
 	private boolean isMultiSensor = true;
 	
 	/**
-	 * 
+	 * are the minorvalues changeable? if true, at bottom some buttons
 	 */
 	private boolean isAdjustable = true;
 	
@@ -138,6 +143,9 @@ public class UniversalDisplay extends Region
 	 */
 	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
 	
+	/**
+	 * for mini icons on screen
+	 */
 	private OptionalImageBox optionalImageBox;
 	
 
@@ -164,8 +172,14 @@ public class UniversalDisplay extends Region
 	
 	private int indexOfView = 0;
 	 
+	/**
+	 * The value on screen; in the middle of the view
+	 */
 	private SensorValue mainValueToShow;
 	
+	/**
+	 * the minor value; it can be used for settings like setpoint value.
+	 */
 	private SensorValue minorValueToShow;
 	
 	private Font fontVorgabe = null, fontMinorVorgabe = null;
@@ -189,6 +203,9 @@ public class UniversalDisplay extends Region
 	 */
 	private int presetIndex = 0;
 	
+	/**
+	 * the preset value will be shown on top, when the user click on the left or right arrow button
+	 */
 	private boolean isShowPresetValue = false;
 	
 	/**
@@ -1250,13 +1267,7 @@ public class UniversalDisplay extends Region
 		//bei löschung der Sicht gleich wieder zurück
 		if(!showValues)
 			return;
-		
-		//TODO raus
-		//gc.setFill(Color.ALICEBLUE);
-		//gc.fillRect(0, 0, w,h);
-
-		
-		
+			
 		if(scaleableMinorFontSize == null)
 		{
 			scaleableMinorFontSize = new SimpleDoubleProperty(size * 0.06);
