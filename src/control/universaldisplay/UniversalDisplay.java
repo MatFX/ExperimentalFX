@@ -761,7 +761,7 @@ public class UniversalDisplay extends Region
 	   stopArray = new Stop[]{
 				new Stop(0.0, Color.web("#FFFFFF80")),
 				new Stop(0.3368, Color.web("#D7DAD255")),
-				new Stop(0.7829, Color.web("#A7AD9C1C")),
+				new Stop(0.7829, Color.web("#A7AD9C1C")), 
 				new Stop(1.0, Color.web("#949C8700"))
 			};
 	   stopMap.put(StopIndizes.GLANZ_UNTEN, stopArray);
