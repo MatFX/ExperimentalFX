@@ -189,7 +189,12 @@ public class UniversalDisplay extends Region
 	 */
 	private int presetIndex = 0;
 	
+	private boolean isShowPresetValue = false;
 	
+	/**
+	 * reset the preset text (clear text) and show after the reset the minor value on screen.
+	 */
+	private Timeline presetViewReset;
 	
 	public UniversalDisplay(int maxSizeOfViews, boolean isMultiSensor, boolean isAdjustable)
 	{
@@ -1283,7 +1288,6 @@ public class UniversalDisplay extends Region
 			 //Ermittlung nach dem maximal möglichen Zustand
 			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.minorValueToShow);
 			 
-			 System.out.println("fontsize vorher " + getFontSize().get());
 			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
 			 {
 				 double tempSize = getGreaterFont(scaleableMinorFontSize.get(), w, h, mainValueToShow);
@@ -1298,18 +1302,26 @@ public class UniversalDisplay extends Region
 						scaleableMinorFontSize.set(tempSize);
 			 }
 			 font = Font.font(fontVorgabe.getName(), scaleableMinorFontSize.get());
-			 System.out.println("fontsize nachher " + scaleableMinorFontSize.get());
-			 
-			
 		}
 		gc.setFont(font);
 		
 		String valueToShow = "";
 		if(minorValueToShow != null)
 		{
-			valueToShow = String.format("%.1f", minorValueToShow.getCurrentValue());
+			//hier die Unterscheidung ob zur Zeit die Voreinstellung zur Anzeige kommt
+			if(isShowPresetValue)
+			{
+				valueToShow = String.format("%.1f", minorValueToShow.getPresetValueFrom(presetIndex));
+			}
+			else
+			{
+				valueToShow = String.format("%.1f", minorValueToShow.getCurrentValue());
+			}
 			valueToShow = valueToShow + " " + minorValueToShow.getMeasurementUnit();
 		}
+		
+		
+	
 		
 		Text textSecondValue = new Text();
 		 textSecondValue.setText(valueToShow);
@@ -1378,24 +1390,81 @@ public class UniversalDisplay extends Region
 	
 	private void nextPreset()
 	{
+		this.isShowPresetValue = true;
 		//im anderen Fall hochsetzen und nächsten wert anzeigen
 		presetIndex++;
-		/* TODO 
+	
 		//wenn er größer als die Länge ist, dann wieder zurück auf den ersten Index
-		if(presetIndex >= presetValues.length)
+		if(presetIndex >= minorValueToShow.getPresetValues().length)
 			presetIndex = 0;
-		drawTextPresetValue(true);
+		
+		drawSecondTextValue(true);
 		restartPresetReset();
-		*/
 	}
+	
+
 	
 
 	public void setPreviousPresetNodePressed(Arc nodeBase, Text textNode, Command command, MouseEvent e)
 	{
-		//TODO
-		//previousPreset();
+		previousPreset();
 		setNodePressed(nodeBase, textNode, command,e);
 	}
+	
+
+	private void previousPreset()
+	{
+		this.isShowPresetValue = true;
+		presetIndex--;
+		//wenn der preset unter einem gültigen index fällt
+		//dann zurück auf maximum
+		if(presetIndex < 0)
+		{
+			presetIndex = minorValueToShow.getPresetValues().length-1;
+			System.out.println("presetIndex nun " + presetIndex);
+		}
+		drawSecondTextValue(true);
+	}
+	
+	private void restartPresetReset() 
+	{
+		stopPresetViewReset();
+		presetViewReset = new Timeline();
+		KeyFrame key = new KeyFrame(Duration.millis(3000));
+		presetViewReset.getKeyFrames().add(key);
+		presetViewReset.setOnFinished(new EventHandler<ActionEvent>()
+		{
+
+			@Override
+			public void handle(ActionEvent event) 
+			{
+				isShowPresetValue = false;
+				drawSecondTextValue(true);
+			}
+	
+		});
+		presetViewReset.play();
+		
+	}
+	
+	private void stopPresetViewReset()
+	{
+		if(presetViewReset != null)
+		{
+			presetViewReset.stop();
+		}
+		
+	}
+
+	public int getPresetIndex() {
+		return presetIndex;
+	}
+	
+	public boolean isShowPresetValue()
+	{
+		return isShowPresetValue;
+	}
+	
 	
 	
 

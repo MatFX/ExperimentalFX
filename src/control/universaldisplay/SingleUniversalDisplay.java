@@ -44,7 +44,7 @@ public class SingleUniversalDisplay extends Application
 		
 		List<SensorValue> sensorList = new ArrayList<SensorValue>();
 		sensorList.add(new SensorValue(25, 0, 40, "°C", "img_temperatur"));
-		sensorList.add(new SensorValue(22.5, 8, 40, "°C", ""));
+		sensorList.add(new SensorValue(22.5, 8, 40, "°C", "", new double[]{21.5, 24.5, 30}));
 		sensorMap.put(TEMPERATURE, sensorList);
 		
 		sensorList = new ArrayList<SensorValue>();
@@ -121,6 +121,19 @@ public class SingleUniversalDisplay extends Application
 									currentValue = sensorList.get(1).getBis();
 								sensorList.get(1).setCurrentValue(currentValue);
 								uniDisplay.repaintValues();
+							}
+							break;
+						case SEND_VALUE:
+							//nur auslösen wenn auch wirklich die presets zur Zeit angezeigt werden.
+							if(uniDisplay.isShowPresetValue())
+							{
+								sensorList = sensorMap.get(indexView);
+								if(sensorList.get(1) != null)
+								{
+									
+									double presetValue = sensorList.get(1).getPresetValueFrom(uniDisplay.getPresetIndex());
+									sensorList.get(1).setCurrentValue(presetValue);
+								}
 							}
 							break;
 					}

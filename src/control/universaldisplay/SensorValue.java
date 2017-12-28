@@ -95,4 +95,19 @@ public class SensorValue
 		else
 			return false;
 	}
+	
+	public double getPresetValueFrom(int index)
+	{
+		if(presetValues != null && presetValues.length > 0)
+			return presetValues[index];
+		else
+			return 0;
+	}
+
+
+
+	public double[] getPresetValues()
+	{
+		return presetValues;
+	}
 }
