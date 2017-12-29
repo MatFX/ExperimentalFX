@@ -55,8 +55,7 @@ public class UniversalDisplay extends Region
 		 */
 		RESET_COMMAND;
 	}
-	
-	
+	 
 	
 	//Enums für die gespeicherten Farben
 	public enum StopIndizes
@@ -766,8 +765,8 @@ public class UniversalDisplay extends Region
 			};
 	   stopMap.put(StopIndizes.GLANZ_UNTEN, stopArray);
 	   glanzUnten = new Circle();
-	   
-	   //muss die farben nochmals anpassen irgendwas stimmt nicht mit dem oberen Verlauf
+	    
+	   //muss die farben nochmals a npassen irgendwas stimmt nicht mit dem oberen Verlauf
 	  
 	   stopArray = new Stop[]{
 				new Stop(0.1431, Color.web("#FFFFFFCC")),
@@ -789,11 +788,9 @@ public class UniversalDisplay extends Region
 		textCanvas = new Canvas();
 		
 		textFirstValue = new Text();
-		//TODO vertl. stringproperty koppeln den Wert
-		textFirstValue.setText("TODO Value");
+		textFirstValue.setText("");
 		
 		textFirstMeasuringUnit = new Text();
-		//TODO optional und variable machen
 		textFirstMeasuringUnit.setText("%");
 	   
 	   optionalImageBox = new OptionalImageBox();
@@ -950,7 +947,6 @@ public class UniversalDisplay extends Region
 	{
 		this.isAutoChange = !this.isAutoChange;
 		
-		//TODO
 		if(isAutoChange)
 		{
 			
@@ -1080,13 +1076,7 @@ public class UniversalDisplay extends Region
 		
 			gc.clearRect(0, 0, w, h);
 		}
-		
-
-		//TODO raus
-		//gc.setFill(Color.RED);
-		//gc.fillRect(0, 0, w,h);
-		
-		
+				
 		gc.setFill(Color.web("#00000080"));
 		
 		
