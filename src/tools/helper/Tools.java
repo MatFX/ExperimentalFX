@@ -1,5 +1,11 @@
 package tools.helper;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  * Alles was man sonst noch brauch
  * @author Matthias
@@ -41,5 +47,32 @@ public class Tools
     	'6' , '7' , '8' , '9' , 'A' , 'B' ,
     	'C' , 'D' , 'E' , 'F'
     };
+    
+    public static Object cloneObject(Object objectToClone) throws IOException
+    {
+    	
+    	
+    	//ObjectOutputStream oos = null;
+        ObjectInputStream ois = null;
+        try(ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        		ObjectOutputStream oos = new ObjectOutputStream(bos);
+        		)
+        {
+           oos.writeObject(objectToClone);  
+           oos.flush();               
+           ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray()); 
+           ois = new ObjectInputStream(bin);                  
+           return ois.readObject(); 
+        }
+        catch(Exception e)
+        {
+           System.out.println("Exception in ObjectCloner = " + e);
+        }
+        finally
+        {
+        	ois.close();
+        }
+        return null;
+    }
 
 }

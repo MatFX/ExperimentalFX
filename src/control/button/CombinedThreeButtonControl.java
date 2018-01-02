@@ -1,21 +1,21 @@
 package control.button;
 
 import java.util.HashMap;
-
-import control.universaldisplay.UniversalDisplay.StopIndizes;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+
 
 public class CombinedThreeButtonControl extends Region
 {
 	
 	public enum StopIndizes
 	{
-		HORIZ_MAIN_GLANZ_OBEN, HORIZ_MAIN_GLANZ_UNTEN;
+		HORIZ_MAIN_GLANZ_OBEN, HORIZ_MAIN_GLANZ_UNTEN, OVERLAY_RECHTER_KNOPF, OVERLAY_LINKER_KNOPF;
 	}
 	
 	private Rectangle horizontalHintergrund, horizSchwarz, horizMain, horizMainGlanzOben, horizMainGlanzUnten;
@@ -25,6 +25,12 @@ public class CombinedThreeButtonControl extends Region
 	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
+	/**
+	 * Zwei Buttons die neben dem kreis liegen
+	 */
+	private ButtonRegion rightButton, leftButton, overlayRightButton, overlayLeftButton;
+	
+	private Circle runderKnopfHintergrund;
 	
 	public CombinedThreeButtonControl()
 	{
@@ -63,14 +69,40 @@ public class CombinedThreeButtonControl extends Region
 		horizMainGlanzUnten = new Rectangle();
 		
 		stopArray = new Stop[]{
-				new Stop(0.0, Color.web("#000000CC")),
-				new Stop(1.0, Color.web("#33333300"))
+				new Stop(0.0, Color.web("#33333300")),
+				new Stop(0.0138623, Color.web("#31313104")),
+				new Stop(0.2044517, Color.web("#1B1B1B34")),
+				new Stop(0.4134517, Color.web("#0C0C0C69")),
+				new Stop(0.6548164, Color.web("#030303A7")),
+				new Stop(1.0, Color.web("#000000"))
 			};
 		stopMap.put(StopIndizes.HORIZ_MAIN_GLANZ_UNTEN, stopArray);
 		
+		rightButton = new ButtonRegion(new Rectangle(), new Rectangle());
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#1A1A1A")),
+				new Stop(1.0, Color.web("#33333300"))
+			};
+		stopMap.put(StopIndizes.OVERLAY_RECHTER_KNOPF, stopArray);
+		
+		overlayRightButton = new ButtonRegion(new Rectangle(), new Rectangle());
+		
+		leftButton = new ButtonRegion(new Rectangle(), new Rectangle());
+		overlayLeftButton = new ButtonRegion(new Rectangle(), new Rectangle());
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#1A1A1A")),
+				new Stop(1.0, Color.web("#33333300"))
+			};
+		stopMap.put(StopIndizes.OVERLAY_LINKER_KNOPF, stopArray);
 		
 		
-		this.getChildren().addAll(horizontalHintergrund, horizSchwarz, horizMain, horizMainGlanzOben);
+		runderKnopfHintergrund = new Circle();
+		runderKnopfHintergrund.setFill(Color.web("#555555"));
+		
+		this.getChildren().addAll(horizontalHintergrund, horizSchwarz, horizMain, horizMainGlanzOben, horizMainGlanzUnten, 
+				rightButton, overlayRightButton, leftButton, overlayLeftButton,
+				runderKnopfHintergrund);
 	}
 	
 	private void resize() 
@@ -78,7 +110,7 @@ public class CombinedThreeButtonControl extends Region
 		w = this.getWidth();
 		h = this.getHeight();
 		
-		System.out.println("w " + w + " h " + h);
+		//System.out.println("w " + w + " h " + h);
 		
 		
 		
@@ -132,19 +164,130 @@ public class CombinedThreeButtonControl extends Region
 		horizMainGlanzOben.setFill(lg);
 		
 		
-		//x1="65.0225525" y1="0" x2="65.0225525" y2="31.0071678
-		//x1 = 100/130 * 65.0225525 = 50,01734807692308 = 0.5001734807692308
-		//y1 = 0
-		//x2 = 100/130 * 65.0225525 = 50,01734807692308 = 0.5001734807692308
-		//y2 = 100/55 * 31.0071678 = 56,37666872727273 = 0.5637666872727273
+		//x1="65.0088577" y1="28.8131142" x2="65.7588577" y2="56.1881142"
 		
-		lg = new LinearGradient(getWidth() * 0.5001734807692308, 
-				0, 
-				getWidth() * 0.5001734807692308,
-				getHeight() *  0.5637666872727273,
-				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.HORIZ_MAIN_GLANZ_OBEN));
+		//x1 = 100/130 * 65.0088577 = 50,00681361538462 = 0.5000681361538462
+		//y1 = 100/55 * 28.8131142 = 52,38748036363636 = 0.5238748036363636
+		//x2 = 100/130 * 65.7588577 =  50,58373669230769 = 0.5058373669230769
+		
+		//y2 = 100/55 * 56.1881142 = 102,1602076363636 = 1.021602076363636
+		
+		
+		lg = new LinearGradient(getWidth() *  0.5000681361538462, 
+				getHeight() * 0.5238748036363636, 
+				getWidth() * 0.5058373669230769,
+				getHeight() *  1.021602076363636,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.HORIZ_MAIN_GLANZ_UNTEN));
 		
 		horizMainGlanzUnten.setFill(lg);
+		horizMainGlanzUnten.setX(w * 0.04982307692307693);
+		horizMainGlanzUnten.setY(h * 0.28485454545454547);
+		horizMainGlanzUnten.setWidth(w * 0.9769230769230769);
+		horizMainGlanzUnten.setHeight(h * 0.5272727272727272);
+		horizMainGlanzUnten.setArcWidth(w * 0.09234615384615387);
+		horizMainGlanzUnten.setArcHeight(w * 0.09234615384615387);
+		
+		
+		//7,4777 16,667 125 27 11,492
+		double baseX = w * 0.05752076923076923;
+		double baseY = h * 0.30303636363636366;
+		double baseW = w * 0.9615384615384616;
+		double baseH = h * 0.49090909090909085;
+		double arc =w * 0.0884;
+		PointXYWHARC basePoint = new PointXYWHARC(baseX, baseY, baseW, baseH, arc, arc);
+		//basePoint.setPaint(Color.BLANCHEDALMOND);
+		basePoint.setPaint(Color.web("#282828"));
+		
+		//overlay eigenes objekt wegen der anderen farbe
+		PointXYWHARC overlayRightBasePoint = new PointXYWHARC(baseX, baseY, baseW, baseH, arc, arc);
+		
+		//x1="86.5155563" y1="23.886776" x2="120.7655563" y2="46.636776"
+		//x1 = 100/130 * 86.5155563 = 0.6655042792307692 
+		//y1 = 100/55 * 23.886776 = 0.4343050181818182
+		//x2 = 100/130 * 120.7655563 = 0.9289658176923077
+		//y2 = 100/55 * 46,636776 = 0.8479413818181818
+		LinearGradient lgOverlayRechts = new LinearGradient(getWidth()*0.6655042792307692, 
+				getHeight() * 0.4343050181818182, 
+				getWidth() * 0.9289658176923077,
+				getHeight() * 0.8479413818181818,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.OVERLAY_RECHTER_KNOPF));
+		overlayRightBasePoint.setPaint(lgOverlayRechts);
+		
+		
+		//nun der abzug für die rechte seite
+		double subtractX = w * 0.038461538461538464;
+		double subtractY = h * 0.04545454545454545;
+		double subtractW = w * 0.499823076923077;
+		double subtractH = h * 1.0;
+		double subctractArc = 0;
+		PointXYWHARC subtractPoint = new PointXYWHARC(subtractX, subtractY, subtractW, subtractH, subctractArc, subctractArc);
+		
+		rightButton.setNewValues(basePoint, subtractPoint);
+		rightButton.resize();
+		
+		
+		
+		overlayRightButton.setNewValues(overlayRightBasePoint, subtractPoint);
+		overlayRightButton.resize();
+		
+		
+		
+		//beim linken werden die gleichen basepoints verwendet...das Beschneidungsrechteck ist aber anders
+		subtractX = w * 0.5382846153846155;
+		subtractY = h * 0.04545454545454545;
+		subtractW = w * 0.5001769230769231;
+		subtractH = h * 1.0;
+		subctractArc = 0;
+		
+		//nochmals eines für die andere seite
+		PointXYWHARC overlayLeftBasePoint = new PointXYWHARC(baseX, baseY, baseW, baseH, arc, arc);
+		//x1="41.9207115" y1="16.8945789" x2="26.4207115" y2="45.3945808"
+		//x1  100/130 * 41.9207115 = 0.3224670115384615
+		//y1  100/55 * 16.8945789 =  0.3071741618181818
+		//x2 100/130 * 26.4207115 = 0.2032362423076923
+		//y2 100/130 * 45.3945808 = 34,91890830769231 = 0.3491890830769231
+		LinearGradient lgOverlayLinks = new LinearGradient(getWidth()*0.3224670115384615, 
+				getHeight() *0.3071741618181818, 
+				getWidth() *  0.2032362423076923,
+				getHeight() * 0.3491890830769231,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.OVERLAY_LINKER_KNOPF));
+		overlayLeftBasePoint.setPaint(lgOverlayLinks);
+		
+		
+		subtractPoint = new PointXYWHARC(subtractX, subtractY, subtractW, subtractH, subctractArc, subctractArc);
+		leftButton.setNewValues(basePoint, subtractPoint);
+		leftButton.resize();
+
+		overlayLeftButton.setNewValues(overlayLeftBasePoint, subtractPoint);
+		overlayLeftButton.resize();
+		
+		
+		
+		
+		//cx="64.9774475" cy="27.666666" r="27"/>
+		
+		//cx 100/130 * 64.9774475 = 0.4998265192307692
+		//cy 100/55 * 27.666666 = 0.5030302909090909
+		//r  100/130 * 27 = 20,76923076923077 = 0.2076923076923077
+		
+		//Feststellen was sich verändert hat?
+		//brauch ich den Vergleich?
+				double size  = getWidth() < getHeight() ? getWidth() : getHeight();
+		//		//double radius = size / 2d;
+		System.out.println("size " + size);
+		
+		
+		//runderKnopfHintergrund.setCenterX(getWidth() * 0.4998265192307692);
+		///runderKnopfHintergrund.setCenterY(getHeight() * 0.5030302909090909);
+		runderKnopfHintergrund.setRadius(getWidth() * 0.2076923076923077);
+		
+		//Über den horizontalen Hintergrund den Mittelpunkt für den Kreis ermitteln
+		double centerX = horizontalHintergrund.getWidth() / 2d + horizontalHintergrund.getX();
+		double centerY = horizontalHintergrund.getHeight() / 2d + horizontalHintergrund.getY();
+		System.out.println("mittelpunkt " + centerX + " " + centerY);
+		runderKnopfHintergrund.setCenterX(centerX);
+		runderKnopfHintergrund.setCenterY(centerY);
+		
 		
 		
 		
