@@ -15,7 +15,7 @@ public class CombinedThreeButtonControl extends Region
 	
 	public enum StopIndizes
 	{
-		HORIZ_MAIN_GLANZ_OBEN, HORIZ_MAIN_GLANZ_UNTEN, OVERLAY_RECHTER_KNOPF, OVERLAY_LINKER_KNOPF;
+		HORIZ_MAIN_GLANZ_OBEN, HORIZ_MAIN_GLANZ_UNTEN, OVERLAY_RECHTER_KNOPF, OVERLAY_LINKER_KNOPF, KNOPF_GLANZ_OBEN, KNOPF_GLANZ_UNTEN, KNOPF_SCHATTEN_INNEN;
 	}
 	
 	private Rectangle horizontalHintergrund, horizSchwarz, horizMain, horizMainGlanzOben, horizMainGlanzUnten;
@@ -30,7 +30,25 @@ public class CombinedThreeButtonControl extends Region
 	 */
 	private ButtonRegion rightButton, leftButton, overlayRightButton, overlayLeftButton;
 	
-	private Circle runderKnopfHintergrund;
+	private Circle runderKnopfHintergrund, runderKnopfSchwarz, runderKnopfMain, rundKnopfGlanzOben,
+		rundKnopfGlanzUnten, runderKnopfSchaltflaeche, runderKnopfSchattenInnen;
+	
+	private final double HINTERGRUNDFLAECHE = 129D * 31D;
+	
+	private final double HINTERGRUNDFLAECHE_SCHWARZ = 128D * 30D;
+
+	private final double HINTERGRUNDFLAECHE_HAUPT = 127D * 29D;
+	
+	private final double KREIS_HINTERGRUND_FLAECHE = Math.PI * (Math.pow(27, 2));
+	
+	private final double KREIS_HINTERGRUND_SCHWARZ = Math.PI * (Math.pow(26.5, 2));
+	
+	//auch für den zwei glanz kreisen zu verwenden
+	private final double KREIS_HAUPT =  Math.PI * (Math.pow(26, 2));
+	
+	private final double KREIS_SCHALTFLAECHE = Math.PI * (Math.pow(25, 2));
+	
+	
 	
 	public CombinedThreeButtonControl()
 	{
@@ -40,8 +58,8 @@ public class CombinedThreeButtonControl extends Region
 
 	private void registerListener() 
 	{
-		widthProperty().addListener(observable -> resize());
-		heightProperty().addListener(observable -> resize());
+		widthProperty().addListener(observable -> resize(true));
+		heightProperty().addListener(observable -> resize(false));
 	}
 
 	private void initGraphics() 
@@ -100,17 +118,64 @@ public class CombinedThreeButtonControl extends Region
 		runderKnopfHintergrund = new Circle();
 		runderKnopfHintergrund.setFill(Color.web("#555555"));
 		
+		runderKnopfSchwarz = new Circle();
+		runderKnopfSchwarz.setFill(Color.BLACK);
+		
+		runderKnopfMain = new Circle();
+		runderKnopfMain.setFill(Color.web("#212020"));
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#FFFFFFCC")),
+				new Stop(0.0023868, Color.web("#FEFEFECB")),
+				new Stop(0.1384432, Color.web("#C9C9C9AE")),
+				new Stop(0.2760799, Color.web("#9B9B9B90")),
+				new Stop(0.4127651, Color.web("#75757573")),
+				new Stop(0.5482611, Color.web("#58585855")),
+				new Stop(0.6823206, Color.web("#44444438")),
+				new Stop(0.8141946, Color.web("#3737371C")),
+				new Stop(0.9414634, Color.web("#33333300"))
+			};
+		stopMap.put(StopIndizes.KNOPF_GLANZ_OBEN, stopArray);
+		
+		rundKnopfGlanzOben = new Circle();
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#33333300")),
+				new Stop(0.0138623, Color.web("#31313104")),
+				new Stop(0.2044517, Color.web("#1B1B1B34")),
+				new Stop(0.4134517, Color.web("#0C0C0C69")),
+				new Stop(0.6548164, Color.web("#030303A7")),
+				new Stop(1.0, Color.web("#000000"))
+			};
+		stopMap.put(StopIndizes.KNOPF_GLANZ_UNTEN, stopArray);	
+		
+		rundKnopfGlanzUnten = new Circle();
+		
+		runderKnopfSchaltflaeche = new Circle();
+		runderKnopfSchaltflaeche.setFill(Color.web("#282828"));
+		
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#000000")),
+				new Stop(1.0, Color.web("#33333300"))
+			};
+		stopMap.put(StopIndizes.KNOPF_SCHATTEN_INNEN, stopArray);	
+		
+		runderKnopfSchattenInnen = new Circle();
+		
 		this.getChildren().addAll(horizontalHintergrund, horizSchwarz, horizMain, horizMainGlanzOben, horizMainGlanzUnten, 
 				rightButton, overlayRightButton, leftButton, overlayLeftButton,
-				runderKnopfHintergrund);
+				runderKnopfHintergrund, runderKnopfSchwarz, runderKnopfMain, rundKnopfGlanzOben, 
+				rundKnopfGlanzUnten, runderKnopfSchaltflaeche, runderKnopfSchattenInnen);
 	}
 	
-	private void resize() 
+	private void resize(boolean changedWidth) 
 	{
 		w = this.getWidth();
 		h = this.getHeight();
 		
 		//System.out.println("w " + w + " h " + h);
+		
 		
 		
 		
@@ -261,38 +326,97 @@ public class CombinedThreeButtonControl extends Region
 		overlayLeftButton.setNewValues(overlayLeftBasePoint, subtractPoint);
 		overlayLeftButton.resize();
 		
-		
-		
-		
-		//cx="64.9774475" cy="27.666666" r="27"/>
-		
-		//cx 100/130 * 64.9774475 = 0.4998265192307692
-		//cy 100/55 * 27.666666 = 0.5030302909090909
-		//r  100/130 * 27 = 20,76923076923077 = 0.2076923076923077
-		
-		//Feststellen was sich verändert hat?
-		//brauch ich den Vergleich?
-				double size  = getWidth() < getHeight() ? getWidth() : getHeight();
-		//		//double radius = size / 2d;
-		System.out.println("size " + size);
-		
-		
-		//runderKnopfHintergrund.setCenterX(getWidth() * 0.4998265192307692);
-		///runderKnopfHintergrund.setCenterY(getHeight() * 0.5030302909090909);
-		runderKnopfHintergrund.setRadius(getWidth() * 0.2076923076923077);
-		
 		//Über den horizontalen Hintergrund den Mittelpunkt für den Kreis ermitteln
 		double centerX = horizontalHintergrund.getWidth() / 2d + horizontalHintergrund.getX();
 		double centerY = horizontalHintergrund.getHeight() / 2d + horizontalHintergrund.getY();
-		System.out.println("mittelpunkt " + centerX + " " + centerY);
+		
+		double flaecheRechteck = horizontalHintergrund.getWidth() * horizontalHintergrund.getHeight();
+		double verhaeltnis = HINTERGRUNDFLAECHE / KREIS_HINTERGRUND_FLAECHE;
+		double flaecheKreis = flaecheRechteck / verhaeltnis;
+		double radiusKnopf = Math.sqrt(flaecheKreis / Math.PI);
+		
 		runderKnopfHintergrund.setCenterX(centerX);
 		runderKnopfHintergrund.setCenterY(centerY);
+		runderKnopfHintergrund.setRadius(radiusKnopf);
+	
+		
+		flaecheRechteck = horizSchwarz.getWidth() * horizSchwarz.getHeight();
+		verhaeltnis = HINTERGRUNDFLAECHE_SCHWARZ / KREIS_HINTERGRUND_SCHWARZ;
+		flaecheKreis = flaecheRechteck / verhaeltnis;
+		radiusKnopf = Math.sqrt(flaecheKreis / Math.PI);
+		
+		runderKnopfSchwarz.setCenterX(centerX);
+		runderKnopfSchwarz.setCenterY(centerY);
+		runderKnopfSchwarz.setRadius(radiusKnopf);
 		
 		
+		flaecheRechteck = horizMain.getWidth() * horizMain.getHeight();
+		verhaeltnis = HINTERGRUNDFLAECHE_HAUPT / KREIS_HAUPT;
+		flaecheKreis = flaecheRechteck / verhaeltnis;
+		radiusKnopf = Math.sqrt(flaecheKreis / Math.PI);
+		
+		runderKnopfMain.setCenterX(centerX);
+		runderKnopfMain.setCenterY(centerY);
+		runderKnopfMain.setRadius(radiusKnopf);
+		
+		//glanz oben und unten 
+		//x1="64.9774475" y1="-4.5833335" x2="64.9774475" y2="49.9309998"
+		
+		//x1 = 100/130 * 64.9774475 = 0.4998265192307692
+		//y2 = 100/55 * -4.5833335 = 8,333333636363636 = 0.08333333636363636
+		//x2 = 100/130 * 64.9774475  = 0.4998265192307692
+		//y2 = 100/55 * 49.9309998 = 90,783636 = 0.90783636
+		lg = new LinearGradient(getWidth()* 0.4998265192307692, 
+				getHeight() * 0.08333333636363636 * -1, 
+				getWidth() * 0.4998265192307692,
+				getHeight() * 0.90783636,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.KNOPF_GLANZ_OBEN));
+		
+		rundKnopfGlanzOben.setCenterX(centerX);
+		rundKnopfGlanzOben.setCenterY(centerY);
+		rundKnopfGlanzOben.setRadius(radiusKnopf);
+		rundKnopfGlanzOben.setFill(lg);
 		
 		
+		//x1="64.9774475" y1="32.875" x2="64.9774475" y2="56.1303749"
+		//x1 = 100/130 * 64.9774475 = 0.4998265192307692
+		//y1 = 100/55 * 32.875 = 59,77272727272727 = 0.5977272727272727
+		//x2 = 100/130 * 64.9774475 = 0.4998265192307692
+		//y1 = 100/55 * 56.1303749 = 102,0552270909091 = 1.020552270909091
+		lg = new LinearGradient(getWidth()* 0.4998265192307692, 
+				getHeight() * 0.5977272727272727, 
+				getWidth() * 0.4998265192307692,
+				getHeight() * 1.020552270909091,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.KNOPF_GLANZ_UNTEN));
 		
+		rundKnopfGlanzUnten.setCenterX(centerX);
+		rundKnopfGlanzUnten.setCenterY(centerY);
+		rundKnopfGlanzUnten.setRadius(radiusKnopf);
+		rundKnopfGlanzUnten.setFill(lg);
 		
+		flaecheRechteck = horizMain.getWidth() * horizMain.getHeight();
+		verhaeltnis = HINTERGRUNDFLAECHE_HAUPT / KREIS_SCHALTFLAECHE;
+		flaecheKreis = flaecheRechteck / verhaeltnis;
+		radiusKnopf = Math.sqrt(flaecheKreis / Math.PI);
+		
+		runderKnopfSchaltflaeche.setCenterX(centerX);
+		runderKnopfSchaltflaeche.setCenterY(centerY);
+		runderKnopfSchaltflaeche.setRadius(radiusKnopf);
+	
+		//x1="83.5855408" y1="-5.884028" x2="61.5855408" y2="33.7826385"
+		//x1 100/130 * 83.5855408 = 64,29656984615385 => 0.6429656984615385
+		//y1 100/55 * -5.884028 = -0.1069823272727273
+		//x2 =  100/130 * 61.5855408 = 47,37349292307692 => 0.4737349292307692
+		//y2 = 100/55 * 33.7826385 = 61,42297909090909 = 0.6142297909090909
+		lg = new LinearGradient(getWidth()* 0.6429656984615385, 
+				getHeight() * 0.1069823272727273 *-1, 
+				getWidth() * 0.4737349292307692,
+				getHeight() * 0.6142297909090909,
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.KNOPF_SCHATTEN_INNEN));
+		runderKnopfSchattenInnen.setCenterX(centerX);
+		runderKnopfSchattenInnen.setCenterY(centerY);
+		runderKnopfSchattenInnen.setRadius(radiusKnopf);
+		runderKnopfSchattenInnen.setFill(lg);
 		
 	}
 
