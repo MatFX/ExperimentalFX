@@ -1,4 +1,4 @@
-package control.button;
+package control.button.combined;
 
 import java.util.HashMap;
 import javafx.beans.property.SimpleObjectProperty;

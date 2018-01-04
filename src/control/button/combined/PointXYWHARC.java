@@ -1,4 +1,4 @@
-package control.button;
+package control.button.combined;
 
 import javafx.scene.paint.Paint;
 

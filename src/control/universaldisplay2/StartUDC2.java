@@ -1,9 +1,7 @@
-package control.button;
+package control.universaldisplay2;
 
-import java.util.List;
-
-import control.button.CombinedThreeButtonControl.Command;
-import control.universaldisplay.SensorValue;
+import control.button.combined.CombinedThreeButtonControl;
+import control.button.combined.CombinedThreeButtonControl.Command;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,16 +12,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class TestCombinedThreeButtonControl extends Application
+public class StartUDC2 extends Application
 {
-	private CombinedThreeButtonControl combinedButton;
-
+	private UniversalDisplayControl udc;
+	
 
 	@Override
-	public void start(Stage stage) throws Exception
+	public void start(Stage stage) 
 	{
 		 BorderPane pane = new BorderPane();
 		 pane.setStyle("-fx-background-color: #444444");
@@ -32,8 +32,15 @@ public class TestCombinedThreeButtonControl extends Application
 		 kommandoLabel.setStyle("-fx-text-fill: #FFFFFF");
 			
 		 
-		 combinedButton = new CombinedThreeButtonControl();
+		 udc = new UniversalDisplayControl();
+		 //HBox.setHgrow(udc, Priority.ALWAYS);
+		// VBox.setVgrow(udc, Priority.ALWAYS);
+		// udc.setMaxHeight(Double.MAX_VALUE);
+		// udc.setMaxWidth(Double.MAX_VALUE);
+		// udc.setMinHeight(Double.MAX_VALUE);
+		// udc.setMinWidth(Double.MAX_VALUE);
 		 
+		 /*
 		 combinedButton.getCommandProperty().addListener(new ChangeListener<Command>(){
 
 			@Override
@@ -58,9 +65,9 @@ public class TestCombinedThreeButtonControl extends Application
 				
 				
 			}
-		});
+		});*/
 		 
-		 pane.setCenter(combinedButton);
+		 pane.setCenter(udc);
 		 
 		
 		 VBox commandArea = new VBox(2);
@@ -90,22 +97,20 @@ public class TestCombinedThreeButtonControl extends Application
 	        });
 	     vBox.getChildren().add(test);
 	    
-	     pane.setRight(vBox);
+	     //pane.setRight(vBox);
 	    
 		
 	     Scene scene = new Scene(pane);
 	    
-		 stage.setTitle("Combined Three Button");
+		 stage.setTitle("UniversalDisplayControl 2");
 		 stage.setScene(scene);
 		 stage.setWidth(400);
 		 stage.setHeight(266);
 		 stage.show();
 		
 	}
-	
 
 	public static void main(String[] args) {
 		launch(args);
 	}
-
 }

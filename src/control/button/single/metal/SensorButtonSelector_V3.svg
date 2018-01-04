@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 40 40" style="enable-background:new 0 0 40 40;" xml:space="preserve">
+<g id="Ebene_1" style="display:none;">
+	
+		<image style="display:inline;overflow:visible;" width="400" height="270" xlink:href="lcdDisplayTest.jpg"  transform="matrix(1.4966667 0 0 1.3308642 -438.8333435 -54.75)">
+	</image>
+</g>
+<g id="Grundflaeche">
+	<radialGradient id="SVGID_1_" cx="20" cy="20" r="20" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#EAEAEA"/>
+		<stop  offset="0.3606361" style="stop-color:#E8E8E8"/>
+		<stop  offset="0.4905558" style="stop-color:#E1E1E1"/>
+		<stop  offset="0.5831469" style="stop-color:#D6D6D6"/>
+		<stop  offset="0.6580502" style="stop-color:#C5C5C5"/>
+		<stop  offset="0.722233" style="stop-color:#AFAFAF"/>
+		<stop  offset="0.7790776" style="stop-color:#939393"/>
+		<stop  offset="0.830457" style="stop-color:#737373"/>
+		<stop  offset="0.8777024" style="stop-color:#4D4D4D"/>
+		<stop  offset="0.9197454" style="stop-color:#242424"/>
+		<stop  offset="0.9512195" style="stop-color:#000000"/>
+	</radialGradient>
+	<circle style="fill:url(#SVGID_1_);" cx="20" cy="20" r="20"/>
+</g>
+<g id="GrundflaecheGlanz">
+	<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="6.5416665" y1="6.5416665" x2="33.7917938" y2="33.7917938">
+		<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.8"/>
+		<stop  offset="0.4317073" style="stop-color:#000000;stop-opacity:0.8"/>
+		<stop  offset="0.7365854" style="stop-color:#F2F2F2"/>
+		<stop  offset="0.9926829" style="stop-color:#666666"/>
+	</linearGradient>
+	<circle style="fill:url(#SVGID_2_);" cx="20" cy="20" r="20"/>
+</g>
+<g id="Inlay">
+	<circle style="fill:#707070;" cx="20" cy="20" r="18"/>
+</g>
+<g id="TestFarbeVonInlay" style="display:none;">
+	<circle style="display:inline;fill:#62B26E;" cx="20" cy="20" r="18"/>
+</g>
+<g id="TestFarbeVonInlay_1_" style="display:none;">
+	<circle style="display:inline;fill:#5CADAD;" cx="20" cy="20" r="18"/>
+</g>
+<g id="InlayGlanz1">
+	<radialGradient id="SVGID_3_" cx="20" cy="20" r="18" gradientUnits="userSpaceOnUse">
+		<stop  offset="0.0073171" style="stop-color:#B3B3B3;stop-opacity:0"/>
+		<stop  offset="0.2430577" style="stop-color:#B7B7B7;stop-opacity:0.0712435"/>
+		<stop  offset="0.4672107" style="stop-color:#C2C2C2;stop-opacity:0.138985"/>
+		<stop  offset="0.6867312" style="stop-color:#D5D5D5;stop-opacity:0.2053266"/>
+		<stop  offset="0.9020432" style="stop-color:#F0F0F0;stop-opacity:0.2703964"/>
+		<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0.3"/>
+	</radialGradient>
+	<circle style="fill:url(#SVGID_3_);" cx="20" cy="20" r="18"/>
+</g>
+<g id="InlayGlanz2">
+	<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="13.7767458" y1="6.3435564" x2="26.3401184" y2="22.9142132">
+		<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.6"/>
+		<stop  offset="0.0979568" style="stop-color:#F0F0F0;stop-opacity:0.5407927"/>
+		<stop  offset="0.3132688" style="stop-color:#D5D5D5;stop-opacity:0.4106533"/>
+		<stop  offset="0.5327894" style="stop-color:#C2C2C2;stop-opacity:0.2779701"/>
+		<stop  offset="0.7569423" style="stop-color:#B7B7B7;stop-opacity:0.142487"/>
+		<stop  offset="0.9926829" style="stop-color:#B3B3B3;stop-opacity:0"/>
+	</linearGradient>
+	<ellipse style="fill:url(#SVGID_4_);" cx="19.739584" cy="14.208333" rx="14.239583" ry="12.208333"/>
+</g>
+<g id="InnerSchlagschattenHeavy" style="display:none;">
+	<radialGradient id="SVGID_5_" cx="20" cy="20" r="18" gradientUnits="userSpaceOnUse">
+		<stop  offset="0.0073171" style="stop-color:#B3B3B3;stop-opacity:0"/>
+		<stop  offset="0.4044817" style="stop-color:#B1B1B1;stop-opacity:0.4000922"/>
+		<stop  offset="0.5475393" style="stop-color:#AAAAAA;stop-opacity:0.5442042"/>
+		<stop  offset="0.6495415" style="stop-color:#9F9F9F;stop-opacity:0.6469583"/>
+		<stop  offset="0.7320332" style="stop-color:#8E8E8E;stop-opacity:0.730058"/>
+		<stop  offset="0.8026611" style="stop-color:#787878;stop-opacity:0.8012065"/>
+		<stop  offset="0.8651658" style="stop-color:#5C5C5C;stop-opacity:0.8641719"/>
+		<stop  offset="0.9217785" style="stop-color:#3C3C3C;stop-opacity:0.9212019"/>
+		<stop  offset="0.9720677" style="stop-color:#181818;stop-opacity:0.9718618"/>
+		<stop  offset="1" style="stop-color:#000000"/>
+	</radialGradient>
+	<circle style="display:inline;fill:url(#SVGID_5_);" cx="20" cy="20" r="18"/>
+</g>
+<g id="InnerSchlagschattenLight">
+	<radialGradient id="SVGID_6_" cx="20" cy="20" r="18" gradientUnits="userSpaceOnUse">
+		<stop  offset="0.0073171" style="stop-color:#B3B3B3;stop-opacity:0"/>
+		<stop  offset="0.4519936" style="stop-color:#B1B1B1;stop-opacity:0.4479542"/>
+		<stop  offset="0.6121601" style="stop-color:#AAAAAA;stop-opacity:0.6093013"/>
+		<stop  offset="0.7263085" style="stop-color:#9F9F9F;stop-opacity:0.7242911"/>
+		<stop  offset="0.8186446" style="stop-color:#8E8E8E;stop-opacity:0.8173078"/>
+		<stop  offset="0.8977138" style="stop-color:#787878;stop-opacity:0.8969599"/>
+		<stop  offset="0.9664453" style="stop-color:#5D5D5D;stop-opacity:0.9661979"/>
+		<stop  offset="1" style="stop-color:#4D4D4D"/>
+	</radialGradient>
+	<circle style="fill:url(#SVGID_6_);" cx="20" cy="20" r="18"/>
+</g>
+</svg>
