@@ -111,7 +111,7 @@ public class CombinedThreeButtonControl extends Region
 		
 		innerShadow = new InnerShadow();
 		innerShadow.setBlurType(BlurType.GAUSSIAN);
-		innerShadow.setColor(Color.web("#000000A0"));
+		innerShadow.setColor(Color.web("#000000E0"));
 		        
 		
 		
@@ -487,7 +487,8 @@ public class CombinedThreeButtonControl extends Region
 
 	private void setNodeReleased(Node nodeBase, Text textNode, MouseEvent e) 
 	{
-		nodeBase.setEffect(dropShadow);
+		nodeBase.setEffect(null);
+		//nodeBase.setEffect(dropShadow);
 		textNode.setEffect(null);
 		e.consume();
 		
