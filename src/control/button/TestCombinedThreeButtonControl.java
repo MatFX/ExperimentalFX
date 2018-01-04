@@ -1,6 +1,12 @@
 package control.button;
 
+import java.util.List;
+
+import control.button.CombinedThreeButtonControl.Command;
+import control.universaldisplay.SensorValue;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,17 +21,48 @@ public class TestCombinedThreeButtonControl extends Application
 {
 	private CombinedThreeButtonControl combinedButton;
 
+
 	@Override
 	public void start(Stage stage) throws Exception
 	{
 		 BorderPane pane = new BorderPane();
-		 pane.setStyle("-fx-background-color: #FF0000");
+		 pane.setStyle("-fx-background-color: #444444");
+		 
+		 final Label kommandoLabel = new Label();
+		 kommandoLabel.setStyle("-fx-text-fill: #FFFFFF");
+			
 		 
 		 combinedButton = new CombinedThreeButtonControl();
 		 
+		 combinedButton.getCommandProperty().addListener(new ChangeListener<Command>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue)
+			{
+				
+				if(newValue != Command.RESET_COMMAND)
+				{
+					switch(newValue)
+					{
+						case LEFT_BUTTON:
+						case RIGHT_BUTTON:
+						case MIDDLE_BUTTON:
+						
+							break;
+					}
+					
+					
+					kommandoLabel.setText(newValue.toString());
+					combinedButton.getCommandProperty().set(Command.RESET_COMMAND);
+				}
+				
+				
+			}
+		});
+		 
 		 pane.setCenter(combinedButton);
 		 
-		 Label kommandoLabel = new Label();
+		
 		 VBox commandArea = new VBox(2);
 	     commandArea.setPadding(new Insets(5, 5, 5, 5));
 	     commandArea.getChildren().addAll(kommandoLabel);

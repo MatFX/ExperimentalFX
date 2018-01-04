@@ -1,6 +1,13 @@
 package control.button;
 
 import java.util.HashMap;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Node;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -8,10 +15,21 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 
 public class CombinedThreeButtonControl extends Region
 {
+	
+	public enum Command
+	{
+		LEFT_BUTTON, MIDDLE_BUTTON, RIGHT_BUTTON,
+		/**
+		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
+		 * <br>you need the reset as a "acknowledge" from outside.
+		 */
+		RESET_COMMAND;
+	}
 	
 	public enum StopIndizes
 	{
@@ -48,6 +66,19 @@ public class CombinedThreeButtonControl extends Region
 	
 	private final double KREIS_SCHALTFLAECHE = Math.PI * (Math.pow(25, 2));
 	
+	private InnerShadow innerShadow;
+	/**
+	 * für den Text wenn der button gedrückt wurde
+	 */
+	private Glow textGlow = new Glow(0.3);
+	
+	/**
+	 * Kammdos können hier empfangen werden (listener anschluss)
+	 */
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
+	
+	private DropShadow dropShadow;
+	
 	
 	
 	public CombinedThreeButtonControl()
@@ -60,10 +91,30 @@ public class CombinedThreeButtonControl extends Region
 	{
 		widthProperty().addListener(observable -> resize(true));
 		heightProperty().addListener(observable -> resize(false));
+		
+		//TODO text fehlt hier komplett im Moment
+		rightButton.setOnMousePressed(e -> setNodePressed(rightButton, new Text(), Command.RIGHT_BUTTON, e));
+		rightButton.setOnMouseReleased(e -> setNodeReleased(rightButton, new Text(), e));
+		
+		
+		runderKnopfSchaltflaeche.setOnMousePressed(e -> setNodePressed(runderKnopfSchaltflaeche, new Text(), Command.MIDDLE_BUTTON, e));
+		runderKnopfSchaltflaeche.setOnMouseReleased(e -> setNodeReleased(runderKnopfSchaltflaeche, new Text(), e));
+		
+		leftButton.setOnMousePressed(e -> setNodePressed(leftButton, new Text(), Command.LEFT_BUTTON, e));
+		leftButton.setOnMouseReleased(e -> setNodeReleased(leftButton, new Text(), e));
 	}
 
 	private void initGraphics() 
 	{
+		dropShadow = new DropShadow();
+		dropShadow.setColor(Color.web("000000A0")); 
+		
+		innerShadow = new InnerShadow();
+		innerShadow.setBlurType(BlurType.GAUSSIAN);
+		innerShadow.setColor(Color.web("#000000A0"));
+		        
+		
+		
 		
 		horizontalHintergrund = new Rectangle();
 		horizontalHintergrund.setFill(Color.web("#555555"));
@@ -105,9 +156,11 @@ public class CombinedThreeButtonControl extends Region
 		stopMap.put(StopIndizes.OVERLAY_RECHTER_KNOPF, stopArray);
 		
 		overlayRightButton = new ButtonRegion(new Rectangle(), new Rectangle());
+		overlayRightButton.setMouseTransparent(true);
 		
 		leftButton = new ButtonRegion(new Rectangle(), new Rectangle());
 		overlayLeftButton = new ButtonRegion(new Rectangle(), new Rectangle());
+		overlayLeftButton.setMouseTransparent(true);
 		stopArray = new Stop[]{
 				new Stop(0.0, Color.web("#1A1A1A")),
 				new Stop(1.0, Color.web("#33333300"))
@@ -162,6 +215,7 @@ public class CombinedThreeButtonControl extends Region
 		stopMap.put(StopIndizes.KNOPF_SCHATTEN_INNEN, stopArray);	
 		
 		runderKnopfSchattenInnen = new Circle();
+		runderKnopfSchattenInnen.setMouseTransparent(true);
 		
 		this.getChildren().addAll(horizontalHintergrund, horizSchwarz, horizMain, horizMainGlanzOben, horizMainGlanzUnten, 
 				rightButton, overlayRightButton, leftButton, overlayLeftButton,
@@ -419,5 +473,28 @@ public class CombinedThreeButtonControl extends Region
 		runderKnopfSchattenInnen.setFill(lg);
 		
 	}
+	
+	private void setNodePressed(Node nodeBase , Text textNode, Command command, MouseEvent e) 
+	{
+		nodeBase.setEffect(innerShadow);
+		textNode.setEffect(textGlow);
+		commandProperty.set(command);
+		e.consume();
+		
+		
+	
+	}
 
+	private void setNodeReleased(Node nodeBase, Text textNode, MouseEvent e) 
+	{
+		nodeBase.setEffect(dropShadow);
+		textNode.setEffect(null);
+		e.consume();
+		
+	}
+
+	public SimpleObjectProperty<Command> getCommandProperty()
+	{
+		return commandProperty;
+	}
 }
