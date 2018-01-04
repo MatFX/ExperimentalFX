@@ -176,10 +176,24 @@ public class SingleMetalButton extends Region
 		//cx="19.739584" cy="14.208333" rx="14.239583" ry="12.208333"
 		//runter rechnen
 		
+		//cx 20 - 19.739584 = 0,260416 ==> 100/40 * 0,260416 = 0,65104 = 0.0065104
+		//cx 20 - 14.208333 = 5,791667 ==> 100/40 * 5,791667 = 14,4791675 = 0.144791675
+		//rx 100/20 * 14.239583 = 71,197915 = 0.71197915
+		//ry 100/20 * 12.208333 = 61,041665 = 0.61041665
+		 
+		inlayGlanz2.setCenterX(centerX - (size * 0.0065104));
+		inlayGlanz2.setCenterY(centerY - (size * 0.144791675));
+		inlayGlanz2.setRadiusX(radius * 0.71197915);
+		inlayGlanz2.setRadiusY(radius * 0.61041665 );
+		
+		//TODO linearGradient
+		//x1="13.7767458" y1="6.3435564" x2="26.3401184" y2="22.9142132"
 		
 		
+		inlayGlanz2.setFill(Color.RED);
 		
 		//inlayGlanz2.setCenterX(value);
+		
 		
 		
 		
