@@ -17,13 +17,15 @@ public class TestSingleMetalButton extends Application {
 	public void start(Stage stage) 
 	{
 		 BorderPane pane = new BorderPane();
+		 pane.setPadding(new Insets(5,5,5,5));
 		 pane.setStyle("-fx-background-color: #444444");
 		 
 		 final Label kommandoLabel = new Label();
 		 kommandoLabel.setStyle("-fx-text-fill: #FFFFFF");
 		 
-		 SingleMetalButton smb = new SingleMetalButton();
 		 
+		 SingleMetalButton smb = new SingleMetalButton();
+		
 		 
 		 pane.setCenter(smb);
 		 

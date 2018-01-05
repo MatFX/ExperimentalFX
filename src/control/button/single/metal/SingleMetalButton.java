@@ -2,6 +2,9 @@ package control.button.single.metal;
 
 import java.util.HashMap;
 
+import control.button.combined.CombinedThreeButtonControl.Command;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -10,6 +13,7 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.text.Text;
 
 public class SingleMetalButton extends Region
 {
@@ -26,18 +30,23 @@ public class SingleMetalButton extends Region
 	
 	public enum StopIndizes
 	{
-		GRUNDFLAECHE, GRUNDFLAECHE_GLANZ, INLAY_GLANZ1, INLAY_GLANZ2;
+		GRUNDFLAECHE, GRUNDFLAECHE_GLANZ, INLAY_GLANZ1, INLAY_GLANZ2, INNERSHADOW_STRONG, INNERSHADOW_LIGHT;
 	}
 	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
-	private Circle grundflaeche, grundflaecheGlanz, inlay, inlayGlanz1;
+	private Circle grundflaeche, grundflaecheGlanz, inlay, inlayGlanz1, innerShadowStrong, innerShadowLight;
 	
 	private Ellipse inlayGlanz2;
 	
 	private double centerX = 20, centerY = 20;
 	
 	private double width = 40, height = 40;
+	
+	/**
+	 * switch um auszuwählen welche Innershadow verwendet werden soll.
+	 */
+	private boolean isMousePressed = false;
 	
 	public SingleMetalButton()
 	{
@@ -55,7 +64,32 @@ public class SingleMetalButton extends Region
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
 		
+		//TODO spätere Text fehlt noch oder Symbol
+		grundflaeche.setOnMousePressed(e -> setNodeMouseEvent(grundflaeche, new Text(), Command.BUTTON_PRESSED, e));
+		grundflaeche.setOnMouseReleased(e -> setNodeMouseEvent(grundflaeche, new Text(), Command.BUTTON_RELEASED, e));
+		
+		
+	
 	}
+	
+
+	private void setNodeMouseEvent(Node node, Text text, Command commandValue, MouseEvent e) 
+	{
+		if(commandValue == Command.BUTTON_PRESSED)
+		{
+			isMousePressed = true;
+			innerShadowStrong.setOpacity(1.0);
+			innerShadowLight.setOpacity(0.0);
+		}
+		else if(commandValue == Command.BUTTON_RELEASED)
+		{
+			isMousePressed = false;
+			innerShadowStrong.setOpacity(0.0);
+			innerShadowLight.setOpacity(1.0);
+		}
+		e.consume();
+	}
+
 
 	private void initGraphics() 
 	{
@@ -78,6 +112,7 @@ public class SingleMetalButton extends Region
 		stopMap.put(StopIndizes.GRUNDFLAECHE, stopArray);
 		
 		grundflaecheGlanz = new Circle();
+		grundflaecheGlanz.setMouseTransparent(true);
 		
 		stopArray = new Stop[]{
 				new Stop(0.0, Color.web("#FFFFFFCC")),
@@ -89,9 +124,11 @@ public class SingleMetalButton extends Region
 		
 		inlay = new Circle();
 		inlay.setFill(Color.web("#707070"));
+		inlay.setMouseTransparent(true);
 		
 		
 		inlayGlanz1 = new Circle();
+		inlayGlanz1.setMouseTransparent(true);
 		
 		stopArray = new Stop[]{
 				new Stop(0.0073171, Color.web("#B3B3B300")),
@@ -105,6 +142,7 @@ public class SingleMetalButton extends Region
 		
 		
 		inlayGlanz2 = new Ellipse();
+		inlayGlanz2.setMouseTransparent(true);
 		stopArray = new Stop[]{
 				new Stop(0.0, Color.web("#FFFFFF99")),
 				new Stop(0.0979568, Color.web("#F0F0F08A")),
@@ -115,9 +153,41 @@ public class SingleMetalButton extends Region
 			};
 		stopMap.put(StopIndizes.INLAY_GLANZ2, stopArray);
 		
+		innerShadowStrong = new Circle();
+		innerShadowStrong.setMouseTransparent(true);
+		
+		stopArray = new Stop[]{
+				new Stop(0.0073171, Color.web("#B3B3B300")),
+				new Stop(0.4172025, Color.web("#B1B1B15F")),
+				new Stop(0.5648299, Color.web("#AAAAAA81")),
+				new Stop(0.670073, Color.web("#9F9F9F99")),
+				new Stop(0.7551594, Color.web("#8E8E8EAD")),
+				new Stop(0.8280339, Color.web("#787878BE")),
+				new Stop(0.89261, Color.web("#5C5C5CCD")),
+				new Stop(0.9495308, Color.web("#3D3D3DDA")),
+				new Stop(1.0, Color.web("#1A1A1AE6"))
+			};
+		
+		stopMap.put(StopIndizes.INNERSHADOW_STRONG, stopArray);
 		
 		
-		this.getChildren().addAll(grundflaeche, grundflaecheGlanz, inlay, inlayGlanz1, inlayGlanz2);
+		innerShadowLight = new Circle();
+		innerShadowLight.setMouseTransparent(true);
+		stopArray = new Stop[]{
+				new Stop(0.0073171, Color.web("#B3B3B300")),
+				new Stop(0.4519936, Color.web("#B1B1B15B")),
+				new Stop(0.6121601, Color.web("#AAAAAA7C")),
+				new Stop(0.7263085, Color.web("#9F9F9F94")),
+				new Stop(0.8186446, Color.web("#8E8E8EA7")),
+				new Stop(0.8977138, Color.web("#787878B7")),
+				new Stop(0.9664453, Color.web("#5D5D5DC5")),
+				new Stop(1.0, Color.web("#4D4D4DCC"))
+			};
+		
+		stopMap.put(StopIndizes.INNERSHADOW_LIGHT, stopArray);
+		
+		
+		this.getChildren().addAll(grundflaeche, grundflaecheGlanz, inlay, inlayGlanz1, inlayGlanz2, innerShadowStrong, innerShadowLight);
 	}
 	
 
@@ -189,10 +259,57 @@ public class SingleMetalButton extends Region
 		//TODO linearGradient
 		//x1="13.7767458" y1="6.3435564" x2="26.3401184" y2="22.9142132"
 		
+		//x1 20 - 13.7767458 = 6,2232542 = 6,2232542 = 100/40 * 6,2232542 = 15,5581355 = 0.155581355
+		//y1 20 - 6.3435564 = 13,6564436 = 100/40 * 13,6564436 = 34,141109 = 0.34141109
+		//x2 26.3401184 -20 = 6.3401184 = 100/40 * 6.3401184 = 15,850296 = 0.15850296
+		//y2 22.9142132 - 20  = 2,9142132 = 100/40 * 2,9142132 = 7,285533 = 0.07285533
 		
-		inlayGlanz2.setFill(Color.RED);
+
+		lg = new LinearGradient(centerX - (size * 0.155581355), 
+				centerY - (size * 0.34141109),
+				centerX + (size *  0.15850296), 
+				centerY + (size *  0.07285533), 
+				false, 
+				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INLAY_GLANZ2));
 		
-		//inlayGlanz2.setCenterX(value);
+		
+		
+		inlayGlanz2.setFill(lg);
+		//dominanz senken irgendwie ist das rendern anders als bei illustrator
+		//inlayGlanz2.setOpacity(0.7);
+		
+		
+		
+		innerShadowStrong.setCenterX(centerX);
+		innerShadowStrong.setCenterY(centerY);
+		//r war 18 wie bei den anderen
+		innerShadowStrong.setRadius(radius * 0.9);
+		rg = new RadialGradient(0D, 0D, centerX, centerY, innerShadowStrong.getRadius(), false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INNERSHADOW_STRONG));
+		innerShadowStrong.setFill(rg);
+		
+		
+		innerShadowLight.setCenterX(centerX);
+		innerShadowLight.setCenterY(centerY);
+		innerShadowLight.setRadius(radius * 0.9);
+		
+		rg = new RadialGradient(0D, 0D, centerX, centerY, innerShadowLight.getRadius(), false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INNERSHADOW_LIGHT));
+		innerShadowLight.setFill(rg);
+		
+		
+		
+		
+		
+		if(isMousePressed)
+		{
+			innerShadowStrong.setOpacity(1.0);
+			innerShadowLight.setOpacity(0.0);
+		}
+		else
+		{
+			innerShadowStrong.setOpacity(0.0);
+			innerShadowLight.setOpacity(1.0);
+		}
+		
 		
 		
 		

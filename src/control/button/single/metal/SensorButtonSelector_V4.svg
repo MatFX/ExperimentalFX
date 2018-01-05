@@ -63,32 +63,31 @@
 	</linearGradient>
 	<ellipse style="fill:url(#SVGID_4_);" cx="19.739584" cy="14.208333" rx="14.239583" ry="12.208333"/>
 </g>
-<g id="InnerSchlagschattenHeavy" style="display:none;">
+<g id="InnerSchlagschattenHeavy">
 	<radialGradient id="SVGID_5_" cx="20" cy="20" r="18" gradientUnits="userSpaceOnUse">
 		<stop  offset="0.0073171" style="stop-color:#B3B3B3;stop-opacity:0"/>
-		<stop  offset="0.4044817" style="stop-color:#B1B1B1;stop-opacity:0.4000922"/>
-		<stop  offset="0.5475393" style="stop-color:#AAAAAA;stop-opacity:0.5442042"/>
-		<stop  offset="0.6495415" style="stop-color:#9F9F9F;stop-opacity:0.6469583"/>
-		<stop  offset="0.7320332" style="stop-color:#8E8E8E;stop-opacity:0.730058"/>
-		<stop  offset="0.8026611" style="stop-color:#787878;stop-opacity:0.8012065"/>
-		<stop  offset="0.8651658" style="stop-color:#5C5C5C;stop-opacity:0.8641719"/>
-		<stop  offset="0.9217785" style="stop-color:#3C3C3C;stop-opacity:0.9212019"/>
-		<stop  offset="0.9720677" style="stop-color:#181818;stop-opacity:0.9718618"/>
-		<stop  offset="1" style="stop-color:#000000"/>
+		<stop  offset="0.4172025" style="stop-color:#B1B1B1;stop-opacity:0.371616"/>
+		<stop  offset="0.5648299" style="stop-color:#AAAAAA;stop-opacity:0.5054601"/>
+		<stop  offset="0.670073" style="stop-color:#9F9F9F;stop-opacity:0.600877"/>
+		<stop  offset="0.7551594" style="stop-color:#8E8E8E;stop-opacity:0.6780192"/>
+		<stop  offset="0.8280339" style="stop-color:#787878;stop-opacity:0.7440897"/>
+		<stop  offset="0.89261" style="stop-color:#5C5C5C;stop-opacity:0.8026366"/>
+		<stop  offset="0.9495308" style="stop-color:#3D3D3D;stop-opacity:0.8542429"/>
+		<stop  offset="1" style="stop-color:#1A1A1A;stop-opacity:0.9"/>
 	</radialGradient>
-	<circle style="display:inline;fill:url(#SVGID_5_);" cx="20" cy="20" r="18"/>
+	<circle style="fill:url(#SVGID_5_);" cx="20" cy="20" r="18"/>
 </g>
-<g id="InnerSchlagschattenLight">
+<g id="InnerSchlagschattenLight" style="display:none;">
 	<radialGradient id="SVGID_6_" cx="20" cy="20" r="18" gradientUnits="userSpaceOnUse">
 		<stop  offset="0.0073171" style="stop-color:#B3B3B3;stop-opacity:0"/>
-		<stop  offset="0.4519936" style="stop-color:#B1B1B1;stop-opacity:0.4479542"/>
-		<stop  offset="0.6121601" style="stop-color:#AAAAAA;stop-opacity:0.6093013"/>
-		<stop  offset="0.7263085" style="stop-color:#9F9F9F;stop-opacity:0.7242911"/>
-		<stop  offset="0.8186446" style="stop-color:#8E8E8E;stop-opacity:0.8173078"/>
-		<stop  offset="0.8977138" style="stop-color:#787878;stop-opacity:0.8969599"/>
-		<stop  offset="0.9664453" style="stop-color:#5D5D5D;stop-opacity:0.9661979"/>
-		<stop  offset="1" style="stop-color:#4D4D4D"/>
+		<stop  offset="0.4519936" style="stop-color:#B1B1B1;stop-opacity:0.3583634"/>
+		<stop  offset="0.6121601" style="stop-color:#AAAAAA;stop-opacity:0.4874411"/>
+		<stop  offset="0.7263085" style="stop-color:#9F9F9F;stop-opacity:0.5794329"/>
+		<stop  offset="0.8186446" style="stop-color:#8E8E8E;stop-opacity:0.6538463"/>
+		<stop  offset="0.8977138" style="stop-color:#787878;stop-opacity:0.7175679"/>
+		<stop  offset="0.9664453" style="stop-color:#5D5D5D;stop-opacity:0.7729583"/>
+		<stop  offset="1" style="stop-color:#4D4D4D;stop-opacity:0.8"/>
 	</radialGradient>
-	<circle style="fill:url(#SVGID_6_);" cx="20" cy="20" r="18"/>
+	<circle style="display:inline;fill:url(#SVGID_6_);" cx="20" cy="20" r="18"/>
 </g>
 </svg>
