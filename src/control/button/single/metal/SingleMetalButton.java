@@ -47,6 +47,11 @@ public class SingleMetalButton extends Region
 	 * switch um auszuwählen welche Innershadow verwendet werden soll.
 	 */
 	private boolean isMousePressed = false;
+
+	/**
+	 * kann sich verändern
+	 */
+	private Color inlayColor = Color.web("#707070");
 	
 	public SingleMetalButton()
 	{
@@ -123,7 +128,7 @@ public class SingleMetalButton extends Region
 		stopMap.put(StopIndizes.GRUNDFLAECHE_GLANZ, stopArray);
 		
 		inlay = new Circle();
-		inlay.setFill(Color.web("#707070"));
+		inlay.setFill(inlayColor);
 		inlay.setMouseTransparent(true);
 		
 		
@@ -309,14 +314,6 @@ public class SingleMetalButton extends Region
 			innerShadowStrong.setOpacity(0.0);
 			innerShadowLight.setOpacity(1.0);
 		}
-		
-		
-		
-		
-		
-		
-		
-	
 	}
 	
 	/**
@@ -325,7 +322,8 @@ public class SingleMetalButton extends Region
 	 */
 	public void setInlayFill(Color color)
 	{
-		inlay.setFill(color);
+		inlayColor = color;
+		inlay.setFill(inlayColor);
 	}
 	
 

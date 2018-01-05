@@ -5,10 +5,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class TestSingleMetalButton extends Application {
@@ -37,6 +39,7 @@ public class TestSingleMetalButton extends Application {
 		 
 	     VBox vBox = new VBox(2);
 	     vBox.setPadding(new Insets(5, 5,0,0));
+	     /*
 	     ToggleButton test = new ToggleButton("Start");
 	     test.setOnAction(new EventHandler<ActionEvent>(){
 
@@ -56,8 +59,23 @@ public class TestSingleMetalButton extends Application {
 
 	        });
 	     vBox.getChildren().add(test);
-	    
-	     //pane.setRight(vBox);
+	    	*/
+	     
+	     final ColorPicker colorPicker = new ColorPicker();
+	     colorPicker.setValue(Color.web("#707070"));
+			colorPicker.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override 
+	            public void handle(ActionEvent e)
+	            {
+	            	smb.setInlayFill(colorPicker.getValue());
+	            	
+	            }
+	        });
+			
+	     
+	     
+	     vBox.getChildren().add(colorPicker);
+	     pane.setRight(vBox);
 	    
 		
 	     Scene scene = new Scene(pane);
