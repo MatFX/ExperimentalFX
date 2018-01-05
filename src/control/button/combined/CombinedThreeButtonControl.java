@@ -66,6 +66,8 @@ public class CombinedThreeButtonControl extends Region
 	
 	private final double KREIS_SCHALTFLAECHE = Math.PI * (Math.pow(25, 2));
 	
+	
+	
 	private InnerShadow innerShadow;
 	/**
 	 * für den Text wenn der button gedrückt wurde

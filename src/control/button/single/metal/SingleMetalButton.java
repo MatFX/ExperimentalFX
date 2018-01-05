@@ -2,8 +2,8 @@ package control.button.single.metal;
 
 import java.util.HashMap;
 
-import control.button.combined.CombinedThreeButtonControl.Command;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -49,9 +49,15 @@ public class SingleMetalButton extends Region
 	private boolean isMousePressed = false;
 
 	/**
-	 * kann sich verändern
+	 * kann sich verändern, evtl brauche ich diese Variable für die Anpassung der Farbverläufe...mal sehen.
 	 */
 	private Color inlayColor = Color.web("#707070");
+	
+	/**
+	 * Ein Bereich der individuell mit Inhalt befüllt werden kann
+	 */
+	private ContentRegion contentRegion;
+
 	
 	public SingleMetalButton()
 	{
@@ -68,23 +74,23 @@ public class SingleMetalButton extends Region
 	private void registerListener() {
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
-		
 		//TODO spätere Text fehlt noch oder Symbol
-		grundflaeche.setOnMousePressed(e -> setNodeMouseEvent(grundflaeche, new Text(), Command.BUTTON_PRESSED, e));
-		grundflaeche.setOnMouseReleased(e -> setNodeMouseEvent(grundflaeche, new Text(), Command.BUTTON_RELEASED, e));
+		grundflaeche.setOnMousePressed(e -> setNodeMouseEvent(grundflaeche, Command.BUTTON_PRESSED, e));
+		grundflaeche.setOnMouseReleased(e -> setNodeMouseEvent(grundflaeche,Command.BUTTON_RELEASED, e));
 		
 		
 	
 	}
 	
 
-	private void setNodeMouseEvent(Node node, Text text, Command commandValue, MouseEvent e) 
+	private void setNodeMouseEvent(Node node, Command commandValue, MouseEvent e) 
 	{
 		if(commandValue == Command.BUTTON_PRESSED)
 		{
 			isMousePressed = true;
 			innerShadowStrong.setOpacity(1.0);
 			innerShadowLight.setOpacity(0.0);
+		
 		}
 		else if(commandValue == Command.BUTTON_RELEASED)
 		{
@@ -92,6 +98,7 @@ public class SingleMetalButton extends Region
 			innerShadowStrong.setOpacity(0.0);
 			innerShadowLight.setOpacity(1.0);
 		}
+		contentRegion.setMouseEvent(commandValue);
 		e.consume();
 	}
 
@@ -191,8 +198,14 @@ public class SingleMetalButton extends Region
 		
 		stopMap.put(StopIndizes.INNERSHADOW_LIGHT, stopArray);
 		
+		//bei Start nicht befüllt
+		contentRegion = new ContentRegion();
+		contentRegion.setMouseTransparent(true);
+		//TODO raus
+		//	contentRegion.setStyle("-fx-background-color: #FF0000");
 		
-		this.getChildren().addAll(grundflaeche, grundflaecheGlanz, inlay, inlayGlanz1, inlayGlanz2, innerShadowStrong, innerShadowLight);
+		
+		this.getChildren().addAll(grundflaeche, grundflaecheGlanz, inlay, contentRegion, inlayGlanz1, inlayGlanz2, innerShadowStrong, innerShadowLight);
 	}
 	
 
@@ -300,10 +313,6 @@ public class SingleMetalButton extends Region
 		rg = new RadialGradient(0D, 0D, centerX, centerY, innerShadowLight.getRadius(), false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INNERSHADOW_LIGHT));
 		innerShadowLight.setFill(rg);
 		
-		
-		
-		
-		
 		if(isMousePressed)
 		{
 			innerShadowStrong.setOpacity(1.0);
@@ -314,6 +323,21 @@ public class SingleMetalButton extends Region
 			innerShadowStrong.setOpacity(0.0);
 			innerShadowLight.setOpacity(1.0);
 		}
+		
+		
+		
+		System.out.println("size " + size);
+		//Die Contentsize war im Orignal 20x20 also die hälfte zur Gesamtfläche
+		//x = 10 / 100 / 40 * 10 = 0.25
+		//y = 10 wie oben
+		contentRegion.setLayoutX(centerX - (size * 0.25));
+		contentRegion.setLayoutY(centerY - (size * 0.25));
+		
+		double contentSize = size / 2;
+		
+		
+		
+		contentRegion.setNewSize(contentSize);
 	}
 	
 	/**
@@ -324,6 +348,18 @@ public class SingleMetalButton extends Region
 	{
 		inlayColor = color;
 		inlay.setFill(inlayColor);
+	}
+
+
+	public void setImageView(Image imageForView)
+	{
+		contentRegion.setImageView(imageForView);
+	}
+
+
+	public void setText(String textToShow) {
+		contentRegion.setText(textToShow);
+		
 	}
 	
 
