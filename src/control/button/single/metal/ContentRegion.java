@@ -10,12 +10,16 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  * Content container for different viewable things a.e ImageView, Text ...
@@ -24,9 +28,6 @@ import javafx.scene.text.Text;
  */
 public class ContentRegion extends Region
 {
-	private Node nodeToShow;
-	
-	private ImageView imageView;
 	
 	private double size;
 	
@@ -36,6 +37,12 @@ public class ContentRegion extends Region
 	
 	private static final double GAP_PERCENT = 0.1;
 	
+	private String textToShow;
+	
+	private Color textColor = Color.web("#0096ff"); 
+	
+	private Color textPressedColor = Color.web("#0074c5");
+	
 	public ContentRegion()
 	{
 		super();
@@ -43,22 +50,14 @@ public class ContentRegion extends Region
 		this.initGraphics();
 		this.registerListener();
 		
-		
-		
 	}
 
 	private void registerListener() {
-		widthProperty().addListener(observable -> resize());
-		heightProperty().addListener(observable -> resize());
+//		widthProperty().addListener(observable -> resize());
+//		heightProperty().addListener(observable -> resize());
 		
 	}
-
-	private void resize() 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	private void initGraphics() 
 	{
 		fontVorgabe = new Font("Verdana",12);
@@ -78,13 +77,10 @@ public class ContentRegion extends Region
 				((ImageView)this.getChildren().get(0)).setFitWidth(size);
 				
 			}
-			else if(this.getChildren().get(0) instanceof Text)
+			else if(this.getChildren().get(0) instanceof Canvas)
 			{
-				
-				
-				
-				//((Text)this.getChildren().get(0)).set(size);
-				//((Text)this.getChildren().get(0)).setFitWidth(size);
+				//calculate possible text size and draw canvas with the text
+				setText(textToShow);
 			}
 		}
 		
@@ -120,11 +116,14 @@ public class ContentRegion extends Region
 	{
 		//hier muss die bounds aufgebaut werden anhand der zwei darzustellenden Werte 
 		if(fontVorgabe == null)
-			fontVorgabe = new Font("Verdana", 12);
+		{
+			fontVorgabe = Font.font("Verdana", FontWeight.BOLD, 12);
+		
+		}
 		Text text = new Text(valueToShow);
-		Font font =  Font.font(fontVorgabe.getFamily(), size);
+		Font font =  Font.font(fontVorgabe.getFamily(), FontWeight.BOLD, size);
         text.setFont(font);
-        return text.getBoundsInLocal();
+		return text.getBoundsInLocal();
 	}
 	
 	private Bounds getMaxTextWidth(Font font, String textToShow) 
@@ -170,16 +169,18 @@ public class ContentRegion extends Region
 
 	public void setText(String textToShow) 
 	{
+		this.textToShow = textToShow;
 		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null)
 			this.getChildren().remove(0);
 		
-		double contentSize  = getWidth() < getHeight() ? getWidth() : getHeight();
-	
 		if(textToShow != null)
 		{
-			Font font = Font.font(fontVorgabe.getName(), scaleableFontSize.get());
+			Font font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, scaleableFontSize.get());
 			Canvas canvas = new Canvas(size, size);
+			//muss transparenz sein wegen der möglichen Schaltung
+			canvas.setMouseTransparent(true);
 			GraphicsContext gc = canvas.getGraphicsContext2D();
+			
 			double w = canvas.getWidth();
 			double h = canvas.getHeight();
 			Bounds maxTextAbmasse = this.getMaxTextWidth(font, textToShow);
@@ -188,50 +189,127 @@ public class ContentRegion extends Region
 			
 			if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
 			{
-				System.out.println("greater erwartet");
-				double tempSize = getGreaterFont(contentSize * 0.12, w, h, textToShow);
+				double tempSize = getGreaterFont(size * 0.12, w, h, textToShow);
 				if(tempSize != getFontSize().get())
 					getFontSize().set(tempSize);
 			}
 			else
 			{
-				System.out.println("mach es kleiner");
 				 double tempSize = getLesserFont(getFontSize().get(), w, h, textToShow);
 					if(tempSize != getFontSize().get())
 						getFontSize().set(tempSize);
 			}
-			font = Font.font(fontVorgabe.getName(), getFontSize().get());
-			gc.setFont(font);
+			font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, getFontSize().get());
+			
 			
 			Text textFirstValue = new Text(textToShow);
+			textFirstValue.setFont(font);
 			
-			double valueX = w - (textFirstValue.getLayoutBounds().getWidth());
-			double haelfte =  textFirstValue.getLayoutBounds().getHeight() / 2d;
-			double masseinheitY = h/2d +  (haelfte/2d);
+			double centerX = size / 2d;
+			double valueX = centerX - (textFirstValue.getLayoutBounds().getWidth() / 2d );
 			
-			System.out.println("valueX " + valueX + " " + masseinheitY);
-			System.out.println("font " + getFontSize().get());
-			System.out.println("textToShow " + textToShow);
+			double valueY =  textFirstValue.getLayoutBounds().getHeight() / 2d;
 			
-			gc.setFill(Color.RED);
-			gc.fillText(textToShow, 0, 0);
+			double komischesY = h/2d +  (valueY/2d);
 			
+			gc.setFill(textColor);
+			gc.setFont(font);
+			InnerShadow innerShadow = new InnerShadow();
+			innerShadow.setOffsetX(1);
+			innerShadow.setOffsetY(1);
+			innerShadow.setColor(Color.web("0x00000090"));
+			gc.setEffect(innerShadow);
 			
-			//Label text = new Label(textToShow);
-			
-			
-			//größe ermitteln
-			
-			
-			
-			
-			//text.setMouseTransparent(true);
-			
+			gc.fillText(textToShow, valueX, komischesY);
 			this.getChildren().add(canvas);
 			
 		}
+	}
+	
+	public void setMousePressed()
+	{
+		//TODO image view fehlt noch
+		
+		
+		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null)
+			this.getChildren().remove(0);
+		
+		if(textToShow != null)
+		{
+			Font font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, scaleableFontSize.get() - (scaleableFontSize.get()* 0.1));
+			Canvas canvas = new Canvas(size, size);
+			//muss transparenz sein wegen der möglichen Schaltung
+			canvas.setMouseTransparent(true);
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			
+			double w = canvas.getWidth();
+			double h = canvas.getHeight();
+			Text textFirstValue = new Text(textToShow);
+			textFirstValue.setFont(font);
+			
+			double centerX = size / 2d;
+			double valueX = centerX - (textFirstValue.getLayoutBounds().getWidth() / 2d );
+			
+			double valueY =  textFirstValue.getLayoutBounds().getHeight() / 2d;
+			
+			double komischesY = h/2d +  (valueY/2d);
+			
+			gc.setFill(textPressedColor);
+			gc.setFont(font);
+			InnerShadow innerShadow = new InnerShadow();
+			innerShadow.setOffsetX(1);
+			innerShadow.setOffsetY(1);
+			innerShadow.setColor(Color.web("0x00000090"));
+			gc.setEffect(innerShadow);
+			
+			gc.fillText(textToShow, valueX, komischesY);
+			this.getChildren().add(canvas);
+		}
+		
+		
+		
+		
 		
 	}
+	
+	public void setMouseReleased()
+	{
+		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null)
+			this.getChildren().remove(0);
+		
+		if(textToShow != null)
+		{
+			Font font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, scaleableFontSize.get());
+			Canvas canvas = new Canvas(size, size);
+			//muss transparenz sein wegen der möglichen Schaltung
+			canvas.setMouseTransparent(true);
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			
+			double w = canvas.getWidth();
+			double h = canvas.getHeight();
+			Text textFirstValue = new Text(textToShow);
+			textFirstValue.setFont(font);
+			
+			double centerX = size / 2d;
+			double valueX = centerX - (textFirstValue.getLayoutBounds().getWidth() / 2d );
+			
+			double valueY =  textFirstValue.getLayoutBounds().getHeight() / 2d;
+			
+			double komischesY = h/2d +  (valueY/2d);
+			
+			gc.setFill(textColor);
+			gc.setFont(font);
+			InnerShadow innerShadow = new InnerShadow();
+			innerShadow.setOffsetX(1);
+			innerShadow.setOffsetY(1);
+			innerShadow.setColor(Color.web("0x00000090"));
+			gc.setEffect(innerShadow);
+			
+			gc.fillText(textToShow, valueX, komischesY);
+			this.getChildren().add(canvas);
+		}
+	}
+	
 
 	public void setMouseEvent(Command commandValue) 
 	{
@@ -256,6 +334,14 @@ public class ContentRegion extends Region
 		return scaleableFontSize;
 	}
 	
-
-
+	
+	public void setTextColor(Color textColor)
+	{
+		this.textColor = textColor;
+	}
+	
+	public void setTextColorPressed(Color textPressedColor)
+	{
+		this.textPressedColor = textPressedColor;
+	}
 }

@@ -90,6 +90,7 @@ public class SingleMetalButton extends Region
 			isMousePressed = true;
 			innerShadowStrong.setOpacity(1.0);
 			innerShadowLight.setOpacity(0.0);
+			contentRegion.setMousePressed();
 		
 		}
 		else if(commandValue == Command.BUTTON_RELEASED)
@@ -97,6 +98,7 @@ public class SingleMetalButton extends Region
 			isMousePressed = false;
 			innerShadowStrong.setOpacity(0.0);
 			innerShadowLight.setOpacity(1.0);
+			contentRegion.setMouseReleased();
 		}
 		contentRegion.setMouseEvent(commandValue);
 		e.consume();

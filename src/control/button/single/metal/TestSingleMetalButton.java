@@ -81,10 +81,10 @@ public class TestSingleMetalButton extends Application
 						smb.setText("push");
 						break;
 					case 3:
-						smb.setText("!");
+						smb.setText("fire");
 						break;
 					case 4:
-						smb.setText("fire");
+						smb.setText("long text");
 						break;
 				}
 				textNumber++;
