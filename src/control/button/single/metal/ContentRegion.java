@@ -29,21 +29,35 @@ import javafx.scene.text.Text;
  */
 public class ContentRegion extends Region
 {
-	
+	/**
+	 * Size from the component (it is the half of the complete component)
+	 */
 	private double size;
 	
-	private Font fontVorgabe = null;
+	private Font fontBase = null;
 	
 	private DoubleProperty scaleableFontSize = null;
 	
 	private static final double GAP_PERCENT = 0.1;
 	
+	/**
+	 * if text to show fill this field
+	 */
 	private String textToShow;
 	
+	/**
+	 * base color of the text value
+	 */
 	private Color textColor = Color.web("#0096ff"); 
 	
+	/**
+	 * pressed text color
+	 */
 	private Color textPressedColor = Color.web("#0074c5");
 	
+	/**
+	 * if image to show fill this field
+	 */
 	private Image imageToShow;
 	
 	public ContentRegion()
@@ -51,29 +65,26 @@ public class ContentRegion extends Region
 		super();
 		
 		this.initGraphics();
-		this.registerListener();
-		
+		//the component receive no register listener; the size changement will be triggered from the top component
 	}
 
-	private void registerListener() {
-//		widthProperty().addListener(observable -> resize());
-//		heightProperty().addListener(observable -> resize());
-		
-	}
 	
 	private void initGraphics() 
 	{
-		fontVorgabe = new Font("Verdana",12);
+		fontBase = new Font("Verdana",12);
 		scaleableFontSize = new SimpleDoubleProperty(12);
 	}
 
+	/**
+	 * changement of the size; it will be called from the top component
+	 * @param size
+	 */
 	public void setNewSize(double size) 
 	{
 		this.size = size;
-		//this.setWidth(size);
-		//this.setHeight(size);
 		if(this.getChildren().size() > 0)
 		{
+			//show imageview or text
 			if(this.getChildren().get(0) instanceof ImageView)
 			{
 				((ImageView)this.getChildren().get(0)).setFitHeight(size);
@@ -90,11 +101,16 @@ public class ContentRegion extends Region
 		
 	}
 
+	/**
+	 * Draw a ImageView with the field imageForView; If this variable null, the content must be removed
+	 * @param imageForView
+	 */
 	public void setImageView(Image imageForView) 
 	{
 		this.imageToShow = imageForView;
 		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null && this.getChildren().get(0) instanceof ImageView)
 			this.getChildren().remove(0);
+	
 		if(imageForView != null)
 		{
 			ImageView imageView = new ImageView(imageToShow);
@@ -104,8 +120,6 @@ public class ContentRegion extends Region
 			imageView.setMouseTransparent(true);
 			this.getChildren().add(imageView);
 		}
-		
-		
 	}
 	
 	public double getGAPPercent()
@@ -117,13 +131,13 @@ public class ContentRegion extends Region
 	private Bounds textWidth(double size, String valueToShow)
 	{
 		//hier muss die bounds aufgebaut werden anhand der zwei darzustellenden Werte 
-		if(fontVorgabe == null)
+		if(fontBase == null)
 		{
-			fontVorgabe = Font.font("Verdana", FontWeight.BOLD, 12);
+			fontBase = Font.font("Verdana", FontWeight.BOLD, 12);
 		
 		}
 		Text text = new Text(valueToShow);
-		Font font =  Font.font(fontVorgabe.getFamily(), FontWeight.BOLD, size);
+		Font font =  Font.font(fontBase.getFamily(), FontWeight.BOLD, size);
         text.setFont(font);
 		return text.getBoundsInLocal();
 	}
@@ -168,7 +182,10 @@ public class ContentRegion extends Region
 		return fontSize;
 	}
 	
-
+	/**
+	 * Draw the text value with the field content 'textToShow'; If it's null the content will be erased
+	 * @param textToShow
+	 */
 	public void setText(String textToShow) 
 	{
 		this.textToShow = textToShow;
@@ -177,7 +194,7 @@ public class ContentRegion extends Region
 		
 		if(textToShow != null)
 		{
-			Font font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, scaleableFontSize.get());
+			Font font = Font.font(fontBase.getName(), FontWeight.BOLD, scaleableFontSize.get());
 			Canvas canvas = new Canvas(size, size);
 			//muss transparenz sein wegen der möglichen Schaltung
 			canvas.setMouseTransparent(true);
@@ -186,8 +203,6 @@ public class ContentRegion extends Region
 			double w = canvas.getWidth();
 			double h = canvas.getHeight();
 			Bounds maxTextAbmasse = this.getMaxTextWidth(font, textToShow);
-			System.out.println("w " + w + " h " + h);
-			System.out.println("width " + maxTextAbmasse.getWidth() + " height " + maxTextAbmasse.getHeight());
 			
 			if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
 			{
@@ -201,7 +216,7 @@ public class ContentRegion extends Region
 					if(tempSize != getFontSize().get())
 						getFontSize().set(tempSize);
 			}
-			font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, getFontSize().get());
+			font = Font.font(fontBase.getName(), FontWeight.BOLD, getFontSize().get());
 			
 			
 			Text textFirstValue = new Text(textToShow);
@@ -228,6 +243,9 @@ public class ContentRegion extends Region
 		}
 	}
 	
+	/**
+	 * If the mouse is pressed, the content will be minimized by ten percent.
+	 */
 	public void setMousePressed()
 	{
 		//egal was war das child muss raus
@@ -236,13 +254,13 @@ public class ContentRegion extends Region
 		
 		if(textToShow != null)
 		{
-			Font font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, scaleableFontSize.get() - (scaleableFontSize.get()* 0.1));
+			Font font = Font.font(fontBase.getName(), FontWeight.BOLD, scaleableFontSize.get() - (scaleableFontSize.get()* 0.1));
 			Canvas canvas = new Canvas(size, size);
 			//muss transparenz sein wegen der möglichen Schaltung
 			canvas.setMouseTransparent(true);
 			GraphicsContext gc = canvas.getGraphicsContext2D();
 			
-			double w = canvas.getWidth();
+			//double w = canvas.getWidth();
 			double h = canvas.getHeight();
 			Text textFirstValue = new Text(textToShow);
 			textFirstValue.setFont(font);
@@ -281,6 +299,9 @@ public class ContentRegion extends Region
 		}
 	}
 	
+	/**
+	 * The release show the content in normal size
+	 */
 	public void setMouseReleased()
 	{
 		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null)
@@ -288,7 +309,7 @@ public class ContentRegion extends Region
 		
 		if(textToShow != null)
 		{
-			Font font = Font.font(fontVorgabe.getName(), FontWeight.BOLD, scaleableFontSize.get());
+			Font font = Font.font(fontBase.getName(), FontWeight.BOLD, scaleableFontSize.get());
 			Canvas canvas = new Canvas(size, size);
 			//muss transparenz sein wegen der möglichen Schaltung
 			canvas.setMouseTransparent(true);
@@ -331,36 +352,23 @@ public class ContentRegion extends Region
 		}
 	}
 	
-
-	public void setMouseEvent(Command commandValue) 
-	{
-		//TODO effekte am bild oder Text?
-		if(commandValue == Command.BUTTON_PRESSED)
-		{
-			
-			
-		
-		}
-		else if(commandValue == Command.BUTTON_RELEASED)
-		{
-		
-		
-		}
-		
-	}
-	
-
 	public DoubleProperty getFontSize()
 	{
 		return scaleableFontSize;
 	}
-	
-	
+	/**
+	 * set a new text color; the changement for repaint must be triggered from outside
+	 * @param textColor
+	 */
 	public void setTextColor(Color textColor)
 	{
 		this.textColor = textColor;
 	}
 	
+	/**
+	 * set a new pressed text color; the changement for repaint must be triggered from outside
+	 * @param textPressedColor
+	 */
 	public void setTextColorPressed(Color textPressedColor)
 	{
 		this.textPressedColor = textPressedColor;

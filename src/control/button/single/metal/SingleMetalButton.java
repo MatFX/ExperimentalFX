@@ -2,6 +2,7 @@ package control.button.single.metal;
 
 import java.util.HashMap;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -13,11 +14,14 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.text.Text;
 
+/**
+ * a simple button with a lightly metal style at the edge
+ * @author m.goerlich
+ *
+ */
 public class SingleMetalButton extends Region
 {
-	
 	public enum Command
 	{
 		BUTTON_PRESSED, BUTTON_RELEASED,
@@ -28,11 +32,19 @@ public class SingleMetalButton extends Region
 		RESET_COMMAND;
 	}
 	
+	/**
+	 * map index for the different stop arrays
+	 * @author m.goerlich
+	 *
+	 */
 	public enum StopIndizes
 	{
 		GRUNDFLAECHE, GRUNDFLAECHE_GLANZ, INLAY_GLANZ1, INLAY_GLANZ2, INNERSHADOW_STRONG, INNERSHADOW_LIGHT;
 	}
 	
+	/**
+	 * storage for the different stop arrays
+	 */
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
 	private Circle grundflaeche, grundflaecheGlanz, inlay, inlayGlanz1, innerShadowStrong, innerShadowLight;
@@ -41,6 +53,10 @@ public class SingleMetalButton extends Region
 	
 	private double centerX = 20, centerY = 20;
 	
+	/**
+	 * the design size from illustrator
+	 */
+	@SuppressWarnings("unused")
 	private double width = 40, height = 40;
 	
 	/**
@@ -50,19 +66,26 @@ public class SingleMetalButton extends Region
 
 	/**
 	 * kann sich verändern, evtl brauche ich diese Variable für die Anpassung der Farbverläufe...mal sehen.
+	 * <br>starting inlay color from the button; it's changeable {@link #setInlayFill(Color)}
 	 */
 	private Color inlayColor = Color.web("#707070");
 	
 	/**
 	 * Ein Bereich der individuell mit Inhalt befüllt werden kann
+	 * <br>A area to set text or image on the button
 	 */
 	private ContentRegion contentRegion;
+	
+	/**
+	 * Kommandos können hier empfangen werden (listener anschluss)
+	 * <br>to listen from outside connect via {@link #getCommandProperty()}
+	 */
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
 
 	
 	public SingleMetalButton()
 	{
 		super();
-		
 		this.initGraphics();
 		this.registerListener();
 		
@@ -71,15 +94,12 @@ public class SingleMetalButton extends Region
 	}
 
 
-	private void registerListener() {
+	private void registerListener() 
+	{
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
-		//TODO spätere Text fehlt noch oder Symbol
 		grundflaeche.setOnMousePressed(e -> setNodeMouseEvent(grundflaeche, Command.BUTTON_PRESSED, e));
 		grundflaeche.setOnMouseReleased(e -> setNodeMouseEvent(grundflaeche,Command.BUTTON_RELEASED, e));
-		
-		
-	
 	}
 	
 
@@ -88,6 +108,7 @@ public class SingleMetalButton extends Region
 		if(commandValue == Command.BUTTON_PRESSED)
 		{
 			isMousePressed = true;
+			//ui stuff
 			innerShadowStrong.setOpacity(1.0);
 			innerShadowLight.setOpacity(0.0);
 			contentRegion.setMousePressed();
@@ -96,11 +117,13 @@ public class SingleMetalButton extends Region
 		else if(commandValue == Command.BUTTON_RELEASED)
 		{
 			isMousePressed = false;
+			//ui stuff
 			innerShadowStrong.setOpacity(0.0);
 			innerShadowLight.setOpacity(1.0);
 			contentRegion.setMouseReleased();
 		}
-		contentRegion.setMouseEvent(commandValue);
+		
+		commandProperty.set(commandValue);
 		e.consume();
 	}
 
@@ -200,12 +223,9 @@ public class SingleMetalButton extends Region
 		
 		stopMap.put(StopIndizes.INNERSHADOW_LIGHT, stopArray);
 		
-		//bei Start nicht befüllt
+		//to visulize text or image on the button
 		contentRegion = new ContentRegion();
 		contentRegion.setMouseTransparent(true);
-		//TODO raus
-		//	contentRegion.setStyle("-fx-background-color: #FF0000");
-		
 		
 		this.getChildren().addAll(grundflaeche, grundflaecheGlanz, inlay, contentRegion, inlayGlanz1, inlayGlanz2, innerShadowStrong, innerShadowLight);
 	}
@@ -276,9 +296,6 @@ public class SingleMetalButton extends Region
 		inlayGlanz2.setRadiusX(radius * 0.71197915);
 		inlayGlanz2.setRadiusY(radius * 0.61041665 );
 		
-		//TODO linearGradient
-		//x1="13.7767458" y1="6.3435564" x2="26.3401184" y2="22.9142132"
-		
 		//x1 20 - 13.7767458 = 6,2232542 = 6,2232542 = 100/40 * 6,2232542 = 15,5581355 = 0.155581355
 		//y1 20 - 6.3435564 = 13,6564436 = 100/40 * 13,6564436 = 34,141109 = 0.34141109
 		//x2 26.3401184 -20 = 6.3401184 = 100/40 * 6.3401184 = 15,850296 = 0.15850296
@@ -326,9 +343,6 @@ public class SingleMetalButton extends Region
 			innerShadowLight.setOpacity(1.0);
 		}
 		
-		
-		
-		System.out.println("size " + size);
 		//Die Contentsize war im Orignal 20x20 also die hälfte zur Gesamtfläche
 		//x = 10 / 100 / 40 * 10 = 0.25
 		//y = 10 wie oben
@@ -338,7 +352,7 @@ public class SingleMetalButton extends Region
 		double contentSize = size / 2;
 		
 		
-		
+		//at last change the size from the content region
 		contentRegion.setNewSize(contentSize);
 	}
 	
@@ -352,21 +366,34 @@ public class SingleMetalButton extends Region
 		inlay.setFill(inlayColor);
 	}
 
-
+	/**
+	 * set a image on the content region
+	 * @param imageForView
+	 */
 	public void setImageView(Image imageForView)
 	{
 		contentRegion.setImageView(imageForView);
 	}
 
-
+	/**
+	 * set a text value on the content region
+	 * @param textToShow
+	 */
 	public void setText(String textToShow) {
 		contentRegion.setText(textToShow);
 		
 	}
 
-
 	public ContentRegion getContentRegion() {
 		return contentRegion;
+	}
+
+	/**
+	 * to connect listener from outside and react on the commands
+	 * @return
+	 */
+	public SimpleObjectProperty<Command> getCommandProperty(){
+		return commandProperty;
 	}
 	
 

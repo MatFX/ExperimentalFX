@@ -1,6 +1,10 @@
 package control.button.single.metal;
 
+
+import control.button.single.metal.SingleMetalButton.Command;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,16 +19,17 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import tools.helper.ImageLoader;
 
+/**
+ * sample application for the button
+ * @author m.goerlich
+ *
+ */
 public class TestSingleMetalButton extends Application 
 {
 	
 	private static int imgNumber = 0;
 	
 	private static int textNumber = 0;
-	
-	
-	
-	
 	
 	@Override
 	public void start(Stage stage) 
@@ -35,19 +40,42 @@ public class TestSingleMetalButton extends Application
 		 pane.setPadding(new Insets(5,5,5,5));
 		 pane.setStyle("-fx-background-color: #444444");
 		 
-		 final Label kommandoLabel = new Label();
-		 kommandoLabel.setStyle("-fx-text-fill: #FFFFFF");
+		 final Label commandoLabel = new Label();
+		 commandoLabel.setStyle("-fx-text-fill: #FFFFFF");
 		 
 		 
 		 SingleMetalButton smb = new SingleMetalButton();
-		
-		 
+		 //listening on the command property and do anything
+		 smb.getCommandProperty().addListener(new ChangeListener<Command>(){
+
+				@Override
+				public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue)
+				{
+					
+					if(newValue != Command.RESET_COMMAND)
+					{
+						switch(newValue)
+						{
+							case BUTTON_PRESSED:
+								//do anything
+								break;
+							case BUTTON_RELEASED:
+								//do anything
+								break;
+						}
+						commandoLabel.setText(newValue.toString());
+						smb.getCommandProperty().set(Command.RESET_COMMAND);
+					}
+					
+					
+				}
+			});
 		 pane.setCenter(smb);
 		 
 			
 		 VBox commandArea = new VBox(2);
 	     commandArea.setPadding(new Insets(5, 5, 5, 5));
-	     commandArea.getChildren().addAll(kommandoLabel);
+	     commandArea.getChildren().addAll(commandoLabel);
 	     pane.setBottom(commandArea);
 		 
 	     VBox vBox = new VBox(5);
