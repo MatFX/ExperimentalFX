@@ -73,18 +73,23 @@ public class TestSingleMetalButton extends Application
 				{
 					case 0:
 						smb.setText(">");
+						smb.setImageView(null);
 						break;
 					case 1:
 						smb.setText("<");
+						smb.setImageView(null);
 						break;
 					case 2:
 						smb.setText("push");
+						smb.setImageView(null);
 						break;
 					case 3:
 						smb.setText("fire");
+						smb.setImageView(null);
 						break;
 					case 4:
 						smb.setText("long text");
+						smb.setImageView(null);
 						break;
 				}
 				textNumber++;
@@ -107,18 +112,23 @@ public class TestSingleMetalButton extends Application
 					{
 						case 0:
 							smb.setImageView(ImageLoader.getImageFromIconFolder("man"));
+							smb.setText(null);
 							break;
 						case 1:
 							smb.setImageView(ImageLoader.getImageFromIconFolder("runningMan"));
+							smb.setText(null);
 							break;
 						case 2:
 							smb.setImageView(ImageLoader.getImageFromIconFolder("schulterzucken"));
+							smb.setText(null);
 							break;
 						case 3:
 							smb.setImageView(ImageLoader.getImageFromIconFolder("schloss_schwarz"));
+							smb.setText(null);
 							break;
 						case 4:
 							smb.setImageView(ImageLoader.getImageFromIconFolder("img_temperatur"));
+							smb.setText(null);
 							break;
 					
 					}
@@ -134,6 +144,38 @@ public class TestSingleMetalButton extends Application
 				}
 				 
 			 });
+		 Label textColorLabel =  new Label("text color:");
+		 textColorLabel.setStyle("-fx-text-fill: #FFFFFF");
+		 
+		 
+		 final ColorPicker textColorPicker = new ColorPicker();
+		 textColorPicker.setValue(Color.web("#0096ff"));
+		 textColorPicker.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override 
+	            public void handle(ActionEvent e)
+	            {
+	            	smb.getContentRegion().setTextColor(textColorPicker.getValue());
+	            	smb.getContentRegion().setMouseReleased();
+	            }
+	        });
+		 
+		 
+		
+		 Label textPressedColorLabel = new Label("pressed color:");
+		 textPressedColorLabel.setStyle("-fx-text-fill: #FFFFFF");
+		 
+		 final ColorPicker pressedColorPicker = new ColorPicker();
+		 pressedColorPicker.setValue(Color.web("#0074c5"));
+		 pressedColorPicker.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override 
+	            public void handle(ActionEvent e)
+	            {
+	            	smb.getContentRegion().setTextColorPressed(pressedColorPicker.getValue());
+	            	
+	            }
+	        });
+		 
+		 
 	     
 		 Button reset = new Button("resetView");
 		 reset.setOnAction(new EventHandler<ActionEvent>() {
@@ -148,7 +190,9 @@ public class TestSingleMetalButton extends Application
 			 });
 	     
 	     
-	     vBox.getChildren().addAll(colorPicker, textButton, imgButton, reset);
+	     vBox.getChildren().addAll(colorPicker, textButton, imgButton, textColorLabel , textColorPicker,
+	    		 textPressedColorLabel, pressedColorPicker , reset);
+	     
 	     pane.setRight(vBox);
 	    
 		
@@ -156,8 +200,8 @@ public class TestSingleMetalButton extends Application
 	    
 		 stage.setTitle("Single metal button");
 		 stage.setScene(scene);
-		 stage.setWidth(400);
-		 stage.setHeight(270);
+		 stage.setWidth(500);
+		 stage.setHeight(350);
 		 stage.show();
 		
 	}

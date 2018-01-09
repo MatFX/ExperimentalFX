@@ -363,6 +363,11 @@ public class SingleMetalButton extends Region
 		contentRegion.setText(textToShow);
 		
 	}
+
+
+	public ContentRegion getContentRegion() {
+		return contentRegion;
+	}
 	
 
 }

@@ -1,15 +1,16 @@
 package control.button.single.metal;
 
 import control.button.single.metal.SingleMetalButton.Command;
-import control.universaldisplay.SensorValue;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
@@ -19,7 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
+
 
 /**
  * Content container for different viewable things a.e ImageView, Text ...
@@ -42,6 +43,8 @@ public class ContentRegion extends Region
 	private Color textColor = Color.web("#0096ff"); 
 	
 	private Color textPressedColor = Color.web("#0074c5");
+	
+	private Image imageToShow;
 	
 	public ContentRegion()
 	{
@@ -89,18 +92,17 @@ public class ContentRegion extends Region
 
 	public void setImageView(Image imageForView) 
 	{
-		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null)
+		this.imageToShow = imageForView;
+		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null && this.getChildren().get(0) instanceof ImageView)
 			this.getChildren().remove(0);
 		if(imageForView != null)
 		{
-
-			ImageView imageView = new ImageView(imageForView);
+			ImageView imageView = new ImageView(imageToShow);
 			imageView.setPreserveRatio(true);
 			imageView.setFitHeight(size);
 			imageView.setFitHeight(size);
 			imageView.setMouseTransparent(true);
 			this.getChildren().add(imageView);
-			
 		}
 		
 		
@@ -170,7 +172,7 @@ public class ContentRegion extends Region
 	public void setText(String textToShow) 
 	{
 		this.textToShow = textToShow;
-		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null)
+		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null && this.getChildren().get(0) instanceof Canvas)
 			this.getChildren().remove(0);
 		
 		if(textToShow != null)
@@ -228,9 +230,7 @@ public class ContentRegion extends Region
 	
 	public void setMousePressed()
 	{
-		//TODO image view fehlt noch
-		
-		
+		//egal was war das child muss raus
 		if(this.getChildren().size() > 0 && this.getChildren().get(0) != null)
 			this.getChildren().remove(0);
 		
@@ -265,11 +265,20 @@ public class ContentRegion extends Region
 			gc.fillText(textToShow, valueX, komischesY);
 			this.getChildren().add(canvas);
 		}
-		
-		
-		
-		
-		
+		else if(imageToShow != null)
+		{
+			//dann das image icon verkleinert darstellen
+			
+			ImageView imageView = new ImageView(imageToShow);
+			imageView.setPreserveRatio(true);
+			imageView.setFitHeight(size -(size *0.1));
+			imageView.setFitHeight(size- (size *0.1));
+			//repositioning 
+			imageView.setLayoutX((size * 0.1)/2d);
+			imageView.setLayoutY((size * 0.1)/2d);
+			imageView.setMouseTransparent(true);
+			this.getChildren().add(imageView);
+		}
 	}
 	
 	public void setMouseReleased()
@@ -307,6 +316,18 @@ public class ContentRegion extends Region
 			
 			gc.fillText(textToShow, valueX, komischesY);
 			this.getChildren().add(canvas);
+		}
+		else if(imageToShow != null)
+		{
+			//dann das image icon verkleinert darstellen
+			
+			ImageView imageView = new ImageView(imageToShow);
+			imageView.setPreserveRatio(true);
+			imageView.setFitHeight(size);
+			imageView.setFitHeight(size);
+			imageView.setMouseTransparent(true);
+			this.getChildren().add(imageView);
+			
 		}
 	}
 	
