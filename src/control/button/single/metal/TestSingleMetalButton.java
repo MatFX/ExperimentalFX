@@ -139,23 +139,23 @@ public class TestSingleMetalButton extends Application
 					switch(imgNumber)
 					{
 						case 0:
-							smb.setImageView(ImageLoader.getImageFromIconFolder("man"));
+							smb.setImageView(ImageLoader.getImageFromIconFolder("hi_keineBewegung"));
 							smb.setText(null);
 							break;
 						case 1:
-							smb.setImageView(ImageLoader.getImageFromIconFolder("runningMan"));
+							smb.setImageView(ImageLoader.getImageFromIconFolder("hi_bewegung"));
 							smb.setText(null);
 							break;
 						case 2:
-							smb.setImageView(ImageLoader.getImageFromIconFolder("schulterzucken"));
+							smb.setImageView(ImageLoader.getImageFromIconFolder("hi_schulterZucken"));
 							smb.setText(null);
 							break;
 						case 3:
-							smb.setImageView(ImageLoader.getImageFromIconFolder("schloss_schwarz"));
+							smb.setImageView(ImageLoader.getImageFromIconFolder("hi_schloss"));
 							smb.setText(null);
 							break;
 						case 4:
-							smb.setImageView(ImageLoader.getImageFromIconFolder("img_temperatur"));
+							smb.setImageView(ImageLoader.getImageFromIconFolder("hi_temp"));
 							smb.setText(null);
 							break;
 					
