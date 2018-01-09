@@ -1,10 +1,12 @@
 package control.universaldisplay2;
 
+import java.net.MalformedURLException;
+import java.util.List;
+
 import control.button.combined.CombinedThreeButtonControl;
 import control.button.combined.CombinedThreeButtonControl.Command;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,10 +14,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import tools.helper.CSSContainer;
+import tools.helper.ResourceLoader;
 
 public class StartUDC2 extends Application
 {
@@ -26,7 +28,9 @@ public class StartUDC2 extends Application
 	public void start(Stage stage) 
 	{
 		 BorderPane pane = new BorderPane();
+		 pane.setPadding(new Insets(10,10,10,10));
 		 pane.setStyle("-fx-background-color: #444444");
+		 //pane.setBorder(value);
 		 
 		 final Label kommandoLabel = new Label();
 		 kommandoLabel.setStyle("-fx-text-fill: #FFFFFF");
@@ -101,11 +105,39 @@ public class StartUDC2 extends Application
 	    
 		
 	     Scene scene = new Scene(pane);
+	   //  scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+	     
 	    
+	     
+	     try 
+	     {
+			List<CSSContainer> cssList = ResourceLoader.getGlobalCSSContainerList();
+			System.out.println("list size " + cssList.size());
+			for(int i = 0; i < cssList.size(); i++)
+			{
+				System.out.println("cssList " + cssList.get(i).toString());
+				
+				
+			}
+			
+			CSSContainer cssContainer = null;
+			if(cssList != null && cssList.size() > 0)
+				cssContainer = cssList.get(0);
+			
+			if(cssContainer != null)
+				scene.getStylesheets().setAll(cssContainer.getUrl().toExternalForm());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	     
+	     
+	    
+
 		 stage.setTitle("UniversalDisplayControl 2");
 		 stage.setScene(scene);
-		 stage.setWidth(400);
-		 stage.setHeight(266);
+		 stage.setWidth(525);
+		 stage.setHeight(200);
 		 stage.show();
 		
 	}

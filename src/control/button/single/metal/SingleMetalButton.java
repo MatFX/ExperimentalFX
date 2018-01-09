@@ -346,10 +346,18 @@ public class SingleMetalButton extends Region
 		//Die Contentsize war im Orignal 20x20 also die hälfte zur Gesamtfläche
 		//x = 10 / 100 / 40 * 10 = 0.25
 		//y = 10 wie oben
-		contentRegion.setLayoutX(centerX - (size * 0.25));
-		contentRegion.setLayoutY(centerY - (size * 0.25));
+		//contentRegion.setLayoutX(centerX - (size * 0.25));
+		//contentRegion.setLayoutY(centerY - (size * 0.25));
 		
-		double contentSize = size / 2;
+		//Test mit 30x30  => 100/40 * 15 = 
+		contentRegion.setLayoutX(centerX - (size * 0.375));
+		contentRegion.setLayoutY(centerY - (size * 0.375));
+		
+		//old size from 20x20
+		//double contentSize = size / 2;
+		
+		//30x30
+		double contentSize = size * .75;
 		
 		
 		//at last change the size from the content region
