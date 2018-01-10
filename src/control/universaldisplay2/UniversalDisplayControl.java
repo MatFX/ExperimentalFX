@@ -1,14 +1,21 @@
 package control.universaldisplay2;
 
+import java.util.HashMap;
+import java.util.List;
+
 import control.button.single.metal.SingleMetalButton;
+import control.button.single.metal.SingleMetalButton.Command;
+import control.universaldisplay.SensorValue;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import tools.helper.ImageLoader;
+
 
 public class UniversalDisplayControl extends GridPane
 {
@@ -16,28 +23,36 @@ public class UniversalDisplayControl extends GridPane
 	
 	//private CombinedThreeButtonControl combined;
 	
-	private SingleMetalButton smbViewLeft, smbViewRight;
+	private SingleMetalButton smbViewLeft, smbAutoView, smbViewRight;
 	
-	private SingleMetalButton plus, minus;
+	private SingleMetalButton plus, minus, sendValue;
 	
-	private SingleMetalButton presetLeft, presetRight, sendValue;
+	private SingleMetalButton presetLeft, presetRight, sendPreset;
 	
 	private Color textColor = Color.web("#4d4d4d");
 	
 	private Color textPressedColor = Color.web("#333333");
 	
-	public UniversalDisplayControl()
+	private HashMap<Integer, List<SensorValue>> sensorMap;
+	
+	
+	public UniversalDisplayControl(HashMap<Integer, List<SensorValue>> sensorMap)
 	{
 		super();
+		
+		this.setGridLinesVisible(true);
+		this.sensorMap = sensorMap;
+		
 		this.setPadding(new Insets(10, 10, 10, 10));
 		this.setHgap(10);
 		this.setVgap(10);
 		this.setPrefWidth(75);
 		
-		//combined = new CombinedThreeButtonControl();
-		//combined.resize(130, 55);
 		displayLCD = new DisplayLCD();
 		
+		displayLCD.setMajorValue(sensorMap.get(StartUDC2.TEMPERATURE).get(0));
+		displayLCD.setMinorValue(sensorMap.get(StartUDC2.TEMPERATURE).get(1));
+		displayLCD.repaintValues();
 		//wir benötigen ein Display in der linken hälfte 
 		
 		//auf der rechten seite werden die Buttons abgelegt
@@ -47,8 +62,16 @@ public class UniversalDisplayControl extends GridPane
 		col1.setPercentWidth(75);
 		ColumnConstraints col2 = new ColumnConstraints();
 		
+		RowConstraints rc = new RowConstraints();
+		rc.setVgrow(Priority.ALWAYS);
+		
 		this.getColumnConstraints().addAll(col1, col2);
-		this.add(displayLCD, 0, 0, 1, 3); 
+		
+		
+		
+		
+		this.getRowConstraints().addAll(rc);
+		this.add(displayLCD, 0, 0, 1, 4); 
 		
 		
 		
@@ -59,6 +82,12 @@ public class UniversalDisplayControl extends GridPane
 		smbViewLeft.setMinWidth(38);
 		smbViewLeft.setMinHeight(38);
 		
+		smbAutoView = new SingleMetalButton();
+		smbAutoView.getContentRegion().setTextColor(textColor);
+		smbAutoView.getContentRegion().setTextColorPressed(textPressedColor);
+		smbAutoView.setText("A");
+		smbAutoView.setMinWidth(38);
+		smbAutoView.setMinHeight(38);
 		
 		smbViewRight = new SingleMetalButton();
 		smbViewRight.getContentRegion().setTextColor(textColor);
@@ -67,8 +96,9 @@ public class UniversalDisplayControl extends GridPane
 		smbViewRight.setMinWidth(38);
 		smbViewRight.setMinHeight(38);
 		
-		this.add(smbViewLeft, 1, 0, 1, 1);
-		this.add(smbViewRight, 2, 0, 1, 1);
+		this.add(smbViewLeft, 1, 1, 1, 1);
+		this.add(smbAutoView, 2,  1, 1, 1);
+		this.add(smbViewRight, 3, 1, 1, 1);
 		
 		
 		plus = new SingleMetalButton();
@@ -78,6 +108,14 @@ public class UniversalDisplayControl extends GridPane
 		plus.setMinWidth(38);
 		plus.setMinHeight(38);
 		
+		
+		sendValue = new SingleMetalButton();
+		sendValue.getContentRegion().setTextColor(textColor);
+		sendValue.getContentRegion().setTextColorPressed(textPressedColor);
+		sendValue.setText("°");
+		sendValue.setMinWidth(38);
+		sendValue.setMinHeight(38);
+		
 		minus = new SingleMetalButton();
 		minus.getContentRegion().setTextColor(textColor);
 		minus.getContentRegion().setTextColorPressed(textPressedColor);
@@ -85,8 +123,9 @@ public class UniversalDisplayControl extends GridPane
 		minus.setMinWidth(38);
 		minus.setMinHeight(38);
 		
-		this.add(plus, 1, 1, 1, 1);
-		this.add(minus, 2, 1, 1, 1);
+		this.add(plus, 1, 2, 1, 1);
+		this.add(sendValue, 2, 2, 1, 1);
+		this.add(minus, 3, 2, 1, 1);
 		
 		presetLeft = new SingleMetalButton();
 		presetLeft.getContentRegion().setTextColor(textColor);
@@ -104,19 +143,128 @@ public class UniversalDisplayControl extends GridPane
 		presetRight.setMinHeight(38);
 		
 		
-		sendValue = new SingleMetalButton();
-		sendValue.getContentRegion().setTextColor(textColor);
-		sendValue.getContentRegion().setTextColorPressed(textPressedColor);
-		sendValue.setText("°");
-		//sendValue.setImageView(ImageLoader.getImageFromIconFolder("hi_bewegung"));
-		sendValue.setMinWidth(38);
-		sendValue.setMinHeight(38);
+		sendPreset = new SingleMetalButton();
+		sendPreset.getContentRegion().setTextColor(textColor);
+		sendPreset.getContentRegion().setTextColorPressed(textPressedColor);
+		sendPreset.setText("°");
+		sendPreset.setMinWidth(38);
+		sendPreset.setMinHeight(38);
 		
 		
 
-		this.add(presetLeft, 1, 2, 1, 1);
-		this.add(sendValue, 2, 2, 1, 1);
-		this.add(presetRight, 3, 2, 1, 1);
+		this.add(presetLeft, 1, 3, 1, 1);
+		this.add(sendPreset, 2, 3, 1, 1);
+		this.add(presetRight, 3, 3, 1, 1);
+		
+		registerCommandListener();
+		
+	}
+
+	private void registerCommandListener() 
+	{
+		smbViewLeft.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("view nach links");
+			}
+			
+		});
+		
+		smbAutoView.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("view wechselt automatisch");
+			}
+			
+		});
+		
+		
+		smbViewRight.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("view nach rechts");
+			}
+			
+		});
+		
+		plus.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("sollwert erhöhen");
+			}
+			
+		});
+		
+		sendValue.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("sollwert senden");
+			}
+			
+		});
+		
+		minus.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("sollwert verringern");
+			}
+			
+		});
+		
+		presetLeft.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("voreinstellung links");
+			}
+			
+		});
+		
+		presetRight.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("voreinstellung rechts");
+			}
+			
+		});
+		
+		
+		sendPreset.getCommandProperty().addListener(new ChangeListener<Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) 
+			{
+				System.out.println("sende voreinstellung");
+			}
+			
+		});
+		
+		
+		
 	}
 
 	

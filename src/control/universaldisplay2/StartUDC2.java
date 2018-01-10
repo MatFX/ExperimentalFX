@@ -1,10 +1,13 @@
 package control.universaldisplay2;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import control.button.combined.CombinedThreeButtonControl;
 import control.button.combined.CombinedThreeButtonControl.Command;
+import control.universaldisplay.SensorValue;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,9 +27,30 @@ public class StartUDC2 extends Application
 	private UniversalDisplayControl udc;
 	
 
+	public static final int TEMPERATURE = 0;
+	
+	public static final int HUMIDITY = 1;
+	public static final int BRIGHTNESS = 2;
+	
+	private HashMap<Integer, List<SensorValue>> sensorMap = new HashMap<Integer, List<SensorValue>>();
 	@Override
 	public void start(Stage stage) 
 	{
+		
+		List<SensorValue> sensorList = new ArrayList<SensorValue>();
+		sensorList.add(new SensorValue(25, 0, 40, "°C", "img_temperatur"));
+		sensorList.add(new SensorValue(22.5, 8, 40, "°C", "", new double[]{21.5, 24.5, 30}));
+		sensorMap.put(TEMPERATURE, sensorList);
+		
+		sensorList = new ArrayList<SensorValue>();
+		sensorList.add(new SensorValue(25.4, 0, 100, "%", "img_feuchtigkeit"));
+		sensorMap.put(HUMIDITY, sensorList);
+		
+		sensorList = new ArrayList<SensorValue>();
+		sensorList.add(new SensorValue(2500, 0, 3000, "Lux", "img_helligkeit"));
+		sensorMap.put(BRIGHTNESS, sensorList);
+		
+		
 		 BorderPane pane = new BorderPane();
 		 pane.setPadding(new Insets(10,10,10,10));
 		 pane.setStyle("-fx-background-color: #444444");
@@ -36,40 +60,7 @@ public class StartUDC2 extends Application
 		 kommandoLabel.setStyle("-fx-text-fill: #FFFFFF");
 			
 		 
-		 udc = new UniversalDisplayControl();
-		 //HBox.setHgrow(udc, Priority.ALWAYS);
-		// VBox.setVgrow(udc, Priority.ALWAYS);
-		// udc.setMaxHeight(Double.MAX_VALUE);
-		// udc.setMaxWidth(Double.MAX_VALUE);
-		// udc.setMinHeight(Double.MAX_VALUE);
-		// udc.setMinWidth(Double.MAX_VALUE);
-		 
-		 /*
-		 combinedButton.getCommandProperty().addListener(new ChangeListener<Command>(){
-
-			@Override
-			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue)
-			{
-				
-				if(newValue != Command.RESET_COMMAND)
-				{
-					switch(newValue)
-					{
-						case LEFT_BUTTON:
-						case RIGHT_BUTTON:
-						case MIDDLE_BUTTON:
-						
-							break;
-					}
-					
-					
-					kommandoLabel.setText(newValue.toString());
-					combinedButton.getCommandProperty().set(Command.RESET_COMMAND);
-				}
-				
-				
-			}
-		});*/
+		 udc = new UniversalDisplayControl(sensorMap);
 		 
 		 pane.setCenter(udc);
 		 
@@ -136,8 +127,8 @@ public class StartUDC2 extends Application
 
 		 stage.setTitle("UniversalDisplayControl 2");
 		 stage.setScene(scene);
-		 stage.setWidth(525);
-		 stage.setHeight(200);
+		 stage.setWidth(550);
+		 stage.setHeight(240);
 		 stage.show();
 		
 	}
