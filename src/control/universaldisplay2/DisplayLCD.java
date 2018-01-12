@@ -3,6 +3,13 @@ package control.universaldisplay2;
 import control.dimmer.OptionalImageBox;
 import control.dimmer.IActivationIcon.Pos;
 import control.universaldisplay.SensorValue;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WritableDoubleValue;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,6 +24,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import tools.helper.ImageLoader;
 import tools.helper.NinePatchLoader;
 
@@ -39,7 +48,14 @@ public class DisplayLCD extends GridPane
 	private SensorValue minorValue;
 	
 	private Canvas presetCanvas, valueCanvas, setpointCanvas;
-		
+	
+	
+	private Font fontBase = null;
+	
+	private DoubleProperty scaleableFontSize = null;
+	
+	private static final double GAP_PERCENT = 0.1;
+	
 	public DisplayLCD()
 	{
 		super();
@@ -86,7 +102,13 @@ public class DisplayLCD extends GridPane
 		
 	}
 
-	private void initGraphics() {
+	private void initGraphics() 
+	{
+		fontBase = new Font("Verdana",12);
+		scaleableFontSize = new SimpleDoubleProperty(12);
+		
+		
+		//TODO raus
 		this.setGridLinesVisible(true);
 		Image image = NinePatchLoader.getNinePatchLoader("lcd_schwarz");
 		
@@ -110,9 +132,9 @@ public class DisplayLCD extends GridPane
 		ColumnConstraints col1 = new ColumnConstraints();
 		col1.setHgrow(Priority.ALWAYS);
 		
-		col1.setPercentWidth(50);
+	//	col1.setPercentWidth(50);
 		ColumnConstraints col2 = new ColumnConstraints();
-		col2.setPercentWidth(50);
+	//	col2.setPercentWidth(50);
 		
 		headlineValue = new Label("headlineValue");
 		headlineSetpoint = new Label("headlineSetpoint");
@@ -122,7 +144,7 @@ public class DisplayLCD extends GridPane
 		//setpointLabel = new Label();
 		//presetLabel = new Label();
 		
-		optionalImageBox = new OptionalImageBox();
+		
 		
 		presetCanvas = new Canvas();
 		valueCanvas =  new Canvas();
@@ -158,7 +180,21 @@ public class DisplayLCD extends GridPane
 		
 		RowConstraints rc5 = new RowConstraints();
 		
+	
+		
+			
+		
+		
 		this.getRowConstraints().addAll(rc1, rc2, rc3, rc4, rc5);
+		rc2.prefHeightProperty().addListener(new ChangeListener<Number>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				System.out.println("newValue " + newValue.toString());
+				
+			}
+			
+		});
 		this.getColumnConstraints().addAll(col1, col2);
 		
 	}
@@ -183,20 +219,90 @@ public class DisplayLCD extends GridPane
 		
 	}
 
-	private void drawTextValues(boolean b) 
+	private void drawTextValues(boolean clearing) 
 	{
 		//TODO die size muss zu beginn schon stehen
+	
+		double initalSize =  getWidth() > getHeight() ? getHeight() : getWidth();
 		
-		System.out.println("valueCanvas " + valueCanvas.getWidth());
+		double w = valueCanvas.getWidth();
+		double h = valueCanvas.getHeight();
 		//valueCanvas.setWidth(50);
 		//valueCanvas.setHeight(50);
 		GraphicsContext gc = valueCanvas.getGraphicsContext2D();
-		gc.clearRect(0, 0, valueCanvas.getWidth(), valueCanvas.getHeight());
+		
+		Font font = Font.font(fontBase.getName(), scaleableFontSize.get());
+		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
+		if(clearing)
+		{
+		
+			gc.clearRect(0, 0, w, h);
+		}
+		
+		//TODO raus
 		gc.setFill(Color.RED);
 		gc.fillRect(0, 0, valueCanvas.getWidth(), valueCanvas.getHeight());
-	
+			
+		//text color
+		gc.setFill(Color.web("#00000080"));
+		
+		if(majorValue != null)
+		{
+			//initial
+			 //Ermittlung nach dem maximal möglichen Zustand
+			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.majorValue);
+			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
+			 {
+				 double tempSize = getGreaterFont(initalSize * 0.12, w, h, majorValue);
+					if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+				 
+			 }
+			 else
+			 {
+				 double tempSize = getLesserFont(getFontSize().get(), w, h, majorValue);
+					if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+			 }
+			 font = Font.font(fontBase.getName(), getFontSize().get());
+		}
+		gc.setFont(font);
+		
+		Text measuringUnit = new Text();
+		if(majorValue == null)
+			measuringUnit.setText("");
+		else
+			measuringUnit.setText(" "+majorValue.getMeasurementUnit());
+		measuringUnit.setFont(font);
+		
+		double masseinheitX = w - (measuringUnit.getLayoutBounds().getWidth());// + (gaugeSize * 0.015635));
+		
+		double haelfte =  measuringUnit.getLayoutBounds().getHeight() / 2d;
+		double masseinheitY = h/2d +  (haelfte/2d);
+		gc.fillText(measuringUnit.getText(), masseinheitX, masseinheitY);
+			
+		
+		Text valueField = new Text();
+		
+		if(majorValue == null)
+			valueField.setText("");
+		else
+			valueField.setText(String.format("%.1f", majorValue.getCurrentValue()));
+		valueField.setFont(font);
+		
+		double valueX = masseinheitX - (valueField.getLayoutBounds().getWidth());//  + (gaugeSize * 0.015635));
+		double valueY = masseinheitY;
+		
+		gc.setFont(font);
+		gc.fillText(valueField.getText(), valueX, valueY);
 		
 	}
+
+	public DoubleProperty getFontSize()
+	{
+		return scaleableFontSize;
+	}
+	
 
 	private void drawSecondTextValue(boolean b) 
 	{
@@ -223,6 +329,98 @@ public class DisplayLCD extends GridPane
 	private void drawImages() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	
+
+	protected double getGreaterFont(double fontSize, double w, double h, SensorValue sensorValue)
+	{	
+		double gapBreite = w * getGAPPercent() * 2;
+		double gapHoehe = h * getGAPPercent() * 2;
+		
+		fontSize = fontSize + 1;
+		Bounds futureBounds = textWidth(fontSize, sensorValue);
+		if((futureBounds.getHeight() + gapHoehe) < h && (futureBounds.getWidth() + gapBreite) < w)
+		{
+			return getGreaterFont(fontSize, w, h, sensorValue);
+		}
+		//eines wieder zurück weil die Abfrage nicht gegriffen hat
+		return fontSize-1;
+	}
+
+	protected double getLesserFont(double fontSize, double w, double h, SensorValue sensorValue)
+	{	
+		Bounds futureBounds = textWidth(fontSize, sensorValue);
+		double gapBreite = w * getGAPPercent() * 2;
+		double gapHoehe = h * getGAPPercent() * 2;
+		//wenn eines von beiden über das Ziel hinaus ist, so ist eine kleiner Fontgröße zu ermitteln
+		if((futureBounds.getHeight() + (gapHoehe)) > h || (futureBounds.getWidth() + (gapBreite)) > w)
+		{
+			fontSize = fontSize - 1;
+			if(fontSize <= 0)
+				return 1;
+			return getLesserFont(fontSize, w, h, sensorValue);
+		}
+		return fontSize;
+	}
+	
+	private Bounds textWidth(double size, SensorValue sensorValue)
+	{
+		//hier muss die bounds aufgebaut werden anhand der zwei darzustellenden Werte 
+		
+		String showValue = sensorValue.getCurrentValue() + " " + sensorValue.getMeasurementUnit();
+		
+		if(fontBase == null)
+			fontBase = new Font("Verdana", 12);
+		Text text = new Text(showValue);
+		Font font =  Font.font(fontBase.getFamily(), size);
+        text.setFont(font);
+        return text.getBoundsInLocal();
+	}
+	
+
+	public double getGAPPercent()
+	{
+		return GAP_PERCENT;
+	}
+	
+	private Bounds getMaxTextWidth(Font font, SensorValue valueSensor) 
+	{
+		String minValue = String.format("%.1f", valueSensor.getVon());
+		String maxValue = String.format("%.1f", valueSensor.getBis());
+		
+		String measuringUnit = " " + valueSensor.getMeasurementUnit();
+		
+		Text valTextMin = new Text(minValue);
+		valTextMin.setFont(font);
+		
+		Bounds valMinBounds = valTextMin.getBoundsInLocal();
+		
+		Text valTextMax = new Text(maxValue);
+		valTextMax.setFont(font);
+		
+		Bounds valMaxBounds = valTextMax.getBoundsInLocal();
+		
+		Text messText = new Text(measuringUnit);
+		messText.setFont(font);
+		
+		Bounds einheitBounds = messText.getBoundsInLocal();
+		
+		double width = valMinBounds.getWidth();
+		if(width < valMaxBounds.getWidth())
+			width = valMaxBounds.getWidth();
+		
+		double height = valMinBounds.getHeight();
+		if(height < valMaxBounds.getHeight())
+			height = valMaxBounds.getHeight();
+		
+		if(height < einheitBounds.getHeight())
+			height = einheitBounds.getHeight();
+		
+		width = width + einheitBounds.getWidth();
+	
+		
+		return new BoundingBox(0,0, width, height);
 	}
 
 

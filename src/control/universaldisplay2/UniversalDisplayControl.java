@@ -13,7 +13,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 
@@ -39,9 +38,38 @@ public class UniversalDisplayControl extends GridPane
 	public UniversalDisplayControl(HashMap<Integer, List<SensorValue>> sensorMap)
 	{
 		super();
-		
-		this.setGridLinesVisible(true);
 		this.sensorMap = sensorMap;
+		this.initGraphics();
+		//TODO weiß nicht
+		this.registerListener();
+		this.resize();
+		
+		
+		registerCommandListener();
+		
+	}
+
+	private void resize() 
+	{
+		double w = this.getWidth();
+		double h = this.getHeight();
+		this.setWidth(w);
+		this.setHeight(h);
+		
+	}
+
+	private void registerListener() 
+	{
+	//	widthProperty().addListener(observable -> resize());
+	//	heightProperty().addListener(observable -> resize());
+	}
+
+	private void initGraphics() 
+	{
+
+		//TODO raus
+		this.setGridLinesVisible(true);
+	
 		
 		this.setPadding(new Insets(10, 10, 10, 10));
 		this.setHgap(10);
@@ -155,8 +183,6 @@ public class UniversalDisplayControl extends GridPane
 		this.add(presetLeft, 1, 3, 1, 1);
 		this.add(sendPreset, 2, 3, 1, 1);
 		this.add(presetRight, 3, 3, 1, 1);
-		
-		registerCommandListener();
 		
 	}
 

@@ -1157,11 +1157,6 @@ public class UniversalDisplay extends Region
 		
 		if(fontVorgabe == null)
 			fontVorgabe = new Font("Verdana", 12);
-		
-		
-		
-		
-		
 		Text text = new Text(showValue);
 		Font font =  Font.font(fontVorgabe.getFamily(), size);
         text.setFont(font);
