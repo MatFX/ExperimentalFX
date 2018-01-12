@@ -1410,6 +1410,7 @@ public class UniversalDisplay extends Region
 			presetIndex = minorValueToShow.getPresetValues().length-1;
 		}
 		drawSecondTextValue(true);
+		restartPresetReset();
 	}
 	
 	private void restartPresetReset() 
