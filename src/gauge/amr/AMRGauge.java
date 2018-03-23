@@ -1,8 +1,11 @@
 package gauge.amr;
 
 import java.util.HashMap;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
-
+import javafx.application.Platform;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -12,6 +15,8 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.transform.Rotate;
 
 
 /**
@@ -23,6 +28,20 @@ public class AMRGauge extends Region
 {
 	private double centerX = 64;
 	private double centerY = 64;
+	
+	private Thread animThread = null;
+	private boolean isAnimation = false;
+	/**
+	 * 
+	 */
+	private double RANGE_MIN = 0D;
+	
+	private double RANGE_MAX = 100D;
+	
+	/**
+	 * starting value
+	 */
+	private double currentValue = 50D;
 	
 	//evtl. hintergrund nicht benötigt
 	private Circle hintergrund;
@@ -48,6 +67,22 @@ public class AMRGauge extends Region
 	private Circle deckflaecheBegrenzer;
 	
 	private Arc segementInlay;
+	
+	
+	private Polygon backgroundNeedle, foregroundNeedle;
+	
+	private Circle backgroundNeedlePick;
+	
+	private DropShadow dropNeedleShadow;
+	
+	/**
+	 * Rotation der Nadel zu Beginn ist der Anfangswert der Rotation 0 und die Nadel steht auf 12 Uhr.
+	 * <br>Eine Bewegung findet von -90° zu +90° statt => 180°
+	 * <br>Ursprünglich waren es drei Rotation Objekte, jedoch brauche ich doch nur eines für alle Nadelkomponenten
+	 */
+	private Rotate needleRotate;
+	
+	
 	
 	//Enums für die gespeicherten Farben
 	public enum StopIndizes
@@ -141,14 +176,23 @@ public class AMRGauge extends Region
 		stopMap.put(StopIndizes.INLAY_SEGMENT, stopArray);
 		segementInlay = new Arc();
 		
+
+		backgroundNeedle = new Polygon();
+		backgroundNeedlePick = new Circle();
+		foregroundNeedle = new Polygon();
+		
+		//preparation needle rotation
+		needleRotate = new Rotate(0);
+		
 		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
-				greenSegment, yellowSegment, redSegment, inlayRand, segementInlay, deckflaecheBegrenzer);
+				greenSegment, yellowSegment, redSegment, inlayRand, segementInlay, backgroundNeedle, backgroundNeedlePick, foregroundNeedle
+				, deckflaecheBegrenzer);
 	}
 	
 
 	private void resize() 
 	{
-		
+	
 		double size  = getWidth() < getHeight() ? getWidth() : getHeight();
 		
 		if(getHeight() > 0)
@@ -269,10 +313,257 @@ public class AMRGauge extends Region
 		//100/64 * 30 = 0.46875
 		deckflaecheBegrenzer.setRadius(radius * 0.46875);
 		
+	
+		
+		drawNeedle(size);
+		//Muss immer gesetzt werden, damit auch die Nadel an der richtigen Position anliegt.
+		this.setCurrentValue(this.currentValue, false);
+		
+	}
+	
+	private void drawNeedle(double gaugeSize)
+	{
+		
+		double radius = gaugeSize / 2d;
+		//nadel beschreibung
+		
+		//canvas muss clearable sein damit später die Nadelbewegung dargestellt werden kann.
+		
+		//breite unteres ende 4px und oberes ende 2px
+		//die Hoehe liegt zu beginn bei 52 wobei 50 nur der Zeiger sind
+		
+		//4px = 100/128 * 4 = 3,125% => 0,03125
+		//2px = 100/128 * 2 = 1,5625% => 0,015625
+		
+		//abzug
+		//1px = 100/128 * 1 = 0,78125 => 0,0078125
+		
+		//hoehe 
+		//52px = 100/128 * 52 = 40,625 = 0.40625
+		
+		//50px = 100/128 * 50 = 39,0625	=> 0.390625
+		
+		//erst die alten entfernen
+		backgroundNeedle.getPoints().clear();
+		
+		backgroundNeedle.getPoints().addAll(new Double[]{
+				//cx - 1, cy - 44
+				centerX - (gaugeSize *  0.0078125) , centerY - (gaugeSize * 0.34375),
+				//cx + 1, cy - 44
+				centerX + (gaugeSize *  0.0078125), centerY - (gaugeSize * 0.34375),
+				  //cx + 2, cy
+				centerX + (gaugeSize *  0.015625), centerY,
+				//cx - 2, cy 
+				centerX - (gaugeSize *  0.015625), centerY,
+			  });
+		backgroundNeedle.setFill(Color.RED);
+		dropNeedleShadow = new DropShadow();
+		dropNeedleShadow.setOffsetY(4.0f);
+		dropNeedleShadow.setColor(Color.web("#6d6d6d"));
+		backgroundNeedle.setEffect(dropNeedleShadow);
+		
+		backgroundNeedlePick.setRadius((radius * 0.015625));
+		
+		backgroundNeedlePick.setCenterX(centerX);
+		backgroundNeedlePick.setCenterY(centerY - (gaugeSize * 0.34375)); 
+		backgroundNeedlePick.setFill(Color.RED);
+		
+		//die forground ist nur eine kleine grafische Abstufung von der Nadel
+		//zu beginn die Points alle löschen
+		foregroundNeedle.getPoints().clear();
+		//44px in der höhe 100/128 * 44 = 34,375% => 0.34375
+		foregroundNeedle.getPoints().addAll(new Double[]{
+				centerX, centerY - (gaugeSize * 0.34375),
+				//2px bei y abstand
+				centerX + (gaugeSize *  0.0078125), centerY - (gaugeSize * 0.015625),
+				centerX -  (gaugeSize *  0.0078125), centerY  - (gaugeSize * 0.015625)
+		});
+		foregroundNeedle.setFill(Color.web("#333333"));
+	}
+
+
+	/**
+	 * Testschleife; Es werden Zufallszahlen ermittelt und dann die Bewegung ausgeführt.
+	 */
+	public void startAnimation() 
+	{
+		if(animThread != null && animThread.isAlive())
+			animThread.stop();
 		
 		
+		isAnimation = true;
+		Runnable runnable = new Runnable(){
+
+			@Override
+			public void run() 
+			{
+				
+				
+				
+				int minValue = (int)RANGE_MIN * 10;
+				int maxValue = (int)RANGE_MAX * 10;
+				
+				//TODO muss noch auseinander gedrösselt werden aus Testbereich und Bereich der auch in der ANwendung
+				//benötigt wird.
+				
+				while(isAnimation)
+				{
+					//wert per Zufall ermitteln ein Wert von rangeMin bis rangeMax
+					Random ran = new Random();
+					int zufallszahl = ran.nextInt((maxValue - minValue) + 1);
+					double neuerWert = (double)zufallszahl / 10D;
+					if(neuerWert != currentValue)
+					{
+						double differenz = 0;
+						double startWert = currentValue;
+						boolean vorwaertsImmer = true;
+						if(currentValue > neuerWert)
+						{
+							differenz = (currentValue - neuerWert);
+							vorwaertsImmer = false;
+						}
+						else
+						{
+							differenz = (neuerWert - currentValue);
+						}
+						differenz = Math.round(differenz * 10D) /10D;
+						double anzahlSchritte = (double) (differenz * 10D);
+						
+						
+						for(int i = 1; i <= anzahlSchritte; i++)
+						{
+							if(vorwaertsImmer)
+								startWert = startWert + 0.1;
+							else
+								startWert = startWert - 0.1;
+							double valueToSet = startWert;
+							
+							Platform.runLater(() -> setCurrentValue(valueToSet, false));
+							try 
+							{
+								TimeUnit.MILLISECONDS.sleep(2);
+							} 
+							catch (InterruptedException e) 
+							{
+								e.printStackTrace();
+							}
+							
+						}
+						Platform.runLater(() -> setCurrentValue(neuerWert, false));
+					}
+					
+					
+					
+					try 
+					{
+						TimeUnit.SECONDS.sleep(2);
+					} 
+					catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					}
+					
+					
+					
+				}
+				
+			}
+			
+		};
+		
+		animThread = new Thread(runnable);
+		animThread.start();
+		
+		
+	
 		
 	}
 
+	public void stopAnimation() 
+	{
+		isAnimation = false;
+		if(animThread != null)
+			animThread.stop();
+	}
+	
+	 public void setCurrentValue(double currentValue, boolean isInit)
+	 {
+		this.currentValue = currentValue;
+		 
+		double percentValueToCalc = (100D / (RANGE_MAX - RANGE_MIN) * currentValue) / 100D;
+		
+		double angleValue = 180 * percentValueToCalc - 90;
+		
+		
+		//gleichen Wert nochmals setzen, damit ein neuzeichnen erzwungen wird.
+		dropNeedleShadow.setOffsetY(4.0f);
+		
+		needleRotate.setAngle(angleValue);
+		needleRotate.setPivotX(centerX);
+		needleRotate.setPivotY(centerY);
+		 
+		
+		//clear ist wichtig, ansonsten wird beim letzten bekannten Punkt die neue Drehung vorgenommen
+		this.backgroundNeedle.getTransforms().clear();
+		this.backgroundNeedlePick.getTransforms().clear();
+		this.foregroundNeedle.getTransforms().clear();
+		
+		this.backgroundNeedle.getTransforms().add(needleRotate);
+		this.backgroundNeedlePick.getTransforms().add(needleRotate);
+		this.foregroundNeedle.getTransforms().add(needleRotate);
+		
+		//Aktualisierung des Textes für die genauere Darstellung
+		//TODO
+		//this.drawTextValues(true);
+					 
+	
+		 
+	 }
+
+
+	public void setNewLowPercentValue(double doubleInPercent)
+	{
+		double newValue = 180d/100d*doubleInPercent;
+		
+		System.out.println("newValue + " + newValue);
+		
+		double invertAngle = 180d-newValue;
+		invertAngle = invertAngle - this.startingAngleYellow;
+		System.out.println("invert " + invertAngle);
+		this.endingAngleYellow = (float)invertAngle;
+		this.resize();
+	}
+
+
+	public void setNewHighPercentValue(double doubleInPercent) 
+	{
+		double newValue = 180d/100d*doubleInPercent;
+		float invertAngle = (float) (180d - newValue);
+		//neuer Wert ist kleiner als der bisherige
+		if(invertAngle < startingAngleYellow)
+		{
+			
+			float diff = startingAngleYellow - invertAngle;
+			//correct the ending angle
+			this.endingAngleYellow = this.endingAngleYellow + diff;
+			
+
+			this.startingAngleYellow = (float)invertAngle;
+			this.resize();
+		}
+		else if(invertAngle > startingAngleYellow)
+		{
+			float diff = invertAngle - startingAngleYellow;
+			
+			this.endingAngleYellow = this.endingAngleYellow - diff;
+
+			this.startingAngleYellow = (float)invertAngle;
+			this.resize();
+		}
+		
+		
+		System.out.println("starting angle " + startingAngleYellow);
+		
+	}
 
 }

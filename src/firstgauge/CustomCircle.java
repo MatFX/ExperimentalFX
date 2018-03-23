@@ -156,6 +156,7 @@ public class CustomCircle extends Region
 
 	public void resize() 
 	{
+		System.out.println("resize ");
 		double size  = getWidth() < getHeight() ? getWidth() : getHeight();
 		
 		double breitenDifferenz = 0, hoehenDifferenz = 0;
