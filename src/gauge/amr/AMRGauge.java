@@ -141,8 +141,6 @@ public class AMRGauge extends Region
 		stopMap.put(StopIndizes.INLAY_SEGMENT, stopArray);
 		segementInlay = new Arc();
 		
-		
-	
 		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
 				greenSegment, yellowSegment, redSegment, inlayRand, segementInlay, deckflaecheBegrenzer);
 	}
