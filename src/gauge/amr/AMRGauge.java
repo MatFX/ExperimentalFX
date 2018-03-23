@@ -82,17 +82,29 @@ public class AMRGauge extends Region
 	 */
 	private Rotate needleRotate;
 	
+	private Circle basisAnzeige, anzeigeGlanzRahmen, anzeigeHintergrund, anzeigeGlanz;
+	
+	
 	
 	
 	//Enums für die gespeicherten Farben
 	public enum StopIndizes
 	{
-		//für die hintergründe
+		/**
+		 * outside border
+		 */
 		RAHMEN_GLANZ,
 		
 		INLAY_BORDER,
 		
-		INLAY_SEGMENT,
+		INLAY_SEGMENT, 
+		
+		/**
+		 * Shiny border for the middle view
+		 */
+		VIEW_BORDER,
+		
+		VIEW_TOP_SHINY;
 	}
 
 	public AMRGauge()
@@ -184,9 +196,42 @@ public class AMRGauge extends Region
 		//preparation needle rotation
 		needleRotate = new Rotate(0);
 		
+		basisAnzeige = new Circle();
+		basisAnzeige.setFill(Color.web("#191919"));
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#FFFFFF")),
+				new Stop(0.5317073, Color.web("#33333300")),
+				new Stop(0.5902743, Color.web("#48484823")),
+				new Stop(0.7116535, Color.web("#7F7F7F6B")),
+				new Stop(0.8838744, Color.web("#D6D6D6D2")),
+				new Stop(0.9602357, Color.web("#FFFFFF"))
+			};
+		stopMap.put(StopIndizes.VIEW_BORDER, stopArray);
+		
+		anzeigeGlanzRahmen = new Circle();
+		
+		anzeigeHintergrund = new Circle();
+		anzeigeHintergrund.setFill(Color.BLACK);
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#9BA38800")),
+				new Stop(0.2615826, Color.web("#9DA58B2F")),
+				new Stop(0.436628, Color.web("#A5AC944E")),
+				new Stop(0.5863504, Color.web("#B1B8A369")),
+				new Stop(0.7217618, Color.web("#C3C8B882")),
+				new Stop(0.8475584, Color.web("#DBDED498")),
+				new Stop(0.964749, Color.web("#F7F7F5AD")),
+				new Stop(0.994382, Color.web("#FFFFFFB3"))
+			};
+		stopMap.put(StopIndizes.VIEW_TOP_SHINY, stopArray);
+		anzeigeGlanz = new Circle();
+		anzeigeGlanz.setOpacity(0.38);
+		
 		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
 				greenSegment, yellowSegment, redSegment, inlayRand, segementInlay, backgroundNeedle, backgroundNeedlePick, foregroundNeedle
-				, deckflaecheBegrenzer);
+				, deckflaecheBegrenzer,
+				basisAnzeige, anzeigeGlanzRahmen, anzeigeHintergrund, anzeigeGlanz);
 	}
 	
 
@@ -313,9 +358,52 @@ public class AMRGauge extends Region
 		//100/64 * 30 = 0.46875
 		deckflaecheBegrenzer.setRadius(radius * 0.46875);
 		
-	
-		
 		drawNeedle(size);
+		
+		
+		basisAnzeige.setCenterX(centerX);
+		basisAnzeige.setCenterY(centerY);
+		//r = 26
+		//100/64 * 26 = 0.40625
+		basisAnzeige.setRadius(radius * 0.40625);
+		
+		//x1="46.0137711" y1="48.12603" x2="81.1387711" y2="79.12603"
+		//x1 64 - 46.0137711 = 17,9862289 = 100/128 * 17,9862289  = 0.14051741328125
+		//y1 64 - 48.12603 =  15,87397 = 100/128 * 15,87397 = 0.124015390625
+		//x2 81.1387711 - 64 = 17,1387711 = 100/128 * 17,1387711 = 0.13389664921875
+		//y2 79.1260- 64 = 15,126 = 100/128 * 15,126 = 11,8171875 = 0.118171875
+		LinearGradient innerViewGradient =  new LinearGradient(centerX - (size *  0.14051741328125) , 
+				centerY - (size * 0.124015390625), 
+				centerX + (size * 0.13389664921875), 
+				centerY + (size * 0.118171875), 
+				false, 
+				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.VIEW_BORDER));
+		
+		anzeigeGlanzRahmen.setCenterX(centerX);
+		anzeigeGlanzRahmen.setCenterY(centerY);
+		
+		//r 26.5
+		//100/64 * 26.5 = 0.4140625
+		anzeigeGlanzRahmen.setRadius(radius * 0.4140625);
+		anzeigeGlanzRahmen.setFill(innerViewGradient);
+		
+		anzeigeHintergrund.setCenterX(centerX);
+		anzeigeHintergrund.setCenterY(centerY);
+		//r = 25
+		//100/64 * 25 = 39,0625
+		anzeigeHintergrund.setRadius(radius * 0.390625);
+		
+		
+		RadialGradient radialAnzeigeGlanz = new RadialGradient(0D, 0D, centerX, centerY, radius * 0.390625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.VIEW_TOP_SHINY));
+		
+		
+		
+		anzeigeGlanz.setCenterX(centerX);
+		anzeigeGlanz.setCenterY(centerY);
+		//100/64 * 25 = 39,0625
+		anzeigeGlanz.setRadius(radius * 0.390625);
+		anzeigeGlanz.setFill(radialAnzeigeGlanz);
+		
 		//Muss immer gesetzt werden, damit auch die Nadel an der richtigen Position anliegt.
 		this.setCurrentValue(this.currentValue, false);
 		
