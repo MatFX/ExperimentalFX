@@ -2,14 +2,17 @@ package gauge.amr;
 
 import java.util.HashMap;
 
-import control.universaldisplay.UniversalDisplay.StopIndizes;
+
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+
 
 /**
  * Illustrator Abmaße 128*128 und centerX/Y 64/64
@@ -30,20 +33,33 @@ public class AMRGauge extends Region
 	
 	private Circle basis_farbe;
 	
+	private Arc greenSegment, yellowSegment, redSegment;
+	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
+	
+	private float STARTING_ANGLE_RED = 0f;
+	
+	private float startingAngleYellow = 30f;
+	
+	private float endingAngleYellow = 90f;
+	
+	private Circle inlayRand;
+	
+	private Circle deckflaecheBegrenzer;
+	
+	private Arc segementInlay;
 	
 	//Enums für die gespeicherten Farben
 	public enum StopIndizes
 	{
 		//für die hintergründe
 		RAHMEN_GLANZ,
-
 		
+		INLAY_BORDER,
+		
+		INLAY_SEGMENT,
 	}
 
-
-
-	
 	public AMRGauge()
 	{
 
@@ -92,8 +108,43 @@ public class AMRGauge extends Region
 		basis_farbe = new Circle();
 		basis_farbe.setFill(Color.web("#282828"));
 		
+		greenSegment = new Arc();
+		greenSegment.setFill(Color.web("#4B9900"));
+		
+		yellowSegment = new Arc();
+		yellowSegment.setFill(Color.web("#B5A800"));
+		
+		redSegment = new Arc();
+		redSegment.setFill(Color.web("#D80015"));
+		
+		stopArray = new Stop[]{
+				new Stop(0.8, Color.web("#33333300")),
+				new Stop(0.90008, Color.web("#31313142")),
+				new Stop(0.9361322, Color.web("#2A2A2A59")),
+				new Stop(0.9618216, Color.web("#1F1F1F6A")),
+				new Stop(0.9824584, Color.web("#0E0E0E78")),
+				new Stop(0.994382, Color.web("#00000080"))
+			};
+		stopMap.put(StopIndizes.INLAY_BORDER, stopArray);
+		inlayRand = new Circle();
+		
+		deckflaecheBegrenzer = new Circle();
+		deckflaecheBegrenzer.setFill(Color.web("#282828"));
+		
+		
+		 stopArray = new Stop[]{
+					new Stop(0.7414634, Color.web("#00000000")),
+					new Stop(0.9379081, Color.web("#00000083")),
+					new Stop(0.9702439, Color.web("#00000099")),
+					new Stop(1.0, Color.web("#000000"))
+				};
+		stopMap.put(StopIndizes.INLAY_SEGMENT, stopArray);
+		segementInlay = new Arc();
+		
+		
 	
-		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe);
+		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
+				greenSegment, yellowSegment, redSegment, inlayRand, segementInlay, deckflaecheBegrenzer);
 	}
 	
 
@@ -145,6 +196,80 @@ public class AMRGauge extends Region
 		basis_farbe.setCenterY(centerY);
 		basis_farbe.setRadius(radius * .90625);
 		
+		
+		//hier der begrenzer für die drei farben
+		greenSegment.setCenterX(centerX);
+		greenSegment.setCenterY(centerY);
+		//radius = 50
+		//100/64 * 50 = 0.78125
+		//greenSegment.setRadiusX(radius * 0.78125);
+		greenSegment.setRadiusX(radius *  0.78125);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		greenSegment.setRadiusY(radius * 0.78125);
+		greenSegment.setStartAngle(0f);
+		greenSegment.setLength(180.0f);
+		greenSegment.setType(ArcType.ROUND);
+		
+		
+		yellowSegment.setCenterX(centerX);
+		yellowSegment.setCenterY(centerY);
+		yellowSegment.setRadiusX(radius *  0.78125);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		yellowSegment.setRadiusY(radius * 0.78125);
+		yellowSegment.setStartAngle(startingAngleYellow);
+		yellowSegment.setLength(endingAngleYellow);
+		yellowSegment.setType(ArcType.ROUND);
+		
+		
+		redSegment.setCenterX(centerX);
+		redSegment.setCenterY(centerY);
+		redSegment.setRadiusX(radius *  0.78125);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		redSegment.setRadiusY(radius * 0.78125);
+		redSegment.setStartAngle(STARTING_ANGLE_RED);
+		redSegment.setLength(startingAngleYellow);
+		redSegment.setType(ArcType.ROUND);
+		
+		//cx="64" cy="64" r="58" g
+		//100/64 * 58 = 0.90625
+		RadialGradient radialInalyBorder = new RadialGradient(0D, 0D, centerX, centerY, radius *  0.90625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INLAY_BORDER));
+		
+		//gleiche maße
+		inlayRand.setCenterX(centerX);
+		inlayRand.setCenterY(centerY);
+		inlayRand.setRadius(radius *  0.90625);
+		inlayRand.setFill(radialInalyBorder);
+		
+		
+		//cx="63.2343216" cy="62.8514862" r="58"
+		
+		RadialGradient radialInlaySegment = new RadialGradient(0D, 0D, centerX, centerY, radius *  0.90625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INLAY_SEGMENT));
+		
+		
+		
+		
+		
+		segementInlay.setCenterX(centerX);
+		segementInlay.setCenterY(centerY);
+		//radius = 50
+		//100/64 * 50 = 0.78125
+		//greenSegment.setRadiusX(radius * 0.78125);
+		segementInlay.setRadiusX(radius *  0.78125);
+		//hier wird noch die Zugabe von Y wieder abgezogen
+		segementInlay.setRadiusY(radius * 0.78125);
+		segementInlay.setStartAngle(0f);
+		segementInlay.setLength(180.0f);
+		segementInlay.setType(ArcType.ROUND);
+		segementInlay.setFill(radialInlaySegment);
+
+		
+		
+		
+		//cx="64" cy="64" r="30"
+		deckflaecheBegrenzer.setCenterX(centerX);
+		deckflaecheBegrenzer.setCenterY(centerY);
+		//100/64 * 30 = 0.46875
+		deckflaecheBegrenzer.setRadius(radius * 0.46875);
 		
 		
 		
