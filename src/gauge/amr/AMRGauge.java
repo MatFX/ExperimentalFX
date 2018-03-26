@@ -16,6 +16,7 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
 
@@ -65,6 +66,8 @@ public class AMRGauge extends Region
 	private Circle inlayRand;
 	
 	private Circle deckflaecheBegrenzer;
+	
+	private Rectangle deckflaecheRechteck;
 	
 	private Arc segementInlay;
 	
@@ -164,6 +167,9 @@ public class AMRGauge extends Region
 		redSegment = new Arc();
 		redSegment.setFill(Color.web("#D80015"));
 		
+		deckflaecheRechteck = new Rectangle();
+		deckflaecheRechteck.setFill(Color.web("#282828"));
+		
 		stopArray = new Stop[]{
 				new Stop(0.8, Color.web("#33333300")),
 				new Stop(0.90008, Color.web("#31313142")),
@@ -229,8 +235,8 @@ public class AMRGauge extends Region
 		anzeigeGlanz.setOpacity(0.38);
 		
 		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
-				greenSegment, yellowSegment, redSegment, inlayRand, segementInlay, backgroundNeedle, backgroundNeedlePick, foregroundNeedle
-				, deckflaecheBegrenzer,
+				greenSegment, yellowSegment, redSegment,  segementInlay, backgroundNeedle, backgroundNeedlePick, foregroundNeedle,
+				deckflaecheRechteck,  deckflaecheBegrenzer, inlayRand,
 				basisAnzeige, anzeigeGlanzRahmen, anzeigeHintergrund, anzeigeGlanz);
 	}
 	
@@ -320,6 +326,17 @@ public class AMRGauge extends Region
 		//cx="64" cy="64" r="58" g
 		//100/64 * 58 = 0.90625
 		RadialGradient radialInalyBorder = new RadialGradient(0D, 0D, centerX, centerY, radius *  0.90625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INLAY_BORDER));
+		
+		//14x64 u. 100x3
+		//x1 = 64 - 14 = 50 = 100/128 * 50 =  0.390625
+		deckflaecheRechteck.setX(centerX - (size * 0.390625));
+		//y1 = 64
+		deckflaecheRechteck.setY(centerY);
+		//w = 100 -64 = 36  = 100/128 * 36 = 0.28125
+		deckflaecheRechteck.setWidth(centerX + (size * 0.28125));
+		//h = 3 = 100/128 * 3 = 0.0234375
+		deckflaecheRechteck.setHeight(size * 0.0234375);
+		
 		
 		//gleiche maße
 		inlayRand.setCenterX(centerX);
@@ -493,13 +510,21 @@ public class AMRGauge extends Region
 				
 				//TODO muss noch auseinander gedrösselt werden aus Testbereich und Bereich der auch in der ANwendung
 				//benötigt wird.
-				
+				double neuerWert = 50D;
 				while(isAnimation)
 				{
 					//wert per Zufall ermitteln ein Wert von rangeMin bis rangeMax
 					Random ran = new Random();
 					int zufallszahl = ran.nextInt((maxValue - minValue) + 1);
-					double neuerWert = (double)zufallszahl / 10D;
+					neuerWert = (double)zufallszahl / 10D;
+					
+					//test für die endewerte
+					//if(neuerWert == 50D || neuerWert == 100D)
+					//	neuerWert = 0d;
+					//else 
+					//	neuerWert = 100d;
+					
+					
 					if(neuerWert != currentValue)
 					{
 						double differenz = 0;
@@ -537,7 +562,8 @@ public class AMRGauge extends Region
 							}
 							
 						}
-						Platform.runLater(() -> setCurrentValue(neuerWert, false));
+						final double value = neuerWert;
+						Platform.runLater(() -> setCurrentValue(value, false));
 					}
 					
 					
