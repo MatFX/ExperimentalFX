@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import control.dimmer.IActivationIcon.Pos;
 import control.dimmer.OptionalImageBox;
 import control.universaldisplay.SensorValue;
-import firstgauge.CustomCircle.StopIndizes;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -104,7 +103,11 @@ public class AMRGauge extends Region
 	 */
 	private SensorValue majorValue;
 	
-
+	/**
+	 * minorvalue for the rectangle view.
+	 */
+	private SensorValue minorValue;
+	
 	private Canvas textCanvas;
 	
 	/**
@@ -310,7 +313,8 @@ public class AMRGauge extends Region
 				new Stop(0.7626889, Color.web("#6565657B")),
 				new Stop(0.8430177, Color.web("#4949499B")),
 				new Stop(0.9138942, Color.web("#393939B7")),
-				new Stop(0.9678218, Color.web("#333333CC"))
+				new Stop(0.9678218, Color.web("#333333CC")),
+			
 			};
 		stopMap.put(StopIndizes.BACKGROUND_LCD, stopArray);
 		
@@ -336,7 +340,7 @@ public class AMRGauge extends Region
 				greenSegment, yellowSegment, redSegment,  segementInlay, backgroundNeedle, backgroundNeedlePick, foregroundNeedle,
 				deckflaecheRechteck,  deckflaecheBegrenzer, inlayRand,
 				basisAnzeige, anzeigeGlanzRahmen, anzeigeHintergrund, anzeigeGlanz, optionalImageBox, textCanvas,
-				rectangleBackgroundLCD, rectangleLCD,  rectLCDOverlay, canvasCounterValue);
+				rectangleBackgroundLCD, rectangleLCD,  rectLCDOverlay,  canvasCounterValue);
 	}
 	
 
@@ -540,18 +544,6 @@ public class AMRGauge extends Region
 		anzeigeGlanz.setFill(radialAnzeigeGlanz);
 		
 		
-		//x1="64" y1="103.5" x2="64" y2="92.5"
-		//y1 = 103.5 - 64 = 39,5 = 100/128 * 30,859375 = 0.30859375
-		//y2 = 92,5-64 = 28,5 = 100/128 * 28,5 = 22,265625 = 0.22265625
-		
-		LinearGradient backgroundLCD =  new LinearGradient(centerX, 
-				centerY + (size * 0.30859375),  
-				centerX, 				
-				centerY + (size *  0.22265625),
-				false, 
-				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BACKGROUND_LCD));
-	
-	
 		//x="38" y="92.5"  width="52" height="11"/
 		//x = 64 - 38 = 100/128 * 26 = 20,3125 = 0.203125
 		//y1 = 92,5 -64 = 28,5 = 100/128 * 28,5 = 0.22265625
@@ -561,6 +553,14 @@ public class AMRGauge extends Region
 		rectangleBackgroundLCD.setLayoutY(centerY + (size * 0.22265625));
 		rectangleBackgroundLCD.setWidth(size *  0.40625);
 		rectangleBackgroundLCD.setHeight(size * 0.0859375);
+		
+		//100/128 * 5 = 
+		LinearGradient backgroundLCD =  new LinearGradient(0, 
+				-(size * 0.0490625),  
+				0, 				
+				rectangleBackgroundLCD.getHeight(),
+				false, 
+				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BACKGROUND_LCD));
 		rectangleBackgroundLCD.setFill(backgroundLCD);
 		
 
@@ -574,25 +574,19 @@ public class AMRGauge extends Region
 		rectangleLCD.setWidth(size *  0.39080488671875);
 		rectangleLCD.setHeight(size * 0.07459852109375);
 		
-		//x1="63.8333321" y1="90.3321762" x2="63.8333321" y2="108.9955139"
-		//64 - 63,8333321 = 0,166679 => 100/128 * 0,166679 = 0.0013021796875
-		//64 - 90.3321762 = 26,3321762 = 100/128 * 26,3321762 = 20,57201265625 = 0.2057201265625
-		//108.9955139 - 64 = 44,9955139 = 100(128 * 44,9955139 = 0.35152745234375
-		LinearGradient lcdShiny =  new LinearGradient(centerX - (size * 0.0013021796875), 
-				centerY + (size *  0.2057201265625),  
-				centerX - (size * 0.0013021796875), 				
-				centerY + (size *   0.35152745234375),
-				false, 
-				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.LCD_SHINY));
-		
-		//x="38.8220406" y="93.2256927" width="50.0225868" height="9.5486107"
-		
-		
 		
 		rectLCDOverlay.setLayoutX(centerX - (size *  0.19670453671875));
 		rectLCDOverlay.setLayoutY(centerY + (size *  0.22832572421875));
 		rectLCDOverlay.setWidth(size *  0.39080488671875);
 		rectLCDOverlay.setHeight(size * 0.07459852109375);
+		
+		LinearGradient lcdShiny =  new LinearGradient(
+				0, 
+				0,  
+				0, 				
+				rectLCDOverlay.getHeight(),
+				false, 
+				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.LCD_SHINY));
 		rectLCDOverlay.setFill(lcdShiny);
 		
 		//Muss immer gesetzt werden, damit auch die Nadel an der richtigen Position anliegt.
@@ -849,9 +843,14 @@ public class AMRGauge extends Region
 	}
 
 
-	public void setMajorValue(SensorValue wattValue) 
+	public void setMajorValue(SensorValue majorValue) 
 	{
-		this.majorValue  = wattValue;
+		this.majorValue  = majorValue;
+	}
+	
+	public void setMinorValue(SensorValue minorValue)
+	{
+		this.minorValue = minorValue;
 	}
 	
 	private void drawTextValues(boolean clearing) 

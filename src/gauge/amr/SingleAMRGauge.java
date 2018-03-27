@@ -26,11 +26,13 @@ public class SingleAMRGauge extends Application
 		 BorderPane pane = new BorderPane();
 	     
 		 SensorValue wattValue = new SensorValue(1250D, 0D , 2500D, "W", "");
+		 SensorValue kwhValue = new SensorValue(4711D, 0D, 60000D, "kWh", "");
 		 
 		 
 		 //center of borderpane, initialize
 		 AMRGauge amrGauge = new AMRGauge();
 		 amrGauge.setMajorValue(wattValue);
+		 amrGauge.setMinorValue(kwhValue);
 		
 		 pane.setCenter(amrGauge);
 	        
