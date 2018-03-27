@@ -30,6 +30,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import tools.helper.ImageLoader;
+import tools.helper.Tools;
 
 
 /**
@@ -565,47 +566,47 @@ public class AMRGauge extends Region
 			@Override
 			public void run() 
 			{
+				double minWatt = majorValue.getVon();
+				double maxWatt = majorValue.getBis();
+				double currentWatt = majorValue.getCurrentValue();
 				
 				
-				
-				int minValue = (int)RANGE_MIN * 10;
-				int maxValue = (int)RANGE_MAX * 10;
-				
-				//TODO muss noch auseinander gedrösselt werden aus Testbereich und Bereich der auch in der ANwendung
-				//benötigt wird.
-				double neuerWert = 50D;
+				double newPercentValue = 50D;
 				while(isAnimation)
 				{
-					//wert per Zufall ermitteln ein Wert von rangeMin bis rangeMax
 					Random ran = new Random();
-					int zufallszahl = ran.nextInt((maxValue - minValue) + 1);
-					neuerWert = (double)zufallszahl / 10D;
+					double randomDouble = ran.nextDouble();
+					double randomValue = minWatt + (maxWatt - minWatt) * randomDouble;
 					
-					//test für die endewerte
-					//if(neuerWert == 50D || neuerWert == 100D)
-					//	neuerWert = 0d;
-					//else 
-					//	neuerWert = 100d;
+					System.out.println("new randomValue " + randomValue);
 					
+					double rangeWatt = Tools.getRange(minWatt, maxWatt);
 					
-					if(neuerWert != percentValueNeedle)
+					//convert to percent 
+					newPercentValue = 100D/rangeWatt * randomValue;
+					
+					System.out.println("new percentValue " + newPercentValue);
+					
+					//movement of the needle
+					
+					if(newPercentValue != percentValueNeedle)
 					{
 						double differenz = 0;
 						double startWert = percentValueNeedle;
 						boolean vorwaertsImmer = true;
-						if(percentValueNeedle > neuerWert)
+						if(percentValueNeedle > newPercentValue)
 						{
-							differenz = (percentValueNeedle - neuerWert);
+							differenz = (percentValueNeedle - newPercentValue);
 							vorwaertsImmer = false;
 						}
 						else
 						{
-							differenz = (neuerWert - percentValueNeedle);
+							differenz = (newPercentValue - percentValueNeedle);
 						}
 						differenz = Math.round(differenz * 10D) /10D;
 						double anzahlSchritte = (double) (differenz * 10D);
 						
-						
+						System.out.println("anzahlSchritte " + anzahlSchritte);
 						for(int i = 1; i <= anzahlSchritte; i++)
 						{
 							if(vorwaertsImmer)
@@ -613,6 +614,13 @@ public class AMRGauge extends Region
 							else
 								startWert = startWert - 0.1;
 							double valueToSet = startWert;
+							
+							//convert percent value to watt value for the middleview
+							
+							double wattValue = (rangeWatt / 100D * valueToSet) - (rangeWatt - maxWatt);
+							System.out.println("wattValue " + wattValue);
+							
+							majorValue.setCurrentValue(wattValue);
 							
 							Platform.runLater(() -> setCurrentValue(valueToSet, false));
 							try 
@@ -623,13 +631,14 @@ public class AMRGauge extends Region
 							{
 								e.printStackTrace();
 							}
-							
 						}
-						final double value = neuerWert;
-						Platform.runLater(() -> setCurrentValue(value, false));
+						
+						double wattValue = (rangeWatt / 100D * newPercentValue) - (rangeWatt - maxWatt);
+						majorValue.setCurrentValue(wattValue);
+						final double percentToSet = newPercentValue;
+						Platform.runLater(() -> setCurrentValue(percentToSet, false));
+						
 					}
-					
-					
 					
 					try 
 					{
@@ -641,9 +650,7 @@ public class AMRGauge extends Region
 					}
 					
 					
-					
 				}
-				
 			}
 			
 		};
@@ -691,7 +698,7 @@ public class AMRGauge extends Region
 		
 		//Aktualisierung des Textes für die genauere Darstellung
 		//TODO
-		//this.drawTextValues(true);
+		this.drawTextValues(true);
 					 
 	
 		 

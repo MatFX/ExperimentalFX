@@ -74,5 +74,23 @@ public class Tools
         }
         return null;
     }
+    
+    public static void main(String[] args)
+    {
+    	System.out.println(" " + Tools.getRange(0D, 2500D));
+    	System.out.println(" " + Tools.getRange(-500D, 2500D));
+    	System.out.println(" " + Tools.getRange(+500D, 2500D));
+    	
+    	System.out.println(" " + Tools.getRange(-1000D, -1500D));
+    	
+    }
+
+	public static double getRange(double minWatt, double maxWatt) 
+	{
+		double resultValue = maxWatt - minWatt;
+		if(resultValue < 0)
+			return resultValue *-1;
+		return resultValue;
+	}
 
 }
