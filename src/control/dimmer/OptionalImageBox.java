@@ -1,6 +1,7 @@
 package control.dimmer;
 
 import control.dimmer.IActivationIcon.Pos;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -78,7 +79,7 @@ public class OptionalImageBox extends HBox implements IActivationIcon
 	 */
 	public void resize(double heightValue)
 	{
-		
+		System.out.println("resize height with " + heightValue);
 		left.setFitHeight(heightValue);
 		middle.setFitHeight(heightValue);
 		right.setFitHeight(heightValue);

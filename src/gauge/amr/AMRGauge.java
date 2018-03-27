@@ -278,8 +278,8 @@ public class AMRGauge extends Region
 		
 		optionalImageBox = new OptionalImageBox();
 		
-		optionalImageBox.initImage(Pos.RIGHT, ImageLoader.getImageFromIconFolder("amr_electricity"));
-		optionalImageBox.setDeactivation(Pos.RIGHT);
+		optionalImageBox.initImage(Pos.MIDDLE, ImageLoader.getImageFromIconFolder("amr_electricity"));
+		optionalImageBox.setActivation(Pos.MIDDLE);
 		
 		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
 				greenSegment, yellowSegment, redSegment,  segementInlay, backgroundNeedle, backgroundNeedlePick, foregroundNeedle,
@@ -380,7 +380,7 @@ public class AMRGauge extends Region
 		//y1 = 64
 		deckflaecheRechteck.setY(centerY);
 		//w = 100 -64 = 36  = 100/128 * 36 = 0.28125
-		deckflaecheRechteck.setWidth(centerX + (size * 0.28125));
+		deckflaecheRechteck.setWidth(size * 0.28125);
 		//h = 3 = 100/128 * 3 = 0.0234375
 		deckflaecheRechteck.setHeight(size * 0.0234375);
 		
@@ -460,18 +460,30 @@ public class AMRGauge extends Region
 
 		//45 = 100/128 * 45 = 0.3515625
 		double w = size * 0.3515625;
-		double h = size * 0.15;
+		double h = size * 0.1;
 		double x = centerX - (w/2); 
 		double y = centerY - (h/2);
 		textCanvas.setWidth(w);
 		textCanvas.setHeight(h);
 		textCanvas.relocate(x, y);
 		
+		
+		
+		//40px 100/128 * 40 = 0.3125
+		double breiteImages = size * 0.3125;
+		
+		
+		//10 px 100/128 * 10 = 7,8125
+		double hoeheImages = size * 0.078125;
+		
+		System.out.println("hoehe images " + breiteImages + " " + hoeheImages);
 		//TODO
-		//optionalImageBox.setMinSize(breiteImages, hoeheImages);
-		//optionalImageBox.setLayoutX(centerX - (breiteImages/2));
-		//optionalImageBox.setLayoutY(centerY + (textCanvas.getHeight()/2));
-		//optionalImageBox.resize(hoeheImages);
+		optionalImageBox.setMinSize(breiteImages, hoeheImages);
+		optionalImageBox.setLayoutX(centerX - (breiteImages/2));
+		optionalImageBox.setLayoutY(centerY + (textCanvas.getHeight()/2));
+		optionalImageBox.resize(hoeheImages);
+		//TODO raus
+		//optionalImageBox.setStyle("-fx-background-color: #FF0000");
 		
 		RadialGradient radialAnzeigeGlanz = new RadialGradient(0D, 0D, centerX, centerY, radius * 0.390625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.VIEW_TOP_SHINY));
 		
@@ -568,7 +580,7 @@ public class AMRGauge extends Region
 			{
 				double minWatt = majorValue.getVon();
 				double maxWatt = majorValue.getBis();
-				double currentWatt = majorValue.getCurrentValue();
+				//double currentWatt = majorValue.getCurrentValue();
 				
 				
 				double newPercentValue = 50D;
@@ -578,15 +590,10 @@ public class AMRGauge extends Region
 					double randomDouble = ran.nextDouble();
 					double randomValue = minWatt + (maxWatt - minWatt) * randomDouble;
 					
-					System.out.println("new randomValue " + randomValue);
-					
 					double rangeWatt = Tools.getRange(minWatt, maxWatt);
 					
 					//convert to percent 
 					newPercentValue = 100D/rangeWatt * randomValue;
-					
-					System.out.println("new percentValue " + newPercentValue);
-					
 					//movement of the needle
 					
 					if(newPercentValue != percentValueNeedle)
@@ -606,7 +613,6 @@ public class AMRGauge extends Region
 						differenz = Math.round(differenz * 10D) /10D;
 						double anzahlSchritte = (double) (differenz * 10D);
 						
-						System.out.println("anzahlSchritte " + anzahlSchritte);
 						for(int i = 1; i <= anzahlSchritte; i++)
 						{
 							if(vorwaertsImmer)
@@ -618,7 +624,6 @@ public class AMRGauge extends Region
 							//convert percent value to watt value for the middleview
 							
 							double wattValue = (rangeWatt / 100D * valueToSet) - (rangeWatt - maxWatt);
-							System.out.println("wattValue " + wattValue);
 							
 							majorValue.setCurrentValue(wattValue);
 							
@@ -765,8 +770,7 @@ public class AMRGauge extends Region
 		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
 		double w = textCanvas.getWidth();
 		double h = textCanvas.getHeight();
-		double x = textCanvas.getLayoutX();
-		double y = textCanvas.getLayoutY();
+		
 		
 		
 		GraphicsContext gc = textCanvas.getGraphicsContext2D();
@@ -787,7 +791,7 @@ public class AMRGauge extends Region
 		
 		
 		Font font = Font.font(fontVorgabe.getName(), scaleableFontSize.get());
-		
+		System.out.println("font " + font.getSize());
 		
 		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
 		if(clearing)
@@ -795,6 +799,10 @@ public class AMRGauge extends Region
 		
 			gc.clearRect(0, 0, w, h);
 		}
+		
+		//TODO raus debug
+		//gc.setFill(Color.BLUE);
+		//gc.fillRect(0, 0, w, h);
 				
 		gc.setFill(Color.web("#FFFFFF"));
 		
@@ -805,19 +813,23 @@ public class AMRGauge extends Region
 			//initial
 			 //Ermittlung nach dem maximal möglichen Zustand
 			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.majorValue);
+			 
+			 System.out.println("maxTestAbmasse " + maxTextAbmasse.getWidth() + " " + maxTextAbmasse.getHeight());
+			 System.out.println("w " + w + " h " +h );
 			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
 			 {
 				 double tempSize = getGreaterFont(gaugeSize * 0.12, w, h, majorValue);
-					if(tempSize != getFontSize().get())
+				 if(tempSize != getFontSize().get())
 						getFontSize().set(tempSize);
 				 
 			 }
 			 else
 			 {
 				 double tempSize = getLesserFont(getFontSize().get(), w, h, majorValue);
-					if(tempSize != getFontSize().get())
+				 if(tempSize != getFontSize().get())
 						getFontSize().set(tempSize);
 			 }
+			// System.out.println("fontSize " + getFontSize().get());
 			 font = Font.font(fontVorgabe.getName(), getFontSize().get());
 		}
 		gc.setFont(font);
@@ -836,7 +848,15 @@ public class AMRGauge extends Region
 	
 		double haelfte =  textFirstMeasuringUnit.getLayoutBounds().getHeight() / 2d;
 		double masseinheitY = h/2d +  (haelfte/2d);
+		
+		
+		gc.setFill(Color.web("#282828"));
+		gc.fillText(textFirstMeasuringUnit.getText(), masseinheitX+2, masseinheitY+2);
+		
+		gc.setFill(Color.WHITE);
 		gc.fillText(textFirstMeasuringUnit.getText(), masseinheitX, masseinheitY);
+		
+		
 			
 		if(majorValue == null)
 			textFirstValue.setText("");
@@ -849,10 +869,15 @@ public class AMRGauge extends Region
 		double valueY = masseinheitY;
 		
 		gc.setFont(font);
-	
 		
+		gc.setFill(Color.web("#282828"));
+		gc.fillText(textFirstValue.getText(), valueX+2, valueY+2);
+	
+		gc.setFill(Color.WHITE);
 		gc.fillText(textFirstValue.getText(), valueX, valueY);
 	
+		
+		
 	}
 	
 	private Bounds getMaxTextWidth(Font font, SensorValue valueSensor) 
@@ -935,6 +960,7 @@ public class AMRGauge extends Region
 				return 1;
 			return getLesserFont(fontSize, w, h, sensorValue);
 		}
+		System.out.println("fontsize " + fontSize);
 		return fontSize;
 	}
 	
@@ -943,7 +969,9 @@ public class AMRGauge extends Region
 	{
 		//hier muss die bounds aufgebaut werden anhand der zwei darzustellenden Werte 
 		
-		String showValue = sensorValue.getCurrentValue() + " " + sensorValue.getMeasurementUnit();
+		double valueRounded = Math.round(sensorValue.getCurrentValue()*10)/10;
+		String eineNachkomma = String.format("%.1f", valueRounded);
+		String showValue = eineNachkomma + " " + sensorValue.getMeasurementUnit();
 		
 		if(fontVorgabe == null)
 			fontVorgabe = new Font("Verdana", 12);
