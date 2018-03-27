@@ -79,7 +79,6 @@ public class OptionalImageBox extends HBox implements IActivationIcon
 	 */
 	public void resize(double heightValue)
 	{
-		System.out.println("resize height with " + heightValue);
 		left.setFitHeight(heightValue);
 		middle.setFitHeight(heightValue);
 		right.setFitHeight(heightValue);

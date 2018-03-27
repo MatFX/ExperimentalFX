@@ -476,14 +476,10 @@ public class AMRGauge extends Region
 		//10 px 100/128 * 10 = 7,8125
 		double hoeheImages = size * 0.078125;
 		
-		System.out.println("hoehe images " + breiteImages + " " + hoeheImages);
-		//TODO
 		optionalImageBox.setMinSize(breiteImages, hoeheImages);
 		optionalImageBox.setLayoutX(centerX - (breiteImages/2));
 		optionalImageBox.setLayoutY(centerY + (textCanvas.getHeight()/2));
 		optionalImageBox.resize(hoeheImages);
-		//TODO raus
-		//optionalImageBox.setStyle("-fx-background-color: #FF0000");
 		
 		RadialGradient radialAnzeigeGlanz = new RadialGradient(0D, 0D, centerX, centerY, radius * 0.390625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.VIEW_TOP_SHINY));
 		
@@ -714,11 +710,9 @@ public class AMRGauge extends Region
 	{
 		double newValue = 180d/100d*doubleInPercent;
 		
-		System.out.println("newValue + " + newValue);
 		
 		double invertAngle = 180d-newValue;
 		invertAngle = invertAngle - this.startingAngleYellow;
-		System.out.println("invert " + invertAngle);
 		this.endingAngleYellow = (float)invertAngle;
 		this.resize();
 	}
@@ -749,9 +743,6 @@ public class AMRGauge extends Region
 			this.startingAngleYellow = (float)invertAngle;
 			this.resize();
 		}
-		
-		
-		System.out.println("starting angle " + startingAngleYellow);
 		
 	}
 
@@ -791,7 +782,6 @@ public class AMRGauge extends Region
 		
 		
 		Font font = Font.font(fontVorgabe.getName(), scaleableFontSize.get());
-		System.out.println("font " + font.getSize());
 		
 		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
 		if(clearing)
@@ -800,10 +790,6 @@ public class AMRGauge extends Region
 			gc.clearRect(0, 0, w, h);
 		}
 		
-		//TODO raus debug
-		//gc.setFill(Color.BLUE);
-		//gc.fillRect(0, 0, w, h);
-				
 		gc.setFill(Color.web("#FFFFFF"));
 		
 		
@@ -813,9 +799,6 @@ public class AMRGauge extends Region
 			//initial
 			 //Ermittlung nach dem maximal möglichen Zustand
 			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.majorValue);
-			 
-			 System.out.println("maxTestAbmasse " + maxTextAbmasse.getWidth() + " " + maxTextAbmasse.getHeight());
-			 System.out.println("w " + w + " h " +h );
 			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
 			 {
 				 double tempSize = getGreaterFont(gaugeSize * 0.12, w, h, majorValue);
@@ -829,7 +812,6 @@ public class AMRGauge extends Region
 				 if(tempSize != getFontSize().get())
 						getFontSize().set(tempSize);
 			 }
-			// System.out.println("fontSize " + getFontSize().get());
 			 font = Font.font(fontVorgabe.getName(), getFontSize().get());
 		}
 		gc.setFont(font);
@@ -960,7 +942,6 @@ public class AMRGauge extends Region
 				return 1;
 			return getLesserFont(fontSize, w, h, sensorValue);
 		}
-		System.out.println("fontsize " + fontSize);
 		return fontSize;
 	}
 	

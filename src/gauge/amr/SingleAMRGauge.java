@@ -80,7 +80,6 @@ public class SingleAMRGauge extends Application
 		{
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				System.out.println("new value " + newValue.doubleValue());
 				amrGauge.setNewLowPercentValue(newValue.doubleValue());
 				
 				
@@ -92,7 +91,6 @@ public class SingleAMRGauge extends Application
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				System.out.println("new value " + newValue.doubleValue());
 				amrGauge.setNewHighPercentValue(newValue.doubleValue());
 			}
 			
