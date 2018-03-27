@@ -3,6 +3,7 @@ package gauge.amr;
 
 import org.controlsfx.control.RangeSlider;
 
+import control.universaldisplay.SensorValue;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,9 +24,13 @@ public class SingleAMRGauge extends Application
 	@Override
 	public void start(Stage stage) throws Exception {
 		 BorderPane pane = new BorderPane();
-	      
+	     
+		 SensorValue wattValue = new SensorValue(1250D, 0D , 2500D, "W", "");
+		 
+		 
 		 //center of borderpane, initialize
 		 AMRGauge amrGauge = new AMRGauge();
+		 amrGauge.setMajorValue(wattValue);
 		
 		 pane.setCenter(amrGauge);
 	        

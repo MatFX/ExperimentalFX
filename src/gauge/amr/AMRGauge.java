@@ -4,7 +4,16 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import control.dimmer.IActivationIcon.Pos;
+import control.dimmer.OptionalImageBox;
+import control.universaldisplay.SensorValue;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -17,7 +26,10 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import tools.helper.ImageLoader;
 
 
 /**
@@ -33,16 +45,16 @@ public class AMRGauge extends Region
 	private Thread animThread = null;
 	private boolean isAnimation = false;
 	/**
-	 * 
+	 * percent range needle
 	 */
 	private double RANGE_MIN = 0D;
 	
 	private double RANGE_MAX = 100D;
 	
 	/**
-	 * starting value
+	 * needle value is always percent
 	 */
-	private double currentValue = 50D;
+	private double percentValueNeedle = 50D;
 	
 	//evtl. hintergrund nicht benötigt
 	private Circle hintergrund;
@@ -79,14 +91,37 @@ public class AMRGauge extends Region
 	private DropShadow dropNeedleShadow;
 	
 	/**
-	 * Rotation der Nadel zu Beginn ist der Anfangswert der Rotation 0 und die Nadel steht auf 12 Uhr.
-	 * <br>Eine Bewegung findet von -90° zu +90° statt => 180°
-	 * <br>Ursprünglich waren es drei Rotation Objekte, jedoch brauche ich doch nur eines für alle Nadelkomponenten
+	 * Rotation of the needle. 
 	 */
 	private Rotate needleRotate;
 	
 	private Circle basisAnzeige, anzeigeGlanzRahmen, anzeigeHintergrund, anzeigeGlanz;
 	
+	/**
+	 * majorvalue is represented with needle and the middle view
+	 */
+	private SensorValue majorValue;
+	
+
+	private Canvas textCanvas;
+	
+	/**
+	 * optional images 
+	 */
+	private OptionalImageBox optionalImageBox;
+	
+	private DoubleProperty scaleableFontSize = null;
+	
+	private Font fontVorgabe = null;
+	
+	private static final double GAP_PERCENT = 0.1;
+	
+	/**
+	 * first Value or main value; Bigger from font size
+	 */
+	private Text textFirstValue;
+	
+	private Text textFirstMeasuringUnit;
 	
 	
 	
@@ -234,10 +269,21 @@ public class AMRGauge extends Region
 		anzeigeGlanz = new Circle();
 		anzeigeGlanz.setOpacity(0.38);
 		
+		textCanvas = new Canvas();
+		textFirstValue = new Text();
+		textFirstValue.setText("");
+		textFirstMeasuringUnit = new Text();
+		textFirstMeasuringUnit.setText("");
+		
+		optionalImageBox = new OptionalImageBox();
+		
+		optionalImageBox.initImage(Pos.RIGHT, ImageLoader.getImageFromIconFolder("amr_electricity"));
+		optionalImageBox.setDeactivation(Pos.RIGHT);
+		
 		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
 				greenSegment, yellowSegment, redSegment,  segementInlay, backgroundNeedle, backgroundNeedlePick, foregroundNeedle,
 				deckflaecheRechteck,  deckflaecheBegrenzer, inlayRand,
-				basisAnzeige, anzeigeGlanzRahmen, anzeigeHintergrund, anzeigeGlanz);
+				basisAnzeige, anzeigeGlanzRahmen, anzeigeHintergrund, anzeigeGlanz, optionalImageBox, textCanvas);
 	}
 	
 
@@ -410,6 +456,21 @@ public class AMRGauge extends Region
 		//100/64 * 25 = 39,0625
 		anzeigeHintergrund.setRadius(radius * 0.390625);
 		
+
+		//45 = 100/128 * 45 = 0.3515625
+		double w = size * 0.3515625;
+		double h = size * 0.15;
+		double x = centerX - (w/2); 
+		double y = centerY - (h/2);
+		textCanvas.setWidth(w);
+		textCanvas.setHeight(h);
+		textCanvas.relocate(x, y);
+		
+		//TODO
+		//optionalImageBox.setMinSize(breiteImages, hoeheImages);
+		//optionalImageBox.setLayoutX(centerX - (breiteImages/2));
+		//optionalImageBox.setLayoutY(centerY + (textCanvas.getHeight()/2));
+		//optionalImageBox.resize(hoeheImages);
 		
 		RadialGradient radialAnzeigeGlanz = new RadialGradient(0D, 0D, centerX, centerY, radius * 0.390625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.VIEW_TOP_SHINY));
 		
@@ -422,7 +483,9 @@ public class AMRGauge extends Region
 		anzeigeGlanz.setFill(radialAnzeigeGlanz);
 		
 		//Muss immer gesetzt werden, damit auch die Nadel an der richtigen Position anliegt.
-		this.setCurrentValue(this.currentValue, false);
+		this.setCurrentValue(this.percentValueNeedle, false);
+		
+		this.drawTextValues(true);
 		
 	}
 	
@@ -525,19 +588,19 @@ public class AMRGauge extends Region
 					//	neuerWert = 100d;
 					
 					
-					if(neuerWert != currentValue)
+					if(neuerWert != percentValueNeedle)
 					{
 						double differenz = 0;
-						double startWert = currentValue;
+						double startWert = percentValueNeedle;
 						boolean vorwaertsImmer = true;
-						if(currentValue > neuerWert)
+						if(percentValueNeedle > neuerWert)
 						{
-							differenz = (currentValue - neuerWert);
+							differenz = (percentValueNeedle - neuerWert);
 							vorwaertsImmer = false;
 						}
 						else
 						{
-							differenz = (neuerWert - currentValue);
+							differenz = (neuerWert - percentValueNeedle);
 						}
 						differenz = Math.round(differenz * 10D) /10D;
 						double anzahlSchritte = (double) (differenz * 10D);
@@ -602,7 +665,7 @@ public class AMRGauge extends Region
 	
 	 public void setCurrentValue(double currentValue, boolean isInit)
 	 {
-		this.currentValue = currentValue;
+		this.percentValueNeedle = currentValue;
 		 
 		double percentValueToCalc = (100D / (RANGE_MAX - RANGE_MIN) * currentValue) / 100D;
 		
@@ -678,6 +741,209 @@ public class AMRGauge extends Region
 		
 		System.out.println("starting angle " + startingAngleYellow);
 		
+	}
+
+
+	public void setMajorValue(SensorValue wattValue) 
+	{
+		this.majorValue  = wattValue;
+	}
+	
+	private void drawTextValues(boolean clearing) 
+	{
+		
+		
+		
+		//Size wird für die Ausrichtung benötigt
+		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
+		double w = textCanvas.getWidth();
+		double h = textCanvas.getHeight();
+		double x = textCanvas.getLayoutX();
+		double y = textCanvas.getLayoutY();
+		
+		
+		GraphicsContext gc = textCanvas.getGraphicsContext2D();
+	
+		
+		if(scaleableFontSize == null)
+		{
+			scaleableFontSize = new SimpleDoubleProperty(gaugeSize * 0.12);
+		}
+		else
+			scaleableFontSize.set(gaugeSize * 0.12);
+		
+		if(fontVorgabe == null)
+		{
+			fontVorgabe = new Font("Verdana", 12);
+		}
+		
+		
+		
+		Font font = Font.font(fontVorgabe.getName(), scaleableFontSize.get());
+		
+		
+		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
+		if(clearing)
+		{
+		
+			gc.clearRect(0, 0, w, h);
+		}
+				
+		gc.setFill(Color.web("#FFFFFF"));
+		
+		
+		//Fontsize muss ermittelt werden anhand des größten values
+		if(majorValue != null)
+		{
+			//initial
+			 //Ermittlung nach dem maximal möglichen Zustand
+			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.majorValue);
+			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
+			 {
+				 double tempSize = getGreaterFont(gaugeSize * 0.12, w, h, majorValue);
+					if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+				 
+			 }
+			 else
+			 {
+				 double tempSize = getLesserFont(getFontSize().get(), w, h, majorValue);
+					if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+			 }
+			 font = Font.font(fontVorgabe.getName(), getFontSize().get());
+		}
+		gc.setFont(font);
+		
+		
+		
+		
+		if(majorValue == null)
+			textFirstMeasuringUnit.setText("");
+		else
+			textFirstMeasuringUnit.setText(" "+majorValue.getMeasurementUnit());
+		textFirstMeasuringUnit.setFont(font);
+		
+		
+		double masseinheitX = w - (textFirstMeasuringUnit.getLayoutBounds().getWidth());// + (gaugeSize * 0.015635));
+	
+		double haelfte =  textFirstMeasuringUnit.getLayoutBounds().getHeight() / 2d;
+		double masseinheitY = h/2d +  (haelfte/2d);
+		gc.fillText(textFirstMeasuringUnit.getText(), masseinheitX, masseinheitY);
+			
+		if(majorValue == null)
+			textFirstValue.setText("");
+		else
+			textFirstValue.setText(String.format("%.1f", majorValue.getCurrentValue()));
+		
+		textFirstValue.setFont(font);
+		
+		double valueX = masseinheitX - (textFirstValue.getLayoutBounds().getWidth());//  + (gaugeSize * 0.015635));
+		double valueY = masseinheitY;
+		
+		gc.setFont(font);
+	
+		
+		gc.fillText(textFirstValue.getText(), valueX, valueY);
+	
+	}
+	
+	private Bounds getMaxTextWidth(Font font, SensorValue valueSensor) 
+	{
+		String minValue = String.format("%.1f", valueSensor.getVon());
+		String maxValue = String.format("%.1f", valueSensor.getBis());
+		
+		String measuringUnit = " " + valueSensor.getMeasurementUnit();
+		
+		Text valTextMin = new Text(minValue);
+		valTextMin.setFont(font);
+		
+		Bounds valMinBounds = valTextMin.getBoundsInLocal();
+		
+		Text valTextMax = new Text(maxValue);
+		valTextMax.setFont(font);
+		
+		Bounds valMaxBounds = valTextMax.getBoundsInLocal();
+		
+		Text messText = new Text(measuringUnit);
+		messText.setFont(font);
+		
+		Bounds einheitBounds = messText.getBoundsInLocal();
+		
+		double width = valMinBounds.getWidth();
+		if(width < valMaxBounds.getWidth())
+			width = valMaxBounds.getWidth();
+		
+		double height = valMinBounds.getHeight();
+		if(height < valMaxBounds.getHeight())
+			height = valMaxBounds.getHeight();
+		
+		if(height < einheitBounds.getHeight())
+			height = einheitBounds.getHeight();
+		
+		width = width + einheitBounds.getWidth();
+	
+		return new BoundingBox(0,0, width, height);
+	}
+	
+
+	public double getGAPPercent()
+	{
+		return GAP_PERCENT;
+	}
+	
+
+	protected double getGreaterFont(double fontSize, double w, double h, SensorValue sensorValue)
+	{	
+		double gapBreite = w * getGAPPercent() * 2;
+		double gapHoehe = h * getGAPPercent() * 2;
+		
+		fontSize = fontSize + 1;
+		Bounds futureBounds = textWidth(fontSize, sensorValue);
+		if((futureBounds.getHeight() + gapHoehe) < h && (futureBounds.getWidth() + gapBreite) < w)
+		{
+			return getGreaterFont(fontSize, w, h, sensorValue);
+		}
+		//eines wieder zurück weil die Abfrage nicht gegriffen hat
+		return fontSize-1;
+	}
+	
+
+	public DoubleProperty getFontSize()
+	{
+		return scaleableFontSize;
+	}
+	
+
+	protected double getLesserFont(double fontSize, double w, double h, SensorValue sensorValue)
+	{	
+		Bounds futureBounds = textWidth(fontSize, sensorValue);
+		double gapBreite = w * getGAPPercent() * 2;
+		double gapHoehe = h * getGAPPercent() * 2;
+		//wenn eines von beiden über das Ziel hinaus ist, so ist eine kleiner Fontgröße zu ermitteln
+		if((futureBounds.getHeight() + (gapHoehe)) > h || (futureBounds.getWidth() + (gapBreite)) > w)
+		{
+			fontSize = fontSize - 1;
+			if(fontSize <= 0)
+				return 1;
+			return getLesserFont(fontSize, w, h, sensorValue);
+		}
+		return fontSize;
+	}
+	
+
+	private Bounds textWidth(double size, SensorValue sensorValue)
+	{
+		//hier muss die bounds aufgebaut werden anhand der zwei darzustellenden Werte 
+		
+		String showValue = sensorValue.getCurrentValue() + " " + sensorValue.getMeasurementUnit();
+		
+		if(fontVorgabe == null)
+			fontVorgabe = new Font("Verdana", 12);
+		Text text = new Text(showValue);
+		Font font =  Font.font(fontVorgabe.getFamily(), size);
+        text.setFont(font);
+        return text.getBoundsInLocal();
 	}
 
 }
