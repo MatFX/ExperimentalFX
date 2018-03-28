@@ -10,6 +10,8 @@ import control.universaldisplay.SensorValue;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
@@ -140,6 +142,7 @@ public class AMRGauge extends Region
 	private Text textMeasurement;
 	
 	private Canvas canvasCounterValue;
+	
 	
 	
 	
@@ -746,6 +749,13 @@ public class AMRGauge extends Region
 						
 					}
 					
+					
+					int zahl = (int)(Math.random() * 9 + 1);
+					double addKwh = zahl / 10D;
+					minorValue.setCurrentValue(minorValue.getCurrentValue()+addKwh);
+					drawMinorTextValue(true);
+					
+					
 					try 
 					{
 						TimeUnit.SECONDS.sleep(2);
@@ -857,7 +867,21 @@ public class AMRGauge extends Region
 	public void setMinorValue(SensorValue minorValue)
 	{
 		this.minorValue = minorValue;
+		if(this.minorValue != null)
+		{
+			this.minorValue.getCurrentValueProperty().addListener(new ChangeListener<Number>(){
+
+				@Override
+				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) 
+				{
+					drawMinorTextValue(true);
+				}
+				
+			});
+		}
 	}
+	
+
 	
 	private void drawTextValues(boolean clearing) 
 	{

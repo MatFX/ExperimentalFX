@@ -1,5 +1,6 @@
 package control.universaldisplay;
 
+import javafx.beans.property.SimpleDoubleProperty;
 
 /**
  * helper class to store and change values
@@ -12,7 +13,7 @@ public class SensorValue
 	
 	private double bis;
 	
-	private double currentValue;
+	private SimpleDoubleProperty currentValue;
 	
 	private String measurementUnit;
 
@@ -39,7 +40,7 @@ public class SensorValue
 	
 	public SensorValue(double currentValue, double von, double bis, String measurementUnit, String imageName)
 	{
-		this.currentValue = currentValue;
+		this.currentValue = new SimpleDoubleProperty(currentValue);
 		this.von = von;
 		this.bis = bis;
 		this.measurementUnit = measurementUnit;
@@ -63,11 +64,20 @@ public class SensorValue
 	}
 
 	public double getCurrentValue() {
-		return currentValue;
+		return currentValue.doubleValue();
 	}
 
 	public void setCurrentValue(double currentValue) {
-		this.currentValue = currentValue;
+		this.currentValue.set(currentValue);;
+	}
+	
+	/**
+	 * to add a changelistener
+	 * @return
+	 */
+	public SimpleDoubleProperty getCurrentValueProperty()
+	{
+		return this.currentValue;
 	}
 
 	public String getMeasurementUnit() {
