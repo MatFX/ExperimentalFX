@@ -332,8 +332,11 @@ public class AMRGauge extends Region
 		
 		textCounterValue = new Text();
 		textMeasurement = new Text();
-		
+		//vor the minor text value
 		canvasCounterValue = new Canvas();
+		textCounterValue = new Text();
+		textMeasurement = new Text();
+		
 		
 		
 		this.getChildren().addAll(hintergrund, rahmen_hintergrundfarbe, rahmen_glanz, basis_farbe, 
@@ -464,8 +467,6 @@ public class AMRGauge extends Region
 		segementInlay.setLength(180.0f);
 		segementInlay.setType(ArcType.ROUND);
 		segementInlay.setFill(radialInlaySegment);
-
-		
 		
 		
 		//cx="64" cy="64" r="30"
@@ -589,10 +590,18 @@ public class AMRGauge extends Region
 				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.LCD_SHINY));
 		rectLCDOverlay.setFill(lcdShiny);
 		
+		
+		canvasCounterValue.relocate(centerX - (size *  0.19670453671875), centerY + (size *  0.22832572421875));
+		canvasCounterValue.setWidth(size *  0.39080488671875);	
+		canvasCounterValue.setHeight(size * 0.07459852109375);
+				
+		
 		//Muss immer gesetzt werden, damit auch die Nadel an der richtigen Position anliegt.
 		this.setCurrentValue(this.percentValueNeedle, false);
 		
 		this.drawTextValues(true);
+		
+		this.drawMinorTextValue(true);
 		
 	}
 	
@@ -796,10 +805,7 @@ public class AMRGauge extends Region
 		//Aktualisierung des Textes für die genauere Darstellung
 		//TODO
 		this.drawTextValues(true);
-					 
-	
-		 
-	 }
+	}
 
 
 	public void setNewLowPercentValue(double doubleInPercent)
@@ -855,15 +861,10 @@ public class AMRGauge extends Region
 	
 	private void drawTextValues(boolean clearing) 
 	{
-		
-		
-		
 		//Size wird für die Ausrichtung benötigt
 		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
 		double w = textCanvas.getWidth();
 		double h = textCanvas.getHeight();
-		
-		
 		
 		GraphicsContext gc = textCanvas.getGraphicsContext2D();
 	
@@ -958,10 +959,98 @@ public class AMRGauge extends Region
 	
 		gc.setFill(Color.WHITE);
 		gc.fillText(textFirstValue.getText(), valueX, valueY);
+	}
+	
+	private void drawMinorTextValue(boolean clearing) 
+	{
+		double gaugeSize  = getWidth() < getHeight() ? getWidth() : getHeight();
+		double w = canvasCounterValue.getWidth();
+		double h = canvasCounterValue.getHeight();
+		
+		GraphicsContext gc = canvasCounterValue.getGraphicsContext2D();
+		
+		if(scaleableFontSize == null)
+		{
+			scaleableFontSize = new SimpleDoubleProperty(gaugeSize * 0.12);
+		}
+		else
+			scaleableFontSize.set(gaugeSize * 0.12);
+		
+		if(fontVorgabe == null)
+		{
+			fontVorgabe = new Font("Verdana", 12);
+		}
+		
+		Font font = Font.font(fontVorgabe.getName(), scaleableFontSize.get());
+		
+		//Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
+		if(clearing)
+		{
+		
+			gc.clearRect(0, 0, w, h);
+		}
+
+		gc.setFill(Color.web("#00000080"));
 	
 		
+		//Fontsize muss ermittelt werden anhand des größten values
+		if(minorValue != null)
+		{
+			//initial
+			 //Ermittlung nach dem maximal möglichen Zustand
+			 Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.minorValue);
+			 if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
+			 {
+				 double tempSize = getGreaterFont(gaugeSize * 0.12, w, h, minorValue);
+				 if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+				 
+			 }
+			 else
+			 {
+				 double tempSize = getLesserFont(getFontSize().get(), w, h, minorValue);
+				 if(tempSize != getFontSize().get())
+						getFontSize().set(tempSize);
+			 }
+			 font = Font.font(fontVorgabe.getName(), getFontSize().get());
+		}
+		gc.setFont(font);
+		
+
+		if(minorValue == null)
+			textMeasurement.setText("");
+		else
+			textMeasurement.setText(" "+minorValue.getMeasurementUnit());
+		textMeasurement.setFont(font);
+	
+		
+		double masseinheitX = w - (textMeasurement.getLayoutBounds().getWidth()) - (gaugeSize * 0.015635);
+		
+		double haelfte =  textMeasurement.getLayoutBounds().getHeight() / 2d;
+		double masseinheitY = h/2d +  (haelfte/2d);
+		
+		
+		gc.fillText(textMeasurement.getText(), masseinheitX, masseinheitY);
+		
+		
+			
+		if(minorValue == null)
+			textCounterValue.setText("");
+		else
+			textCounterValue.setText(String.format("%.1f", minorValue.getCurrentValue()));
+		
+		textCounterValue.setFont(font);
+		
+		
+		double valueX = masseinheitX - (textCounterValue.getLayoutBounds().getWidth());// + (gaugeSize * 0.015635);
+		double valueY = masseinheitY;
+		
+		gc.setFont(font);
+		gc.fillText(textCounterValue.getText(), valueX, valueY);
 		
 	}
+	
+	
 	
 	private Bounds getMaxTextWidth(Font font, SensorValue valueSensor) 
 	{
@@ -997,7 +1086,7 @@ public class AMRGauge extends Region
 			height = einheitBounds.getHeight();
 		
 		width = width + einheitBounds.getWidth();
-	
+		
 		return new BoundingBox(0,0, width, height);
 	}
 	
