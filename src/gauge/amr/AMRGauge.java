@@ -225,6 +225,7 @@ public class AMRGauge extends Region
 		
 		deckflaecheRechteck = new Rectangle();
 		deckflaecheRechteck.setFill(Color.web("#282828"));
+		//deckflaecheRechteck.setFill(Color.BLUE);
 		
 		stopArray = new Stop[]{
 				new Stop(0.8, Color.web("#33333300")),
@@ -441,8 +442,8 @@ public class AMRGauge extends Region
 		deckflaecheRechteck.setX(centerX - (size * 0.390625));
 		//y1 = 64
 		deckflaecheRechteck.setY(centerY);
-		//w = 100 -64 = 36  = 100/128 * 36 = 0.28125
-		deckflaecheRechteck.setWidth(size * 0.28125);
+		//78,125
+		deckflaecheRechteck.setWidth((size * 0.78125));
 		//h = 3 = 100/128 * 3 = 0.0234375
 		deckflaecheRechteck.setHeight(size * 0.0234375);
 		
