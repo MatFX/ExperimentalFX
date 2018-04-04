@@ -63,8 +63,6 @@ public class SingleAMRGauge extends Application
 	    	
 	    });
 		 
-		RangeSlider rangeSlider = new RangeSlider();
-		 
 		//range as percent
 		//starting value from yellow = 90f and ending value 30f angle
 		//100/180 * 30 = 16,666666 = invertiert = 100 -16,6666

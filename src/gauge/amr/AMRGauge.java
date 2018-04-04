@@ -943,9 +943,6 @@ public class AMRGauge extends Region
 		}
 		gc.setFont(font);
 		
-		
-		
-		
 		if(majorValue == null)
 			textFirstMeasuringUnit.setText("");
 		else
