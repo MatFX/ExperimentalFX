@@ -70,6 +70,7 @@ public class SingleAMRGauge extends Application
 		
 		
 		
+		
 		final RangeSlider hSlider = new RangeSlider(0, 100, 33.444, 83.3334);
 		hSlider.setShowTickMarks(true);
 		hSlider.setShowTickLabels(true);

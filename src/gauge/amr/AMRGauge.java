@@ -821,6 +821,7 @@ public class AMRGauge extends Region
 
 	public void setNewLowPercentValue(double doubleInPercent)
 	{
+		System.out.println("changeLOW and endingAngle");
 		double newValue = 180d/100d*doubleInPercent;
 		
 		
@@ -833,6 +834,7 @@ public class AMRGauge extends Region
 
 	public void setNewHighPercentValue(double doubleInPercent) 
 	{
+		System.out.println("changeHIGH and startingAngle");
 		double newValue = 180d/100d*doubleInPercent;
 		float invertAngle = (float) (180d - newValue);
 		//neuer Wert ist kleiner als der bisherige
