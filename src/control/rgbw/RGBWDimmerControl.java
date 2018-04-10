@@ -14,6 +14,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.transform.Affine;
 
 /**
  * 128x128 Orginalabmasse
@@ -29,7 +30,9 @@ public class RGBWDimmerControl extends Region
 		
 		INLAY,
 		
-		OVERLAY_INNER_CIRCLE;
+		OVERLAY_INNER_CIRCLE,
+		
+		BORDER_INNERVIEW, INNERVIEW_SHINY
 	}
 	
 	
@@ -58,6 +61,20 @@ public class RGBWDimmerControl extends Region
 	 * <br>ticks on screen for the white channel
 	 */
 	private TreeMap<Integer, Line> tickMap = new TreeMap<Integer, Line>();
+	
+	/**
+	 * Inner circle for the text view
+	 */
+	private Circle basisAnzeige, anzeigeGlanzRahmen;
+	
+	/**
+	 * show the current rgb value
+	 */
+	private Circle anzeigeRGB;
+	
+	private Circle anzeigeGlanz;
+	
+	private Color currentColorRGB = Color.web("#1A1A96");
 	
 	
 	public RGBWDimmerControl()
@@ -132,14 +149,50 @@ public class RGBWDimmerControl extends Region
 		stopMap.put(StopIndizes.OVERLAY_INNER_CIRCLE, stopArray);
 		
 		deckflaechenBegrenzungOverlay = new Circle();
-		
-		drawMinorTick(width, true);
-		
-		
-		
+				
 		this.getChildren().addAll(hintergrund, rahmen_grundfarbe, rahmen_glanz, basisFarbe, canvasColoredCircle, begrenzerInlay,
 				deckflaechenBegrenzung, deckflaechenBegrenzungOverlay);
 		
+		drawMinorTick(width, true);
+		
+		basisAnzeige = new Circle();
+		basisAnzeige.setFill(Color.web("#191919"));
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#FFFFFF")),
+				new Stop(0.5317073, Color.web("#33333300")),
+				new Stop(0.5902743, Color.web("#48484823")),
+				new Stop(0.7116535, Color.web("#7F7F7F6B")),
+				new Stop(0.8838744, Color.web("#D6D6D6D2")),
+				new Stop(0.9602357, Color.web("#FFFFFF"))
+			};
+		
+		stopMap.put(StopIndizes.BORDER_INNERVIEW, stopArray);
+		
+		anzeigeGlanzRahmen = new Circle();
+		
+		anzeigeRGB = new Circle();
+		anzeigeRGB.setFill(currentColorRGB);
+		
+		stopArray = new Stop[]{
+				new Stop(0.0, Color.web("#9BA38800")),
+				new Stop(0.2615826, Color.web("#9DA58B2F")),
+				new Stop(0.436628, Color.web("#A5AC944E")),
+				new Stop(0.5863504, Color.web("#B1B8A369")),
+				new Stop(0.7217618, Color.web("#C3C8B882")),
+				new Stop(0.8475584, Color.web("#DBDED498")),
+				new Stop(0.964749, Color.web("#F7F7F5AD")),
+				new Stop(0.994382, Color.web("#FFFFFFB3"))
+			};
+		
+		
+		stopMap.put(StopIndizes.INNERVIEW_SHINY, stopArray);
+		
+		anzeigeGlanz = new Circle();
+		anzeigeGlanz.setOpacity(0.38);
+		
+		
+		this.getChildren().addAll(basisAnzeige, anzeigeGlanzRahmen, anzeigeRGB, anzeigeGlanz);
 	}
 	
 
@@ -237,10 +290,47 @@ public class RGBWDimmerControl extends Region
 		
 		drawMinorTick(size, false);
 		
+		basisAnzeige.setCenterX(centerX);
+		basisAnzeige.setCenterY(centerY);
+		//r 32.5 = 100/64 * 32.5 = 0.5078125
+		basisAnzeige.setRadius(radius * 0.5078125);
 		
 		
+		//x1="42.6201401" y1="45.1309433" x2="84.3724976" y2="81.9800034"
+		//x1 = 64 - 42.6201401 = 21,3798599 = 100/128 * 21,3798599 = 16,703015546875
+		//y1 = 64 -45.1309433 = 18,8690567 = 100/128 * 18,8690567 = 14,741450546875
+		//x2 = 84.3724976 -64 = 20,3724976 = 100/128 * 20,3724976 = 15,91601375
+		//y2 = 81.9800034 - 64 = 17,9800034 = 100/128 * 17,9800034 =  14,04687765625
+		
+		LinearGradient innerViewGradient = new LinearGradient(centerX - (size * 0.16703015546875), 
+				centerY - (size * 0.14741450546875),
+				centerX + (size * 0.1591601375), 
+				centerY + (size *  0.1404687765625), false, 
+				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.RAHMEN_GLANZ));
+		
+		anzeigeGlanzRahmen.setCenterX(centerX);
+		anzeigeGlanzRahmen.setCenterY(centerY);
+		//r 31.5 = 100/64 * 31.5 = 49,21875
+		anzeigeGlanzRahmen.setRadius(radius * 0.4921875);
+		anzeigeGlanzRahmen.setFill(innerViewGradient);
 		
 		
+		anzeigeRGB.setCenterX(centerX);
+		anzeigeRGB.setCenterY(centerY);
+		//r 30; 100/64  30 = 46,875
+		anzeigeRGB.setRadius(radius * 0.46875);
+		
+		
+		//R 25 = 100/64 * 25 = 39,0625
+		
+		RadialGradient innerShinyGradient = new RadialGradient(0D, 0D, centerX, centerY, radius * 0.390625, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.INNERVIEW_SHINY));
+		
+		
+		anzeigeGlanz.setCenterX(centerX);
+		anzeigeGlanz.setCenterY(centerY);
+		//r 30; 100/64  30 = 46,875
+		anzeigeGlanz.setRadius(radius * 0.46875);
+		anzeigeGlanz.setFill(innerShinyGradient);
 		
 	}
 	
@@ -251,24 +341,21 @@ public class RGBWDimmerControl extends Region
 	 */
 	private void drawMinorTick(double sizeNow, boolean isInit) 
 	{
-		//121 breite 100 / 128 * 121 = 94,53125 = 0.9453125
-		double r = sizeNow * 0.9453125 / 2d;
-		
-		//tick länge orginal war 3 => 100 / 128 * 3 => 2,34375 => 0.0234375
-		double tickLenMinor = sizeNow * 0.0234375;
-		
+		double r = sizeNow * 0.3325;
+		//tick länge ist 10 ==> 100/128 * 10 = 0.078125
+		double tickLenMinor = sizeNow *  0.065125;
 		//strokewidth orginal 2 = 100 / 128 *2 => 1,5625 => 0.015625
 		double strokeWidth = sizeNow * 0.015625;
 		
-		double START_ANGLE = 330;
+		double START_ANGLE = 0;
 		
-		double stepAngle = 7; //(180 / (n-1))
+		double stepAngle = 5; //(180 / (n-1))
 		double nextAngle = START_ANGLE;
 		double cosValue;
 		double sinValue;
 		
 		
-		 for(int i = 1; i <= 35; i++)
+		 for(int i = 1; i <= 37; i++)
 		 {
 			 sinValue = Math.sin(Math.toRadians(nextAngle));
 			 cosValue = Math.cos(Math.toRadians(nextAngle));
