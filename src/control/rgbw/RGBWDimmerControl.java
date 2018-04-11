@@ -184,6 +184,23 @@ public class RGBWDimmerControl extends Region
 	 * timeline to clean the preset dispaly after x seconds
 	 */
 	private Timeline presetViewReset;
+	
+	/**
+	 * Dieser Text wird nur dann dargestellt wenn der Anwender einen der Preset Button verwendet
+	 * <br>this text is only shown, if user switch through the presets
+	 */
+	private Text textPreset;
+	
+	/**
+	 * Zeichnungsfläche für textPreset
+	 */
+	private Canvas textPresetCanvas;
+
+	/**
+	 * temp variable 
+	 */
+	private double presetPercentValueToShow;
+	
 
 	public RGBWDimmerControl()
 	{
@@ -483,7 +500,13 @@ public class RGBWDimmerControl extends Region
 		this.getChildren().addAll(buttonRGBOff, buttonPresetPrevious, buttonPresetNext, buttonWOff,
 				textRGBOff, textPreviousPreset, textNextPreset, textWOff);
 		
-		this.getChildren().addAll(basisAnzeige, anzeigeGlanzRahmen, anzeigeRGB, textCanvas, anzeigeGlanz);
+		textPresetCanvas = new Canvas();
+		textPreset = new Text();
+		
+		
+		
+		
+		this.getChildren().addAll(basisAnzeige, anzeigeGlanzRahmen, anzeigeRGB,textPresetCanvas, textCanvas, anzeigeGlanz);
 		
 		//components for the optinonal preset view
 		
@@ -755,6 +778,21 @@ public class RGBWDimmerControl extends Region
 
 		this.drawTextValues(true);
 		
+		double p_w = size * 0.3;
+		double p_h = size * 0.15;
+		
+		//auf y komme ich über die text_canvas
+		double p_y = y - p_h;
+		double p_x = centerX - (p_w/2);
+		textPresetCanvas.setWidth(p_w);
+		textPresetCanvas.setHeight(p_h);
+		textPresetCanvas.relocate(p_x, p_y);
+		
+		
+		
+		
+		
+		
 		//x1="74.8058167" y1="70.25" x2="74.8058167" y2="87.1291656"
 		//74.8058167 - 64 =  10,8058167 = 100/128 * 10,8058167 = 0.08442044296875
 		//y1 70,25 - 64  = 6,25 = 100/128 * 6,25 = 0.048828125
@@ -796,6 +834,59 @@ public class RGBWDimmerControl extends Region
 		presetGlanz.setCenterY(centerY + (size * 0.11289525));
 		presetGlanz.setRadius(size * 0.04296875);
 		presetGlanz.setFill(overlayPresetGradient);
+		
+		
+	}
+	
+	/**
+	 * Parameter im Regelfall true, außer man will die Sicht gelöscht haben
+	 * @param showValues
+	 */
+	private void drawTextPresetValue(boolean showValues)
+	{
+		double size  = getWidth() < getHeight() ? getWidth() : getHeight();
+		double w = textPresetCanvas.getWidth();
+		double h = textPresetCanvas.getHeight();
+		GraphicsContext gc = textPresetCanvas.getGraphicsContext2D();
+		
+		gc.clearRect(0, 0, w, h);
+		
+		//bei löschung der Sicht gleich wieder zurück
+		if(!showValues)
+			return;
+		
+		//gc.setFill(Color.AZURE);
+		//gc.fillRect(0, 0, w, h);
+		
+		
+		
+		gc.setFill(Color.web("#00000080"));
+		
+		//erstmal zum test preset drei auswählen
+		Font valueFont = new Font("Verdana", size * 0.05);
+		
+		
+		String valueToShow = String.format("%.1f", presetPercentValueToShow);
+		valueToShow = valueToShow + " %";
+		
+		textPreset.setText(valueToShow);
+		textPreset.setFont(valueFont);
+		
+		double valueX = (textPreset.getLayoutBounds().getWidth()  + (size * 0.018635));
+		double valueY = (textPreset.getLayoutBounds().getHeight()  + (size * 0.015635));
+		
+		
+		//TODO raus
+		//gc.setFont(valueFont);
+	//	gc.fillText(textPreset.getText(), w - valueX  , valueY);
+		
+		
+		
+		gc.setFill(Color.web("#282828"));
+		gc.fillText(textPreset.getText(),  w - valueX+2, valueY+2);
+	
+		gc.setFill(Color.WHITE);
+		gc.fillText(textPreset.getText(),  w - valueX, valueY);
 		
 		
 	}
@@ -1256,12 +1347,13 @@ public class RGBWDimmerControl extends Region
 	}
 
 
-	public void setPresetOnScreen(String colorValueAsHex, int percentValueToShow) 
+	public void setPresetOnScreen(String colorValueAsHex, double percentValueToShow) 
 	{
 		
 		//TODO percentvalue
+		this.presetPercentValueToShow = percentValueToShow;
 		presetRGB.setFill(Color.web(colorValueAsHex));
-		
+		drawTextPresetValue(true);
 		showPresetCircle(true);
 		restartPresetReset();
 	}
@@ -1299,10 +1391,9 @@ public class RGBWDimmerControl extends Region
 			{
 				Color colorValue = (Color) presetRGB.getFill();
 				setColorValue(colorValue);
-				
+				setCurrentValue(presetPercentValueToShow, false);
 				showPresetCircle(false);
-				//TODO
-				//drawTextPresetValue(false);
+				drawTextPresetValue(false);
 			}
 	
 		});
