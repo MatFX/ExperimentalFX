@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-
 import control.universaldisplay.SensorValue;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -120,6 +120,9 @@ public class RGBWDimmerControl extends Region
 	 * compare object
 	 */
 	private Color EMPTY_COLOR = Color.web("#00000000");
+	
+	//240
+	private final double  ANGLE_RANGE_SELECTOR = 180; 
 
 	public RGBWDimmerControl()
 	{
@@ -140,7 +143,6 @@ public class RGBWDimmerControl extends Region
 				SnapshotParameters params = new SnapshotParameters();
 				params.setFill(Color.TRANSPARENT);
 				Image snapshot = canvasColoredCircle.snapshot(params, null);
-				
 				
 				
 				/* TODO raus
@@ -170,10 +172,76 @@ public class RGBWDimmerControl extends Region
 			
 		});
 		
+		
+		deckflaechenBegrenzungOverlay.setOnMouseDragged(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) 
+			{
+				drehung(event);
+				event.consume();
+				
+			}
+			
+		});
+		
+		deckflaechenBegrenzungOverlay.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent event) {
+				drehung(event);
+				//jetzt Signalisierung an die Außenwelt, damit die nun die gewünschte Veränderung durchführt.
+				//TODO
+				//commandProperty.set(Command.SEND_VALUE);
+				event.consume();
+				
+			}
+			
+		});
+		
+		
+		
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
 		
 	}
+
+	
+	private void drehung(MouseEvent event)
+	{
+		//Berücksichtigt wird bereits min ist aber zur Zeit noch nicht einstellbar
+		double schrittweite = ANGLE_RANGE_SELECTOR / (majorValue.getBis() - majorValue.getVon());
+		
+		Point2D p = RGBWDimmerControl.this.sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY()));
+		
+		//Point2D p = new Point2D(event.getSceneX(), event.getSceneY());
+		double deltaX = p.getX() - (centerX);
+		double deltaY = p.getY() - (centerY);
+		//bin hier hin passt die berechnung
+		
+	    double radius = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+	
+	    
+	    double  nx     = deltaX / radius;
+        double  ny     = deltaY / radius;
+        double  theta  = Math.atan2(ny, nx);
+        
+        theta = Double.compare(theta, 0.0) >= 0 ? Math.toDegrees(theta) : Math.toDegrees((theta)) + 360.0;
+        //max 180 drehbereich.
+        double angle  = (theta + 180) % 360;
+        if (angle > 320 && angle < 360) 
+        {
+            angle = 0;
+        }
+        else if (angle <= 320 && angle > ANGLE_RANGE_SELECTOR) 
+        {
+            angle = ANGLE_RANGE_SELECTOR;
+        }
+        double valueToSet = (angle / schrittweite + majorValue.getVon());
+        setCurrentValue((int) valueToSet, false);
+   }
+	
+
 
 	private void initGraphics() 
 	{
@@ -675,6 +743,7 @@ public class RGBWDimmerControl extends Region
 				 line = new Line();
 				 //Darf hier nur einmalig gesetzt werden, weil zur Laufzeit sich die Farbe ändern kann.
 				 line.setStroke(Color.web("#626262"));
+				 line.setMouseTransparent(true);
 			 }
 			 else
 				 line = tickMap.get(i);
