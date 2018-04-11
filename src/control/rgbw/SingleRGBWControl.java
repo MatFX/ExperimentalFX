@@ -1,7 +1,13 @@
 package control.rgbw;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import control.rgbw.RGBWDimmerControl.Command;
 import control.universaldisplay.SensorValue;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import tools.helper.GenericPair;
 
 public class SingleRGBWControl extends Application
 {
@@ -26,9 +33,44 @@ public class SingleRGBWControl extends Application
 		 
 		 SensorValue majorValue = new SensorValue(0D, 0D , 100D, "%", "");
 		 
+		 //presetlist for the example
+		 List<GenericPair<String, Integer>> presetList = new ArrayList<GenericPair<String, Integer>>();
+		 
+		 presetList.add(new GenericPair<String, Integer>("#FF0000", 100));
+		 presetList.add(new GenericPair<String, Integer>("#454585", 75));
+		 presetList.add(new GenericPair<String, Integer>("#FF1225", 0));
+		 presetList.add(new GenericPair<String, Integer>("#00FFFF", 33));
+		 
+		 
+		 
 		 
 		 RGBWDimmerControl rgbwDimmerControl = new RGBWDimmerControl();
 		 rgbwDimmerControl.setMajorValue(majorValue);
+		 
+		 rgbwDimmerControl.getCommandProperty().addListener(new ChangeListener<Command>()
+	        {
+
+				@Override
+				public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) {
+					if(newValue != Command.RESET_COMMAND)
+					{
+						switch(newValue)
+						{
+							case PREVIOUS_PRESET:
+								break;
+							case NEXT_PRESET:
+								break;
+						}
+						rgbwDimmerControl.getCommandProperty().set(Command.RESET_COMMAND);
+					}
+					
+					
+				}
+
+				
+	        	
+	        });
+		 
 		 
 		 pane.setCenter(rgbwDimmerControl);
 		 

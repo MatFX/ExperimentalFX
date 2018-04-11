@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+
+import control.dimmer.DimmerControl.Command;
 import control.universaldisplay.SensorValue;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -14,6 +17,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -25,10 +29,12 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 
@@ -40,6 +46,16 @@ import javafx.scene.text.Text;
 public class RGBWDimmerControl extends Region
 {
 	
+	public enum Command
+	{
+		NEXT_PRESET, PREVIOUS_PRESET,
+		/**
+		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
+		 * <br>you need the reset as a "acknowledge" from outside.
+		 */
+		RESET_COMMAND;
+	}
+	
 	public enum StopIndizes
 	{
 		RAHMEN_GLANZ,
@@ -48,7 +64,7 @@ public class RGBWDimmerControl extends Region
 		
 		OVERLAY_INNER_CIRCLE,
 		
-		BORDER_INNERVIEW, INNERVIEW_SHINY
+		BORDER_INNERVIEW, INNERVIEW_SHINY, PRESET_BORDER, PRESET_OVERLAY
 	}
 	
 	
@@ -121,8 +137,25 @@ public class RGBWDimmerControl extends Region
 	 */
 	private Color EMPTY_COLOR = Color.web("#00000000");
 	
-	//240
 	private final double  ANGLE_RANGE_SELECTOR = 180; 
+	
+	private Circle presetBorder, presetInlayBorder, presetRGB, presetGlanz;
+	
+	/**
+	 * 
+	 */
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
+	
+	/**
+	 * Arc as button 
+	 */
+	private Arc buttonPresetNext, buttonPresetPrevious, buttonRGBOff, buttonWOff;
+	
+	private Text textRGBOff, textPreviousPreset, textNextPreset, textWOff;
+	
+	private Color textColor = Color.web("#d2d74b");
+	
+	private DropShadow dropShadow;
 
 	public RGBWDimmerControl()
 	{
@@ -281,7 +314,6 @@ public class RGBWDimmerControl extends Region
 		wahlkreis = new Circle();
 		
 		canvasColoredCircle = new Canvas();
-	//	canvasColoredCircle.setMouseTransparent(true);
 		
 		stopArray = new Stop[]{
 				new Stop(0.7414634, Color.web("#00000000")),
@@ -293,6 +325,10 @@ public class RGBWDimmerControl extends Region
 		
 		begrenzerInlay = new Circle();
 		begrenzerInlay.setMouseTransparent(true);
+		
+	
+		
+		
 		
 		deckflaechenBegrenzung = new Circle();
 		deckflaechenBegrenzung.setFill(Color.web("#282828"));
@@ -306,7 +342,8 @@ public class RGBWDimmerControl extends Region
 		
 		deckflaechenBegrenzungOverlay = new Circle();
 				
-		this.getChildren().addAll(hintergrund, rahmen_grundfarbe, rahmen_glanz, basisFarbe, wahlkreis, canvasColoredCircle, begrenzerInlay,
+		this.getChildren().addAll(hintergrund, rahmen_grundfarbe, rahmen_glanz, basisFarbe, wahlkreis, canvasColoredCircle, 
+				begrenzerInlay,
 				deckflaechenBegrenzung, deckflaechenBegrenzungOverlay);
 		
 		drawMinorTick(width, true);
@@ -354,7 +391,86 @@ public class RGBWDimmerControl extends Region
 		textFirstMeasuringUnit.setText("");
 		
 		
+		
+		buttonPresetNext = new Arc();
+		buttonPresetNext.setType(ArcType.ROUND);
+		buttonPresetNext.setFill(Color.web("404040"));
+		buttonPresetPrevious = new Arc();
+		buttonPresetPrevious.setType(ArcType.ROUND);
+		buttonPresetPrevious.setFill(Color.web("404040"));
+		buttonRGBOff = new Arc();
+		buttonRGBOff.setType(ArcType.ROUND);
+		buttonRGBOff.setFill(Color.web("404040"));
+		buttonWOff = new Arc();
+		buttonWOff.setType(ArcType.ROUND);
+		buttonWOff.setFill(Color.web("404040"));
+		
+		textRGBOff = new Text("RGB off");
+		textRGBOff.setMouseTransparent(true);
+		textPreviousPreset = new Text("<");
+		textPreviousPreset.setMouseTransparent(true);
+		textNextPreset = new Text(">");
+		textNextPreset.setMouseTransparent(true);
+		textWOff = new Text("W off");
+		textWOff.setMouseTransparent(true);
+		
+		dropShadow = new DropShadow();
+		dropShadow.setColor(Color.web("000000A0")); 
+		
+		this.getChildren().addAll(buttonRGBOff, buttonPresetPrevious, buttonPresetNext, buttonWOff,
+				textRGBOff, textPreviousPreset, textNextPreset, textWOff);
+		
 		this.getChildren().addAll(basisAnzeige, anzeigeGlanzRahmen, anzeigeRGB, textCanvas, anzeigeGlanz);
+		
+		//components for the optinonal preset view
+		
+		stopArray = new Stop[]{
+				new Stop(0.004878, Color.web("#FFFFFF")),
+				new Stop(0.0082273, Color.web("#FCFCFC")),
+				new Stop(0.0923704, Color.web("#BABABA")),
+				new Stop(0.1751242, Color.web("#828282")),
+				new Stop(0.2544291, Color.web("#535353")),
+				new Stop(0.329595, Color.web("#2F2F2F")),
+				new Stop(0.3995667, Color.web("#151515")),
+				new Stop(0.4624676, Color.web("#050505")),
+				new Stop(0.5121951, Color.web("#000000")),
+				new Stop(0.6493347, Color.web("#4F4F4F")),
+				new Stop(0.8212717, Color.web("#ADADAD")),
+				new Stop(0.9418331, Color.web("#E8E8E8")),
+				new Stop(0.9992601, Color.web("#FFFFFF"))
+			};
+		stopMap.put(StopIndizes.PRESET_BORDER, stopArray);
+		
+		//preset componet
+		presetBorder = new Circle();
+		
+		presetInlayBorder = new Circle();
+		presetInlayBorder.setFill(Color.BLACK);
+		
+		presetRGB = new Circle();
+		presetRGB.setFill(currentColorRGB);
+		
+		stopArray = new Stop[]{
+				new Stop(0.004878, Color.web("#9BA38800")),
+				new Stop(0.3651071, Color.web("#99A18641")),
+				new Stop(0.5159691, Color.web("#929A805C")),
+				new Stop(0.6276447, Color.web("#878D7670")),
+				new Stop(0.7200578, Color.web("#767C6780")),
+				new Stop(0.8005582, Color.web("#6065548F")),
+				new Stop(0.8726816, Color.web("#45493D9C")),
+				new Stop(0.9371255, Color.web("#262821A7")),
+				new Stop(0.9965406, Color.web("#020202B2")),
+				new Stop(0.9992601, Color.web("#000000B3"))
+			};
+		stopMap.put(StopIndizes.PRESET_OVERLAY, stopArray);
+		
+		presetGlanz = new Circle();
+		presetGlanz.setOpacity(0.38);
+		
+		//TODO evtl. in eigene Region wegen Sichtbarkeitsschaltung?
+		
+		this.getChildren().addAll(presetBorder, presetInlayBorder, presetRGB, presetGlanz);
+		
 	}
 	
 
@@ -434,6 +550,74 @@ public class RGBWDimmerControl extends Region
 		begrenzerInlay.setOpacity(0.5f);
 		
 		
+
+		buttonRGBOff.setCenterX(centerX);
+		buttonRGBOff.setCenterY(centerY);
+		buttonRGBOff.setRadiusX(radius* 0.69);
+		buttonRGBOff.setRadiusY(radius * 0.69);
+		buttonRGBOff.setStartAngle(-113.0f);
+		buttonRGBOff.setLength(-20.0f);
+		buttonRGBOff.setType(ArcType.ROUND);
+		
+		
+		
+		buttonPresetPrevious.setCenterX(centerX);
+		buttonPresetPrevious.setCenterY(centerY);
+		buttonPresetPrevious.setRadiusX(radius* 0.69);
+		buttonPresetPrevious.setRadiusY(radius * 0.69);
+		buttonPresetPrevious.setStartAngle(-91.0f);
+		buttonPresetPrevious.setLength(-20.0f);
+		buttonPresetPrevious.setType(ArcType.ROUND);
+		
+
+		buttonPresetNext.setCenterX(centerX);
+		buttonPresetNext.setCenterY(centerY);
+		buttonPresetNext.setRadiusX(radius* 0.69);
+		buttonPresetNext.setRadiusY(radius * 0.69);
+		buttonPresetNext.setStartAngle(-69.0f);
+		buttonPresetNext.setLength(-20.0f);
+		buttonPresetNext.setType(ArcType.ROUND);
+		
+		
+		buttonWOff.setCenterX(centerX);
+		buttonWOff.setCenterY(centerY);
+		buttonWOff.setRadiusX(radius* 0.69);
+		buttonWOff.setRadiusY(radius * 0.69);
+		buttonWOff.setStartAngle(-47.0f);
+		buttonWOff.setLength(-20.0f);
+		buttonWOff.setType(ArcType.ROUND);
+		
+		Font valueFont = Font.font("Verdana", FontWeight.BOLD, size * 0.02);
+		
+		Font shortTextFont = Font.font("Verdana", FontWeight.BOLD, size * 0.05);
+		
+		
+		//textRGBOff.setFill(Color.BLUEVIOLET);
+		textRGBOff.setFill(textColor);
+		textRGBOff.setFont(valueFont);
+		textRGBOff.setRotate(29);
+		textRGBOff.relocate(centerX - (radius * 0.42), centerY + (radius * 0.500));
+		
+		//textPreviousPreset.setFill(Color.BLUEVIOLET);
+		textPreviousPreset.setFill(textColor);
+		textPreviousPreset.setFont(shortTextFont);
+		textPreviousPreset.setRotate(2);
+		textPreviousPreset.relocate(centerX - (radius * 0.15), centerY + (radius * 0.535));		
+		
+		
+		//textNextPreset.setFill(Color.BLUEVIOLET);
+		textNextPreset.setFill(textColor);
+		textNextPreset.setFont(shortTextFont);
+		textNextPreset.setRotate(-2);
+		textNextPreset.relocate(centerX + (radius * 0.07), centerY + (radius * 0.535));		
+		
+		//textWOff.setFill(Color.BLUEVIOLET);
+		textWOff.setFill(textColor);
+		textWOff.setFont(valueFont);
+		textWOff.setRotate(-35);
+		textWOff.relocate(centerX + (radius * 0.28), centerY + (radius * 0.5));
+		
+		
 		deckflaechenBegrenzung.setCenterX(centerX);
 		deckflaechenBegrenzung.setCenterY(centerY);
 		//r = 45 = 100/64 * 45 = 0.703125
@@ -507,6 +691,49 @@ public class RGBWDimmerControl extends Region
 		
 
 		this.drawTextValues(true);
+		
+		//x1="74.8058167" y1="70.25" x2="74.8058167" y2="87.1291656"
+		//74.8058167 - 64 =  10,8058167 = 100/128 * 10,8058167 = 0.08442044296875
+		//y1 70,25 - 64  = 6,25 = 100/128 * 6,25 = 0.048828125
+		//y2 87.1291656 - 64 = 23,1291656 = 100/128 * 23,1291656 = 0.18069660625
+		LinearGradient gradientPresetBorder  = new LinearGradient(centerX + (size *  0.08442044296875), 
+				centerY + (size * 0.048828125),
+				centerX + (size *  0.08442044296875), 
+				centerY + (size *  0.18069660625), false, 
+				CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.PRESET_BORDER));
+		
+		
+		//cx="74.8058167" cy="78.450592" r="6"
+		//cx = 74.8058167 - 64 =  10,8058167 = 100/128 * 10,8058167 = 0.08442044296875
+		//cy = 78.450592 -64 = 14,450592 = 100/128 * 14,x = 11,289525
+		//r = 6 = 100/128 * 6 = 0,046875
+		presetBorder.setCenterX(centerX + (size *  0.08442044296875));
+		presetBorder.setCenterY(centerY + (size * 0.11289525));
+		presetBorder.setRadius(size * 0.046875);
+		this.presetBorder.setFill(gradientPresetBorder);
+		
+		//cx="74.8058167" cy="78.450592" r="5.75" 
+		//r 5,75 = 100/128 * 5,75 = 0.044921875
+		presetInlayBorder.setCenterX(centerX + (size *  0.08442044296875));
+		presetInlayBorder.setCenterY(centerY + (size * 0.11289525));
+		presetInlayBorder.setRadius(size * 0.044921875);
+		
+		//cx="74.8058167" cy="78.450592" r="5.5"/
+		//r 100/128 * 5,5 = 0.04296875
+		presetRGB.setCenterX(centerX + (size *  0.08442044296875));
+		presetRGB.setCenterY(centerY + (size * 0.11289525));
+		presetRGB.setRadius(size * 0.04296875);
+		
+		//??? cx="118.0290909" cy="136.2529602" r="25"s
+		// 100/128 * 25 = 
+		RadialGradient overlayPresetGradient = new RadialGradient(0D, 0D, centerX + (size *  0.08442044296875),
+				centerY + (size * 0.11289525), size * 0.04296875, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.PRESET_OVERLAY));
+		
+		presetGlanz.setCenterX(centerX + (size *  0.08442044296875));
+		presetGlanz.setCenterY(centerY + (size * 0.11289525));
+		presetGlanz.setRadius(size * 0.04296875);
+		presetGlanz.setFill(overlayPresetGradient);
+		
 		
 	}
 	
@@ -952,6 +1179,11 @@ public class RGBWDimmerControl extends Region
 		
 	
 	
+	}
+	
+	public SimpleObjectProperty<Command> getCommandProperty()
+	{
+		return commandProperty;
 	}
 
 
