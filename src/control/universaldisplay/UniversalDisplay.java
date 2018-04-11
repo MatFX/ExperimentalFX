@@ -1025,9 +1025,6 @@ public class UniversalDisplay extends Region
 		textNode.setEffect(textGlow);
 		commandProperty.set(command);
 		e.consume();
-		
-		
-	
 	}
 
 	private void setNodeReleased(Arc nodeBase, Text textNode, MouseEvent e) 

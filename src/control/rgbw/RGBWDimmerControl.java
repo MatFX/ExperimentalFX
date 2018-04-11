@@ -7,9 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import control.dimmer.DimmerControl.Command;
 import control.universaldisplay.SensorValue;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -17,8 +20,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.input.MouseEvent;
@@ -36,6 +41,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 
 /**
@@ -49,6 +55,8 @@ public class RGBWDimmerControl extends Region
 	public enum Command
 	{
 		NEXT_PRESET, PREVIOUS_PRESET,
+		
+		RGB_OFF, W_OFF,
 		/**
 		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
 		 * <br>you need the reset as a "acknowledge" from outside.
@@ -156,11 +164,34 @@ public class RGBWDimmerControl extends Region
 	private Color textColor = Color.web("#d2d74b");
 	
 	private DropShadow dropShadow;
+	
+
+	private InnerShadow innerShadow;
+	/**
+	 * für den Text wenn der button gedrückt wurde
+	 */
+	private Glow textGlow = new Glow(0.3);
+	
+	
+	/**
+	 * sind presets in er Anzeige sichtbar?
+	 * 
+	 */
+	private boolean isPresetsOnScreen;
+	
+	
+	/**
+	 * timeline to clean the preset dispaly after x seconds
+	 */
+	private Timeline presetViewReset;
 
 	public RGBWDimmerControl()
 	{
 		this.initGraphics();
 		this.registerListener();
+		
+		//zu beginn keine preset anzeige
+		showPresetCircle(false);
 	}
 
 	private void registerListener() {
@@ -232,10 +263,38 @@ public class RGBWDimmerControl extends Region
 			
 		});
 		
+		buttonPresetNext.setOnMousePressed(e -> setNodePressed(buttonPresetNext, textNextPreset, Command.NEXT_PRESET, e));
+		buttonPresetNext.setOnMouseReleased(e -> setNodeReleased(buttonPresetNext, textNextPreset, e));
+
+		buttonPresetPrevious.setOnMousePressed(e -> setNodePressed(buttonPresetPrevious, textNextPreset, Command.PREVIOUS_PRESET, e));
+		buttonPresetPrevious.setOnMouseReleased(e -> setNodeReleased(buttonPresetPrevious, textNextPreset, e));
 		
+		buttonRGBOff.setOnMousePressed(e -> setNodePressed(buttonRGBOff, textRGBOff, Command.RGB_OFF, e));
+		buttonRGBOff.setOnMouseReleased(e -> setNodeReleased(buttonRGBOff, textRGBOff, e));
+		
+		buttonWOff.setOnMousePressed(e -> setNodePressed(buttonWOff, textWOff, Command.W_OFF, e));
+		buttonWOff.setOnMouseReleased(e -> setNodeReleased(buttonWOff, textWOff, e));
 		
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
+		
+	}
+	
+	
+
+	private void setNodePressed(Arc nodeBase , Text textNode, Command command, MouseEvent e) 
+	{
+		nodeBase.setEffect(innerShadow);
+		textNode.setEffect(textGlow);
+		commandProperty.set(command);
+		e.consume();
+	}
+
+	private void setNodeReleased(Arc nodeBase, Text textNode, MouseEvent e) 
+	{
+		nodeBase.setEffect(dropShadow);
+		textNode.setEffect(null);
+		e.consume();
 		
 	}
 
@@ -416,6 +475,10 @@ public class RGBWDimmerControl extends Region
 		
 		dropShadow = new DropShadow();
 		dropShadow.setColor(Color.web("000000A0")); 
+		
+		innerShadow = new InnerShadow();
+		innerShadow.setBlurType(BlurType.GAUSSIAN);
+		innerShadow.setColor(Color.web("#000000A0"));
 		
 		this.getChildren().addAll(buttonRGBOff, buttonPresetPrevious, buttonPresetNext, buttonWOff,
 				textRGBOff, textPreviousPreset, textNextPreset, textWOff);
@@ -1184,6 +1247,67 @@ public class RGBWDimmerControl extends Region
 	public SimpleObjectProperty<Command> getCommandProperty()
 	{
 		return commandProperty;
+	}
+
+	public void setColorValue(Color colorValue) 
+	{
+		this.currentColorRGB = colorValue;
+		this.anzeigeRGB.setFill(currentColorRGB);
+	}
+
+
+	public void setPresetOnScreen(String colorValueAsHex, int percentValueToShow) 
+	{
+		
+		//TODO percentvalue
+		presetRGB.setFill(Color.web(colorValueAsHex));
+		
+		showPresetCircle(true);
+		restartPresetReset();
+	}
+	
+	private void showPresetCircle(boolean isShowing)
+	{
+		presetBorder.setVisible(isShowing);
+		presetInlayBorder.setVisible(isShowing);
+		presetRGB.setVisible(isShowing);
+		presetGlanz.setVisible(isShowing);
+	}
+
+	private void stopPresetViewReset()
+	{
+		if(presetViewReset != null)
+		{
+			presetViewReset.stop();
+		}
+		isPresetsOnScreen = false;
+		
+	}
+	
+	private void restartPresetReset() 
+	{
+		stopPresetViewReset();
+		
+		presetViewReset = new Timeline();
+		KeyFrame key = new KeyFrame(Duration.millis(3000));
+		presetViewReset.getKeyFrames().add(key);
+		presetViewReset.setOnFinished(new EventHandler<ActionEvent>()
+		{
+
+			@Override
+			public void handle(ActionEvent event) 
+			{
+				Color colorValue = (Color) presetRGB.getFill();
+				setColorValue(colorValue);
+				
+				showPresetCircle(false);
+				//TODO
+				//drawTextPresetValue(false);
+			}
+	
+		});
+		isPresetsOnScreen = true;
+		presetViewReset.play();
 	}
 
 

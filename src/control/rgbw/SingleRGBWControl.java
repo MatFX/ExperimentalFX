@@ -3,6 +3,7 @@ package control.rgbw;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import control.rgbw.RGBWDimmerControl.Command;
 import control.universaldisplay.SensorValue;
 import javafx.application.Application;
@@ -15,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tools.helper.GenericPair;
@@ -22,7 +24,11 @@ import tools.helper.GenericPair;
 public class SingleRGBWControl extends Application
 {
 	
+	private int indexPreset = 0;
 	
+	private List<GenericPair<String, Integer>> presetList;
+	
+	private RGBWDimmerControl rgbwDimmerControl;
 	
 	
 
@@ -34,7 +40,7 @@ public class SingleRGBWControl extends Application
 		 SensorValue majorValue = new SensorValue(0D, 0D , 100D, "%", "");
 		 
 		 //presetlist for the example
-		 List<GenericPair<String, Integer>> presetList = new ArrayList<GenericPair<String, Integer>>();
+		 presetList = new ArrayList<GenericPair<String, Integer>>();
 		 
 		 presetList.add(new GenericPair<String, Integer>("#FF0000", 100));
 		 presetList.add(new GenericPair<String, Integer>("#454585", 75));
@@ -43,8 +49,7 @@ public class SingleRGBWControl extends Application
 		 
 		 
 		 
-		 
-		 RGBWDimmerControl rgbwDimmerControl = new RGBWDimmerControl();
+		 rgbwDimmerControl = new RGBWDimmerControl();
 		 rgbwDimmerControl.setMajorValue(majorValue);
 		 
 		 rgbwDimmerControl.getCommandProperty().addListener(new ChangeListener<Command>()
@@ -57,8 +62,16 @@ public class SingleRGBWControl extends Application
 						switch(newValue)
 						{
 							case PREVIOUS_PRESET:
+								previousPreset();
 								break;
 							case NEXT_PRESET:
+								nextPreset();
+								break;
+							case RGB_OFF:
+								rgbwDimmerControl.setColorValue(Color.BLACK);
+								break;
+							case W_OFF:
+								rgbwDimmerControl.setCurrentValue(0, false);
 								break;
 						}
 						rgbwDimmerControl.getCommandProperty().set(Command.RESET_COMMAND);
@@ -126,6 +139,7 @@ public class SingleRGBWControl extends Application
 	            @Override
 	            public void handle(WindowEvent event) 
 	            {
+	            	
 	            
 	            }
 	     });
@@ -135,7 +149,29 @@ public class SingleRGBWControl extends Application
 
 	
 
-    public static void main(String[] args) {
+    protected void nextPreset() 
+    {
+		indexPreset++;
+    	if(indexPreset >= presetList.size())
+    		indexPreset = 0;
+    	rgbwDimmerControl.setPresetOnScreen(presetList.get(indexPreset).getLeft(), presetList.get(indexPreset).getRight());
+	
+    }
+
+
+
+	protected void previousPreset() 
+	{
+		indexPreset--;
+		if(indexPreset < 0)
+			indexPreset = presetList.size()-1;
+		
+		rgbwDimmerControl.setPresetOnScreen(presetList.get(indexPreset).getLeft(), presetList.get(indexPreset).getRight());
+	}
+
+
+
+	public static void main(String[] args) {
         Application.launch(args);
     }
 }

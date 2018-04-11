@@ -1122,12 +1122,9 @@ public class DimmerControl extends Region implements IActivationIcon
 		{
 			drawTextPresetValue(true);
 			isPresetsOnScreen = true;
-			
 		}
 		else
 		{
-			
-			
 			//im anderen Fall hochsetzen und nächsten wert anzeigen
 			presetIndex++;
 			//wenn er größer als die Länge ist, dann wieder zurück auf den ersten Index
