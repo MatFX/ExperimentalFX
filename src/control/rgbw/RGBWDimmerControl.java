@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-
-import control.dimmer.DimmerControl.Command;
 import control.universaldisplay.SensorValue;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,6 +18,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
@@ -197,9 +196,15 @@ public class RGBWDimmerControl extends Region
 	private Canvas textPresetCanvas;
 
 	/**
-	 * temp variable 
+	 * temp variable to sho the percent  
 	 */
-	private double presetPercentValueToShow;
+	private SensorValue minorValue;
+	
+	private DoubleProperty scaleableMinorFontSize;
+	
+	private Font fontMinorVorgabe = null;
+	
+	
 	
 
 	public RGBWDimmerControl()
@@ -506,7 +511,7 @@ public class RGBWDimmerControl extends Region
 		
 		
 		
-		this.getChildren().addAll(basisAnzeige, anzeigeGlanzRahmen, anzeigeRGB,textPresetCanvas, textCanvas, anzeigeGlanz);
+		this.getChildren().addAll(basisAnzeige, anzeigeGlanzRahmen, anzeigeRGB, textPresetCanvas, textCanvas, anzeigeGlanz);
 		
 		//components for the optinonal preset view
 		
@@ -778,6 +783,7 @@ public class RGBWDimmerControl extends Region
 
 		this.drawTextValues(true);
 		
+		/*
 		double p_w = size * 0.3;
 		double p_h = size * 0.15;
 		
@@ -787,8 +793,19 @@ public class RGBWDimmerControl extends Region
 		textPresetCanvas.setWidth(p_w);
 		textPresetCanvas.setHeight(p_h);
 		textPresetCanvas.relocate(p_x, p_y);
+		*/
 		
 		
+		//resize der canvas für preset und der Anzeige
+		double p_w = size * 0.25;
+		double p_h = size * 0.171875;
+		
+		//auf y komme ich über die text_canvas
+		double p_y = y - p_h;
+		double p_x = centerX - (p_w/2);
+		textPresetCanvas.setWidth(p_w);
+		textPresetCanvas.setHeight(p_h);
+		textPresetCanvas.relocate(p_x, p_y);
 		
 		
 		
@@ -842,7 +859,7 @@ public class RGBWDimmerControl extends Region
 	 * Parameter im Regelfall true, außer man will die Sicht gelöscht haben
 	 * @param showValues
 	 */
-	private void drawTextPresetValue(boolean showValues)
+	private void drawSecondTextValue(boolean showValues)
 	{
 		double size  = getWidth() < getHeight() ? getWidth() : getHeight();
 		double w = textPresetCanvas.getWidth();
@@ -855,39 +872,72 @@ public class RGBWDimmerControl extends Region
 		if(!showValues)
 			return;
 		
-		//gc.setFill(Color.AZURE);
+		//TODO raus
+		//gc.setFill(Color.AQUAMARINE);
 		//gc.fillRect(0, 0, w, h);
+			
+		if(scaleableMinorFontSize == null)
+		{
+			scaleableMinorFontSize = new SimpleDoubleProperty(size * 0.01);
+		}
+		else
+			scaleableMinorFontSize.set(size * 0.01);
 		
+		if(fontMinorVorgabe == null)
+		{
+			fontMinorVorgabe = new Label().getFont();
+		}
 		
+		Font font = Font.font(fontMinorVorgabe.getName(), scaleableMinorFontSize.get());
 		
 		gc.setFill(Color.web("#00000080"));
 		
-		//erstmal zum test preset drei auswählen
-		Font valueFont = new Font("Verdana", size * 0.05);
+		Bounds maxTextAbmasse = this.getMaxTextWidth(font, this.minorValue);
+		 
+		if(maxTextAbmasse.getWidth() < w  && maxTextAbmasse.getHeight() < h)
+		{
+			 double tempSize = getGreaterFont(scaleableMinorFontSize.get(), w, h, minorValue);
+				if(tempSize != scaleableMinorFontSize.get())
+					scaleableMinorFontSize.set(tempSize);
+			 
+		}
+		else
+		{
+			 double tempSize = getLesserFont(scaleableMinorFontSize.get(), w, h, minorValue);
+				if(tempSize != scaleableMinorFontSize.get())
+					scaleableMinorFontSize.set(tempSize);
+		}
+		font = Font.font(fontVorgabe.getName(), scaleableMinorFontSize.get());
+		
+		gc.setFont(font);
+		
+		String valueToShow = "";
+		if(minorValue != null)
+		{
+			valueToShow = String.format("%.1f", minorValue.getCurrentValue());
+			//hier die Unterscheidung ob zur Zeit die Voreinstellung zur Anzeige kommt
+			valueToShow = valueToShow + " " + minorValue.getMeasurementUnit();
+		}
 		
 		
-		String valueToShow = String.format("%.1f", presetPercentValueToShow);
-		valueToShow = valueToShow + " %";
-		
-		textPreset.setText(valueToShow);
-		textPreset.setFont(valueFont);
-		
-		double valueX = (textPreset.getLayoutBounds().getWidth()  + (size * 0.018635));
-		double valueY = (textPreset.getLayoutBounds().getHeight()  + (size * 0.015635));
-		
-		
-		//TODO raus
-		//gc.setFont(valueFont);
-	//	gc.fillText(textPreset.getText(), w - valueX  , valueY);
-		
-		
-		
-		gc.setFill(Color.web("#282828"));
-		gc.fillText(textPreset.getText(),  w - valueX+2, valueY+2);
 	
-		gc.setFill(Color.WHITE);
-		gc.fillText(textPreset.getText(),  w - valueX, valueY);
 		
+		Text textSecondValue = new Text();
+		textSecondValue.setText(valueToShow);
+		textSecondValue.setFont(font);
+		
+		double valueX = w - (textSecondValue.getLayoutBounds().getWidth());//  + (size * 0.018635));
+		double haelfte =  textFirstMeasuringUnit.getLayoutBounds().getHeight() / 2d;
+		double valueY = h/2d +  (haelfte/2d);
+		
+		
+		
+		gc.setFont(font);
+		gc.setFill(Color.web("#282828"));
+		gc.fillText(textSecondValue.getText(), valueX+2, valueY+2);
+		
+		gc.setFill(Color.WHITE);
+		gc.fillText(textSecondValue.getText(), valueX  , valueY);
 		
 	}
 	
@@ -1349,11 +1399,10 @@ public class RGBWDimmerControl extends Region
 
 	public void setPresetOnScreen(String colorValueAsHex, double percentValueToShow) 
 	{
-		
 		//TODO percentvalue
-		this.presetPercentValueToShow = percentValueToShow;
+		this.minorValue =new SensorValue(percentValueToShow, 0D , 100D, "%", "");
 		presetRGB.setFill(Color.web(colorValueAsHex));
-		drawTextPresetValue(true);
+		drawSecondTextValue(true);
 		showPresetCircle(true);
 		restartPresetReset();
 	}
@@ -1391,9 +1440,10 @@ public class RGBWDimmerControl extends Region
 			{
 				Color colorValue = (Color) presetRGB.getFill();
 				setColorValue(colorValue);
-				setCurrentValue(presetPercentValueToShow, false);
+				if(minorValue != null)
+					setCurrentValue(minorValue.getCurrentValue(), false);
 				showPresetCircle(false);
-				drawTextPresetValue(false);
+				drawSecondTextValue(false);
 			}
 	
 		});
