@@ -1,0 +1,359 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 150 60">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #121616;
+      }
+
+      .cls-2 {
+        fill: url(#Neues_Verlaufsfeld_1);
+      }
+
+      .cls-3 {
+        fill: #111110;
+      }
+
+      .cls-4 {
+        fill: url(#Unbenannter_Verlauf_415);
+      }
+
+      .cls-5 {
+        fill: #090a0a;
+      }
+
+      .cls-6 {
+        fill: url(#Neues_Verlaufsfeld_2);
+      }
+
+      .cls-7 {
+        fill: url(#Unbenannter_Verlauf_330);
+      }
+
+      .cls-8 {
+        fill: url(#Neues_Verlaufsfeld_3);
+      }
+
+      .cls-9 {
+        fill: url(#Unbenannter_Verlauf_355);
+      }
+
+      .cls-10 {
+        fill: #7cb928;
+      }
+
+      .cls-11 {
+        font-size: 10.99928px;
+        fill: #010101;
+        font-family: MyriadPro-Regular, Myriad Pro;
+      }
+
+      .cls-12 {
+        fill: url(#Unbenannter_Verlauf_148);
+      }
+
+      .cls-13 {
+        fill: url(#Unbenannter_Verlauf_428);
+      }
+
+      .cls-14 {
+        fill: #5f5f5e;
+      }
+
+      .cls-15 {
+        fill: url(#Unbenannter_Verlauf_480);
+      }
+
+      .cls-16 {
+        fill: url(#Unbenannter_Verlauf_428-2);
+      }
+
+      .cls-17 {
+        fill: url(#Unbenannter_Verlauf_480-2);
+      }
+
+      .cls-18 {
+        fill: url(#Unbenannter_Verlauf_428-3);
+      }
+
+      .cls-19 {
+        fill: url(#Unbenannter_Verlauf_480-3);
+      }
+
+      .cls-20 {
+        fill: #353535;
+      }
+
+      .cls-21 {
+        fill: url(#Unbenannter_Verlauf_14);
+      }
+
+      .cls-22 {
+        fill: #baba0b;
+      }
+
+      .cls-23 {
+        fill: url(#Unbenannter_Verlauf_25);
+      }
+
+      .cls-24 {
+        fill: url(#Unbenannter_Verlauf_56);
+      }
+
+      .cls-25 {
+        fill: url(#Unbenannter_Verlauf_14-2);
+      }
+
+      .cls-26 {
+        fill: #e5251c;
+      }
+
+      .cls-27 {
+        fill: url(#Unbenannter_Verlauf_25-2);
+      }
+
+      .cls-28 {
+        fill: url(#Unbenannter_Verlauf_228);
+      }
+
+      .cls-29 {
+        fill: url(#Unbenannter_Verlauf_14-3);
+      }
+
+      .cls-30 {
+        fill: #65b32e;
+      }
+
+      .cls-31 {
+        fill: url(#Unbenannter_Verlauf_25-3);
+      }
+
+      .cls-32 {
+        fill: url(#Unbenannter_Verlauf_236);
+      }
+
+      .cls-33 {
+        font-size: 12px;
+        fill: #c6c6c6;
+      }
+
+      .cls-33, .cls-34 {
+        font-family: Verdana-Bold, Verdana;
+        font-weight: 700;
+      }
+
+      .cls-34 {
+        font-size: 6px;
+        fill: #ededed;
+      }
+    </style>
+    <linearGradient id="Neues_Verlaufsfeld_1" data-name="Neues Verlaufsfeld 1" y1="30" x2="150" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1d1b" stop-opacity="0.9"/>
+      <stop offset="0.27211" stop-color="#b2b2b2" stop-opacity="0.2"/>
+      <stop offset="0.31916" stop-color="#b5b5b5" stop-opacity="0.23227"/>
+      <stop offset="0.39341" stop-color="#bebebe" stop-opacity="0.32055"/>
+      <stop offset="0.48555" stop-color="#ccc" stop-opacity="0.46466"/>
+      <stop offset="0.59098" stop-color="#e0e0e0" stop-opacity="0.66273"/>
+      <stop offset="0.65642" stop-color="#ededed" stop-opacity="0.8"/>
+      <stop offset="0.83862" stop-color="#7c7c7b" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_415" data-name="Unbenannter Verlauf 415" x1="75.07833" y1="59.62849" x2="74.92071" y2="0.00715" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1d1b" stop-opacity="0.3"/>
+      <stop offset="0.37573" stop-color="#afafaf" stop-opacity="0.36746"/>
+      <stop offset="0.54749" stop-color="#f6f6f6" stop-opacity="0.4"/>
+      <stop offset="0.69898" stop-color="#b6b6b5" stop-opacity="0.42952"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="Neues_Verlaufsfeld_2" data-name="Neues Verlaufsfeld 2" x1="24.5" y1="25.2191" x2="34.5" y2="25.2191" gradientUnits="userSpaceOnUse">
+      <stop offset="0.02244" stop-color="#1d1d1b" stop-opacity="0.8"/>
+      <stop offset="0.58653" stop-color="#8e8e8d" stop-opacity="0.40103"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_330" data-name="Unbenannter Verlauf 330" x1="115.5" y1="25.2191" x2="125.5" y2="25.2191" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.41347" stop-color="#8e8e8d" stop-opacity="0.40103"/>
+      <stop offset="0.97756" stop-color="#1d1d1b" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="Neues_Verlaufsfeld_3" data-name="Neues Verlaufsfeld 3" x1="75" y1="33.34891" x2="75" y2="46.38965" gradientUnits="userSpaceOnUse">
+      <stop offset="0.00559" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_355" data-name="Unbenannter Verlauf 355" x1="75" y1="7.29758" x2="75" y2="16.81263" gradientUnits="userSpaceOnUse">
+      <stop offset="0.26398" stop-color="#1d1d1b" stop-opacity="0.8"/>
+      <stop offset="0.63141" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_148" data-name="Unbenannter Verlauf 148" x1="74.51208" y1="6.73968" x2="74.51208" y2="46.15408" gradientUnits="userSpaceOnUse">
+      <stop offset="0.00562" stop-color="#fff" stop-opacity="0.5"/>
+      <stop offset="0.19031" stop-color="#fff" stop-opacity="0.3635"/>
+      <stop offset="0.43688" stop-color="#fff" stop-opacity="0.20691"/>
+      <stop offset="0.66252" stop-color="#fff" stop-opacity="0.09349"/>
+      <stop offset="0.85762" stop-color="#fff" stop-opacity="0.0245"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_428" data-name="Unbenannter Verlauf 428" cx="138.55494" cy="15.69712" r="6" gradientUnits="userSpaceOnUse">
+      <stop offset="0.57444" stop-color="#161412" stop-opacity="0"/>
+      <stop offset="0.58364" stop-color="#272524" stop-opacity="0.12281"/>
+      <stop offset="0.60244" stop-color="#42403f" stop-opacity="0.31636"/>
+      <stop offset="0.62466" stop-color="#575555" stop-opacity="0.46709"/>
+      <stop offset="0.65213" stop-color="#656464" stop-opacity="0.57265"/>
+      <stop offset="0.69069" stop-color="#6e6d6d" stop-opacity="0.63327"/>
+      <stop offset="0.79771" stop-color="#706f6f" stop-opacity="0.65"/>
+      <stop offset="0.82478" stop-color="#616060" stop-opacity="0.69895"/>
+      <stop offset="0.93813" stop-color="#2b2927" stop-opacity="0.88098"/>
+      <stop offset="1" stop-color="#161412" stop-opacity="0.95"/>
+    </radialGradient>
+    <radialGradient id="Unbenannter_Verlauf_480" data-name="Unbenannter Verlauf 480" cx="138.62581" cy="17.26404" r="6" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1d1b" stop-opacity="0"/>
+      <stop offset="0.26196" stop-color="#1f1f1d" stop-opacity="0.06483"/>
+      <stop offset="0.51755" stop-color="#252523" stop-opacity="0.26046"/>
+      <stop offset="0.76967" stop-color="#2f2f2e" stop-opacity="0.58584"/>
+      <stop offset="1" stop-color="#3c3c3b"/>
+    </radialGradient>
+    <radialGradient id="Unbenannter_Verlauf_428-2" cx="12.5077" cy="15.88609" r="6" xlink:href="#Unbenannter_Verlauf_428"/>
+    <radialGradient id="Unbenannter_Verlauf_480-2" cx="12.57857" cy="17.45302" r="6" xlink:href="#Unbenannter_Verlauf_480"/>
+    <radialGradient id="Unbenannter_Verlauf_428-3" cx="12.74803" cy="32.96063" r="6" xlink:href="#Unbenannter_Verlauf_428"/>
+    <radialGradient id="Unbenannter_Verlauf_480-3" cx="12.8189" cy="34.52756" r="6" xlink:href="#Unbenannter_Verlauf_480"/>
+    <linearGradient id="Unbenannter_Verlauf_14" data-name="Unbenannter Verlauf 14" x1="45.5" y1="55.04331" x2="45.5" y2="46.04331" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.8"/>
+      <stop offset="0.13896" stop-color="#fafafa" stop-opacity="0.79769"/>
+      <stop offset="0.28628" stop-color="#eaeaea" stop-opacity="0.79081"/>
+      <stop offset="0.43744" stop-color="#d0d0d0" stop-opacity="0.77936"/>
+      <stop offset="0.59126" stop-color="#ababab" stop-opacity="0.76331"/>
+      <stop offset="0.7472" stop-color="#7c7c7c" stop-opacity="0.74266"/>
+      <stop offset="0.90262" stop-color="#434343" stop-opacity="0.71776"/>
+      <stop offset="1" stop-color="#1b1b1b" stop-opacity="0.7"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_25" data-name="Unbenannter Verlauf 25" cx="50.40259" cy="55.54331" r="2.5" gradientTransform="translate(-30.10388 -32.77165) scale(1.5)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.7"/>
+      <stop offset="0.17334" stop-color="#fff" stop-opacity="0.68551"/>
+      <stop offset="0.33475" stop-color="#fff" stop-opacity="0.64133"/>
+      <stop offset="0.49153" stop-color="#fff" stop-opacity="0.56731"/>
+      <stop offset="0.64538" stop-color="#fff" stop-opacity="0.46336"/>
+      <stop offset="0.79715" stop-color="#fff" stop-opacity="0.32935"/>
+      <stop offset="0.94534" stop-color="#fff" stop-opacity="0.16755"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0.1"/>
+    </radialGradient>
+    <radialGradient id="Unbenannter_Verlauf_56" data-name="Unbenannter Verlauf 56" cx="58.81415" cy="50.82711" r="3.35417" gradientTransform="translate(-59.70792 -40.37724) scale(1.78882 1.78882)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.04865" stop-color="#f9ea32" stop-opacity="0.7"/>
+      <stop offset="0.28125" stop-color="#f9ea31" stop-opacity="0.68951"/>
+      <stop offset="0.42771" stop-color="#f9ea2f" stop-opacity="0.65499"/>
+      <stop offset="0.55034" stop-color="#f8e92b" stop-opacity="0.59617"/>
+      <stop offset="0.65984" stop-color="#f8e925" stop-opacity="0.51293"/>
+      <stop offset="0.76065" stop-color="#f7e81d" stop-opacity="0.40505"/>
+      <stop offset="0.85502" stop-color="#f6e813" stop-opacity="0.27249"/>
+      <stop offset="0.94271" stop-color="#f5e708" stop-opacity="0.11835"/>
+      <stop offset="1" stop-color="#f4e600" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14-2" x1="79.75657" y1="55.04226" x2="79.75657" y2="46.04226" xlink:href="#Unbenannter_Verlauf_14"/>
+    <radialGradient id="Unbenannter_Verlauf_25-2" cx="73.2403" cy="55.54261" r="2.5" xlink:href="#Unbenannter_Verlauf_25"/>
+    <radialGradient id="Unbenannter_Verlauf_228" data-name="Unbenannter Verlauf 228" cx="77.96452" cy="50.82653" r="3.35417" gradientTransform="translate(-59.70792 -40.37724) scale(1.78882 1.78882)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.04865" stop-color="#e50b42" stop-opacity="0.7"/>
+      <stop offset="0.28787" stop-color="#e50b42" stop-opacity="0.6886"/>
+      <stop offset="0.43849" stop-color="#e50b40" stop-opacity="0.65107"/>
+      <stop offset="0.56467" stop-color="#e50c3e" stop-opacity="0.58708"/>
+      <stop offset="0.67731" stop-color="#e50c3b" stop-opacity="0.49653"/>
+      <stop offset="0.78097" stop-color="#e50d37" stop-opacity="0.37924"/>
+      <stop offset="0.87805" stop-color="#e40e32" stop-opacity="0.23503"/>
+      <stop offset="0.96827" stop-color="#e40f2c" stop-opacity="0.06735"/>
+      <stop offset="1" stop-color="#e40f2a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14-3" x1="115" y1="55.04331" x2="115" y2="46.04331" xlink:href="#Unbenannter_Verlauf_14"/>
+    <radialGradient id="Unbenannter_Verlauf_25-3" cx="96.73592" cy="55.54331" r="2.5" xlink:href="#Unbenannter_Verlauf_25"/>
+    <radialGradient id="Unbenannter_Verlauf_236" data-name="Unbenannter Verlauf 236" cx="97.66658" cy="50.82711" r="3.35417" gradientTransform="translate(-59.70792 -40.37724) scale(1.78882 1.78882)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.04865" stop-color="#4fae32" stop-opacity="0.7"/>
+      <stop offset="0.31094" stop-color="#4dad32" stop-opacity="0.68499"/>
+      <stop offset="0.47605" stop-color="#48aa32" stop-opacity="0.63562"/>
+      <stop offset="0.61431" stop-color="#3fa433" stop-opacity="0.5515"/>
+      <stop offset="0.73779" stop-color="#339c34" stop-opacity="0.4324"/>
+      <stop offset="0.85137" stop-color="#229234" stop-opacity="0.27823"/>
+      <stop offset="0.95628" stop-color="#0f8635" stop-opacity="0.09162"/>
+      <stop offset="1" stop-color="#058036" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g id="base_background_component">
+    <rect class="cls-1" width="150" height="60" rx="4"/>
+  </g>
+  <g id="base_background_shine">
+    <rect class="cls-2" width="150" height="60" rx="4"/>
+  </g>
+  <g id="base_background_inlay">
+    <rect class="cls-3" x="2" y="2" width="146" height="56" rx="4"/>
+  </g>
+  <g id="base_background_inlay_shine">
+    <rect class="cls-4" x="2" y="2" width="146" height="56" rx="4"/>
+  </g>
+  <g id="frame_compoent">
+    <rect class="cls-5" x="24.72441" y="9.9685" width="100.27559" height="29.79554"/>
+  </g>
+  <g id="frame_left_highlight">
+    <polygon class="cls-6" points="24.5 40.219 34.5 32.691 34.5 12.691 24.5 10.219 24.5 40.219"/>
+  </g>
+  <g id="frame_right_highlight">
+    <polygon class="cls-7" points="115.5 32.691 125.5 40.219 125.5 10.219 115.5 12.691 115.5 32.691"/>
+  </g>
+  <g id="frame_bottom_highlight">
+    <polygon class="cls-8" points="35 32.736 25 40.264 125 40.264 115 32.736 35 32.736"/>
+  </g>
+  <g id="frame_top_highlight">
+    <polygon class="cls-9" points="25 10.219 35 12.691 115 12.691 125 10.219 25 10.219"/>
+  </g>
+  <g id="display_component">
+    <rect id="display_lcd" class="cls-10" x="34.347" y="12.85039" width="80.33016" height="20.16535"/>
+    <text class="cls-11" transform="translate(70.71388 27.51658) scale(1.18431 1)">55,75%</text>
+    <rect id="display_overlay" class="cls-12" x="34.347" y="12.85039" width="80.33016" height="20.16535"/>
+  </g>
+  <g id="button_automatic">
+    <g id="button_automatic_top">
+      <circle class="cls-13" cx="138.55494" cy="15.69712" r="6"/>
+    </g>
+    <circle id="button_automatic_base" class="cls-14" cx="138.62581" cy="17.26404" r="6"/>
+    <circle id="button_automatic_border" class="cls-15" cx="138.62581" cy="17.26404" r="6"/>
+  </g>
+  <g id="button_top">
+    <g id="button_top_top">
+      <circle class="cls-16" cx="12.5077" cy="15.88609" r="6"/>
+    </g>
+    <circle id="button_top_base" class="cls-14" cx="12.57857" cy="17.45302" r="6"/>
+    <circle id="button_top_border" class="cls-17" cx="12.57857" cy="17.45302" r="6"/>
+  </g>
+  <g id="button_bottom">
+    <g id="button_bottom_top">
+      <circle class="cls-18" cx="12.74803" cy="32.96063" r="6"/>
+    </g>
+    <circle id="button_bottom_base" class="cls-14" cx="12.8189" cy="34.52756" r="6"/>
+    <circle id="button_bottom_border" class="cls-19" cx="12.8189" cy="34.52756" r="6"/>
+  </g>
+  <g id="LED_left">
+    <circle id="led_left_base_component" class="cls-20" cx="45.5" cy="50.54331" r="4.5"/>
+    <circle id="led_left_border" class="cls-21" cx="45.5" cy="50.54331" r="4.5"/>
+    <circle id="lef_left_base_color" class="cls-22" cx="45.5" cy="50.54331" r="3.75"/>
+    <circle id="led_left_base_color_shine" class="cls-23" cx="45.5" cy="50.54331" r="3.75"/>
+    <circle id="led_left_glow" class="cls-24" cx="45.5" cy="50.54331" r="6"/>
+  </g>
+  <g id="LED_middle">
+    <circle id="led_middle_base_component" class="cls-20" cx="79.75657" cy="50.54226" r="4.5"/>
+    <circle id="led_middle_border" class="cls-25" cx="79.75657" cy="50.54226" r="4.5"/>
+    <circle id="led_middle_base_color" class="cls-26" cx="79.75657" cy="50.54226" r="3.75"/>
+    <circle id="led_middle_base_color_shine" class="cls-27" cx="79.75657" cy="50.54226" r="3.75"/>
+    <circle id="led_middle_glow" class="cls-28" cx="79.75657" cy="50.54226" r="6"/>
+  </g>
+  <g id="LED_Rechts">
+    <circle id="led_right_base_component" class="cls-20" cx="115" cy="50.54331" r="4.5"/>
+    <circle id="led_right_border" class="cls-29" cx="115" cy="50.54331" r="4.5"/>
+    <circle id="led_right_base_color" class="cls-30" cx="115" cy="50.54331" r="3.75"/>
+    <circle id="led_right_base_color_shine" class="cls-31" cx="115" cy="50.54331" r="3.75"/>
+    <circle id="led_right_glow" class="cls-32" cx="115" cy="50.54331" r="6"/>
+  </g>
+  <g id="Z">
+    <text class="cls-33" transform="translate(99.13356 55.04328)">Z</text>
+  </g>
+  <g id="Y">
+    <text class="cls-33" transform="translate(62.78542 55.04362)">Y</text>
+  </g>
+  <g id="X">
+    <text class="cls-33" transform="translate(29.71455 55.04194)">X</text>
+  </g>
+  <g id="info_component">
+    <text class="cls-34" transform="translate(24.99812 7.71743)">Monet; Die japanische Brücke</text>
+  </g>
+</svg>
