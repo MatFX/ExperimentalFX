@@ -17,9 +17,9 @@ public class SensorPanel extends Region
 	private double w = 150, h = 60;
 	
 	private Rectangle base_background_component, base_background_shine, base_background_inlay,
-		base_background_inlay_shine, frame_component;	
+		base_background_inlay_shine, frame_component, display_lcd, display_overlay ;
 	
-	private Polygon frame_left_highlight;
+	private Polygon frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight;
 	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
@@ -27,7 +27,12 @@ public class SensorPanel extends Region
 	{
 		BASE_BACKGROUND_SHINE,
 		BASE_BACKGROUND_INLAY_SHINE,
-		FRAME_LEFT_HIGHLIGHT,
+		FRAME_LEFT_HIGHLIGHT, 
+		FRAME_RIGHT_HIGHLIGHT,
+		FRAME_BOTTOM_HIGHLIGHT,
+		FRAME_TOP_HIGHLIGHT,
+		DISPLAY_OVERLAY_HIGHLIGHT,
+		
 		
 		
 		
@@ -94,20 +99,60 @@ public class SensorPanel extends Region
 		frame_left_highlight = new Polygon();
 		
 		stopArray = new Stop[]{
-				new Stop(0.02244, Color.web("#000000CC")),
-				new Stop(0.10764, Color.web("#252524BA")),
-				new Stop(0.2603, Color.web("#4F4E4E9A")),
-				new Stop(0.4629, Color.web("#7F7F7E70")),
-				new Stop(0.70776, Color.web("#BABABA3D")),
-				new Stop(0.98589, Color.web("#FCFCFC03")),
-				new Stop(1.0, Color.web("#FFFFFF00"))
+				new Stop(0.02244, Color.web("#1d1d1bCC")),
+				new Stop(0.58653, Color.web("#8e8e8d66")),
+				new Stop(1, Color.web("#ffffff00"))
 			};
 		stopMap.put(StopIndizes.FRAME_LEFT_HIGHLIGHT, stopArray);
+		
+		frame_right_highlight = new Polygon();
+		
+		stopArray = new Stop[]{
+				new Stop(0, Color.web("#ffffff00")),
+				new Stop(0.41347, Color.web("#8e8e8d66")),
+				new Stop(0.97756, Color.web("#1d1d1bCC"))
+			};
+		stopMap.put(StopIndizes.FRAME_RIGHT_HIGHLIGHT, stopArray);
+		
+		
+		frame_bottom_highlight = new Polygon();
+		stopArray = new Stop[]{
+				//TOOD Ursprungs Farbe war weiß mit Deckkraft 0 % ...evtl. noch ein wenig spielen
+				new Stop(0.00559, Color.web("#ffffff1A")),
+				new Stop(1, Color.web("#1d1d1bCC"))
+			};
+		stopMap.put(StopIndizes.FRAME_BOTTOM_HIGHLIGHT, stopArray);
+		
+		
+		frame_top_highlight = new Polygon();
+		stopArray = new Stop[]{
+				new Stop(0.26398, Color.web("#1d1d1bFF")),
+				new Stop(0.63141, Color.web("#ffffff20"))
+			};
+		stopMap.put(StopIndizes.FRAME_TOP_HIGHLIGHT, stopArray);
+		
+		display_lcd = new Rectangle();
+		display_lcd.setFill(Color.web("#7cb928"));
+		
+		display_overlay = new Rectangle();
+		
+		
+		stopArray = new Stop[]{
+				new Stop(0.00562, Color.web("#ffffff80")),
+				new Stop(0.19031, Color.web("#ffffff5D")),
+				new Stop(0.43688, Color.web("#ffffff35")),
+				new Stop(0.66252, Color.web("#ffffff18")),
+				new Stop(0.85762, Color.web("#ffffff06")),
+				new Stop(1, Color.web("#ffffff00"))
+			};
+		stopMap.put(StopIndizes.DISPLAY_OVERLAY_HIGHLIGHT, stopArray);
+		
 		
 		
 		
 		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
-				frame_component, frame_left_highlight);
+				frame_component, frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight, 
+				display_lcd, display_overlay);
 		
 		
 	}
@@ -203,13 +248,6 @@ public class SensorPanel extends Region
 		
 		frame_left_highlight.getPoints().clear();
 		
-		
-		//layout x = 29,5 > 100/150 * 29,5 = 0.1966666666666667 
-		//layout y = 15,2191  0.2536516666666667
-		
-		double layout_x = w * 0.1966666666666667;
-		double layout_y = h * 0.2536516666666667;
-		
 		//x"24.5 100/150 * 24.5
 		//y 40.219 
 		//x 34.5 
@@ -230,21 +268,124 @@ public class SensorPanel extends Region
 					});
 
 		
+		//x1="24.5" 100/150 * 24.5 = 0,1633333333333333
+		//y1="25.2191" 100/60 = 25.2191 = 0,4203183333333333
+		//x2="34.5" 100/150 * 34,5 = 0,23
+		//y2="25.2191" 100/60 * 25,2191 = 0.4203183333333333
 		
-		//x1="29.5" 100/150 * 29,5 = 0.1966666666666667
-		//y1="30.2191" 100/60 * 30.2191 = 0,5036516666666667
-		//x2="39.5" 100/150 * 39,5 = 0,2633333333333333
-		//y2="30.2191" 100/60 * 30,2191 = 0,5036516666666667
 		
-		lg = new LinearGradient(w * 0.1966666666666667, 
-				h * 0.5036516666666667, 
+		
+		lg = new LinearGradient(w * 0.1633333333333333, 
+				h * 0.4203183333333333, 
 				w * 0.2633333333333333,
-				h * 0.5036516666666667, 
+				h * 0.4203183333333333, 
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.FRAME_LEFT_HIGHLIGHT));
-		frame_left_highlight.setFill(Color.web("#FF0000"));
+		frame_left_highlight.setFill(lg);
+		
+		
+		frame_right_highlight.getPoints().clear();
+		frame_right_highlight.getPoints().addAll(new Double[]
+				{
+					 w * 0.77, h * 0.5448500000000001,
+					 w * 0.8366666666666666, h * 0.6703166666666667,
+					 w * 0.8366666666666666, h * 0.17031666666666667,
+					 w * 0.77, h * 0.2115166666666667,
+					 w * 0.77, h * 0.5448500000000001
+				}
+		);
+		
+		//x1="115.5" 100/150 * 115.5 = 0.77
+		//y1="25.2191"  100/60 * 25,2191 = 0.4203183333333333
+		//x2="125.5" 100/150 * 125,5 = 0.8366666666666667
+		//y2="25.2191" 100/60 * 25,2191 = 0.4203183333333333
+		lg = new LinearGradient(w * 0.77, 
+				h * 0.4203183333333333, 
+				w * 0.8366666666666667,
+				h * 0.4203183333333333, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.FRAME_RIGHT_HIGHLIGHT));
+		frame_right_highlight.setFill(lg);
+		
+		frame_bottom_highlight.getPoints().clear();
+		frame_bottom_highlight.getPoints().addAll(new Double[]
+				{
+						 w * 0.2333333333333333, h * 0.5456,
+						 w * 0.16666666666666663, h * 0.6710666666666667,
+						 w * 0.8333333333333333, h * 0.6710666666666667,
+						 w * 0.7666666666666666, h * 0.5456,
+						 w * 0.2333333333333333, h * 0.5456
+				}
+		);
+		
+		
+		//x1="75" 100/150 * 75 =  0.5
+		//y1="33.34891" 100/60 * 33.34891 = 0.5558301666666667
+		//x2="75" 100/150 * 75 =  0.5 
+		//y2="46.38965"  100/60 * 46.38965 = 0.7731608333333333
+		
+		lg = new LinearGradient(w * 0.5, 
+				h * 0.5558301666666667, 
+				w * 0.5,
+				h * 0.7731608333333333, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.FRAME_BOTTOM_HIGHLIGHT));
+		frame_bottom_highlight.setFill(lg);
 		
 		
 		
+		frame_top_highlight.getPoints().clear();
+		frame_top_highlight.getPoints().addAll(new Double[]
+				{
+						 w * 0.16666666666666663, h * 0.17031666666666667,
+						 w * 0.2333333333333333, h * 0.2115166666666667,
+						 w * 0.7666666666666666, h * 0.2115166666666667,
+						 w * 0.8333333333333333, h * 0.17031666666666667,
+						 w * 0.16666666666666663, h * 0.17031666666666667
+				}
+		);
+		
+		//x1="75" 100/150 * 75 =  0.5
+		//y1="7.29758" 100/60 * 7.29758 = 0.1216263333333333
+		//x2="75" 100/150 * 75 =  0.5
+		//y2="16.81263" 100/60 * 16.81263 = 0,2802105
+		lg = new LinearGradient(w * 0.5, 
+				h * 0.1216263333333333, 
+				w * 0.5,
+				h * 0.2802105, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.FRAME_TOP_HIGHLIGHT));
+		frame_top_highlight.setFill(lg);
+		
+		
+		//x="34.347" 100/150 * 34,347 = 0.22898
+		//y="12.85039"  100/60 * 12.85039 = 0.2141731666666667
+		//width="80.33016"  100/150 * 80,33016 = 0.5355344
+		//height="20.16535" 100/60 * 20,16535 = 0.3360891666666667
+		display_lcd.setX(w * 0.22898);
+		display_lcd.setY(h * 0.2141731666666667);
+		display_lcd.setWidth(w * 0.5355344);
+		display_lcd.setHeight(h * 0.3360891666666667);
+		
+		//TODO Fläche für den Text des Display
+		
+		//x="34.347" 100/150 * 34,347 = 0.22898
+		//y="12.85039" 100/60 * 12.85039 = 0.2141731666666667
+		//width="80.33016"  100/150 * 80,33016 = 0.5355344
+		//height="20.16535"100/60 * 20,16535 = 0.3360891666666667
+		display_overlay.setX(w * 0.22898);
+		display_overlay.setY(h * 0.2141731666666667);
+		display_overlay.setWidth(w * 0.5355344);
+		display_overlay.setHeight(h * 0.3360891666666667);
+		
+		
+		//x1="74.51208" 100/150  * 74.51208 = 0.4967472
+		//y1="6.73968" 100/60 * 6.73968 = 0.112328
+		//x2="74.51208" 100/150 * 74.51208 = 0.4967472
+		//y2="46.15408" 100/60 * 46.15408 = 0,7692346666666667
+		
+		lg = new LinearGradient(w * 0.4967472, 
+				h * 0.112328, 
+				w * 0.4967472,
+				h * 0.7692346666666667, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DISPLAY_OVERLAY_HIGHLIGHT));
+		display_overlay.setFill(lg);
 		
 	}
 
