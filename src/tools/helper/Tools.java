@@ -93,4 +93,33 @@ public class Tools
 		return resultValue;
 	}
 
+	/**
+	 * with any css version it's possible to write three digits for a rgb color.
+	 * <br>example: #fb0 same as #ffbb00
+	 * <br>method give a non scriptkiddie color hex value
+	 * @param stop_color
+	 * @return
+	 */
+	public static String getSixDigitColor(String stop_color) 
+	{
+		StringBuilder sb = new StringBuilder("#");
+		String temp = stop_color.replace("#", "");
+		if(temp.length() == 3)
+		{
+			String[] splittedValue = temp.split("");
+			System.out.println("split " + splittedValue.length);
+			for(int i = 0; i < splittedValue.length; i++)
+			{
+				sb.append(splittedValue[i]);
+				sb.append(splittedValue[i]);
+			}
+			
+		}
+		else
+			sb.append(temp);
+		
+		
+		return sb.toString();
+	}
+
 }

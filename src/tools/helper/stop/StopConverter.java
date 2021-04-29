@@ -3,7 +3,6 @@ package tools.helper.stop;
 
 import java.io.File;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -11,6 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,14 +25,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import tools.helper.GenericPair;
-import tools.helper.Tools;
-import tools.helper.stop.xml.StopList;
-import tools.helper.stop.xml.StopValue;
+import tools.helper.stop.interfaces.IStopValue;
+import tools.helper.stop.xml.version1.StopList_v1;
+import tools.helper.stop.xml.version2.StopList_v2;
 
 public class StopConverter extends Application 
 {
@@ -77,82 +74,43 @@ public class StopConverter extends Application
 				sb.append(valueFromArea);
 				sb.append("</stopList>");
 				
-				//auslesen 
-				Object whichObject = (Object) readObject(StopList.class, sb.toString());
-				System.out.println("which " +whichObject.toString());
-				if(whichObject != null)
+				Object whichList = null;
+				List<? extends IStopValue> listToConvert = null;
+				if(valueFromArea.contains("style="))
 				{
-					if(whichObject instanceof StopList)
+					whichList = (Object) readObject(StopList_v1.class, sb.toString());
+					if(whichList != null)
+						listToConvert = ((StopList_v1)whichList).getIStopValueList();
+				}
+				else
+				{
+					whichList = (Object) readObject(StopList_v2.class, sb.toString());
+					if(whichList != null)
+						listToConvert = ((StopList_v2)whichList).getIStopValueList();
+				}
+				
+				System.out.println("which " +whichList.toString());
+				if(listToConvert != null)
+				{
+					for(int i = 0; i < listToConvert.size(); i++)
 					{
-						List<StopValue> stopValueList = ((StopList)whichObject).getStopValueList();
-						System.out.println("was ist " + stopValueList.size());
-						for(int i = 0; i < stopValueList.size(); i++)
+						String offset = listToConvert.get(i).getOffset();
+						String finalColorValue = listToConvert.get(i).getFinalColorValue();
+						
+						System.out.println("offset " + offset);
+						System.out.println("finalColorValue " + finalColorValue);
+						
+						ausgabe.append("\tnew Stop("+offset+", Color.web(\""+finalColorValue+"\"))");
+						
+						//noch weitere vorhanden?
+						if((i + 1) < listToConvert.size())
 						{
-							
-							StopValue stopValue = stopValueList.get(i);
-							System.out.println("stopValueList " + stopValueList.get(i).toString());
-							double orientationOffset = Double.parseDouble(stopValue.getOffset());
-							
-							String finalColorValue = "";
-							//ist opacity vorhanden?
-							String styleString = stopValue.getStyle();
-							int indexLastStyleTuple = styleString.indexOf("stop-opacity:");
-							if(indexLastStyleTuple != -1)
-							{
-								//dann vorhanden und wir müssen es anders zerlegen
-								
-								//semikolon zerlegen
-								
-								//anschließend :
-								//<stop  offset="0.2006963" style="stop-color:#B7B7B7;stop-opacity:0.4446974"/>
-								String rawColor = "";
-								String[] splitValue = styleString.split(";");
-								
-								GenericPair<String, String> pair = new GenericPair<String, String>(splitValue[0], splitValue[1]);
-								
-								//wir gehen davon aus, dass immer die Farbe 6 stellig ist (SVG kann auch anders!)
-								String stopColorValue = pair.getLeft().split(":")[1];
-								
-								//die muss berechnet werdne
-								String stopOpactiy = pair.getRight().split(":")[1];
-								double percentValue = Double.parseDouble(stopOpactiy);
-								percentValue = 255D * percentValue;
-								
-								int value = (int) Math.round(percentValue);
-								
-								String alphaHex = Tools.toHexString(value, false);
-								System.out.println("alphaHex " + alphaHex);
-								
-								if(alphaHex != null && alphaHex.length() == 2)
-								{
-									finalColorValue  = stopColorValue + alphaHex;
-								}
-								//in dem Fall wird die opacity auf 00 gesetzt
-								else
-								{
-									finalColorValue  = stopColorValue + "00";
-									
-								}
-							}
-							else
-							{
-								String[] splitValue = styleString.split(":");
-								finalColorValue = splitValue[1];
-							}
-							
-							
-							ausgabe.append("\tnew Stop("+orientationOffset+", Color.web(\""+finalColorValue+"\"))");
-							//noch weitere vorhanden?
-							if((i + 1) < stopValueList.size())
-							{
-								ausgabe.append(",");
-							}
-							ausgabe.append("\n");
+							ausgabe.append(",");
 						}
-						ausgabe.append("};");
-						exportArea.setText(ausgabe.toString());
+						ausgabe.append("\n");
 					}
-					
+					ausgabe.append("};");
+					exportArea.setText(ausgabe.toString());
 				
 				}
 			}
@@ -245,7 +203,7 @@ public class StopConverter extends Application
 		return null;
 	}
 	
-	public static boolean writeObjectToFile(StopList stopList)
+	public static boolean writeObjectToFile(StopList_v1 stopList)
 	{
 		try 
     	{

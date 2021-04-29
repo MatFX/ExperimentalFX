@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 public class SensorPanel extends Region
@@ -16,8 +17,9 @@ public class SensorPanel extends Region
 	private double w = 150, h = 60;
 	
 	private Rectangle base_background_component, base_background_shine, base_background_inlay,
-		base_background_inlay_shine;	
+		base_background_inlay_shine, frame_component;	
 	
+	private Polygon frame_left_highlight;
 	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
@@ -25,6 +27,7 @@ public class SensorPanel extends Region
 	{
 		BASE_BACKGROUND_SHINE,
 		BASE_BACKGROUND_INLAY_SHINE,
+		FRAME_LEFT_HIGHLIGHT,
 		
 		
 		
@@ -84,9 +87,27 @@ public class SensorPanel extends Region
 		};
 		stopMap.put(StopIndizes.BASE_BACKGROUND_INLAY_SHINE, stopArray);
 		
+		//TODO frame_component gehts weiter
+		frame_component = new Rectangle();
+		frame_component.setFill(Color.web("#090a0a"));
+		
+		frame_left_highlight = new Polygon();
+		
+		stopArray = new Stop[]{
+				new Stop(0.02244, Color.web("#000000CC")),
+				new Stop(0.10764, Color.web("#252524BA")),
+				new Stop(0.2603, Color.web("#4F4E4E9A")),
+				new Stop(0.4629, Color.web("#7F7F7E70")),
+				new Stop(0.70776, Color.web("#BABABA3D")),
+				new Stop(0.98589, Color.web("#FCFCFC03")),
+				new Stop(1.0, Color.web("#FFFFFF00"))
+			};
+		stopMap.put(StopIndizes.FRAME_LEFT_HIGHLIGHT, stopArray);
 		
 		
-		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine);
+		
+		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
+				frame_component, frame_left_highlight);
 		
 		
 	}
@@ -167,6 +188,60 @@ public class SensorPanel extends Region
 				h * 0.000119166666666667,
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BASE_BACKGROUND_INLAY_SHINE));
 		base_background_inlay_shine.setFill(lg);
+		
+		//x="24.72441" 100/150 * 24.72441 = 60 = 0.1648294
+		//y="9.9685" 100/60 * 9.9685 = 0.1661416666666667
+		
+		
+		//width="100.27559" 100/150 * 100.27559 = 0.6685039333333333
+		//height="29.79554" 100/60 * 29,79554 = 0,4965923333333333
+		frame_component.setX(w * 0.1648294);
+		frame_component.setY(h * 0.1661416666666667);
+		frame_component.setWidth(w * 0.6685039333333333);
+		frame_component.setHeight(h * 0.4965923333333333);
+		
+		
+		frame_left_highlight.getPoints().clear();
+		
+		
+		//layout x = 29,5 > 100/150 * 29,5 = 0.1966666666666667 
+		//layout y = 15,2191  0.2536516666666667
+		
+		double layout_x = w * 0.1966666666666667;
+		double layout_y = h * 0.2536516666666667;
+		
+		//x"24.5 100/150 * 24.5
+		//y 40.219 
+		//x 34.5 
+		//y 32.691 
+		//x 34.5 
+		//y 12.691 
+		//x 24.5 
+		//y 10.219 
+		//x 24.5 
+		//y 40.219"
+		frame_left_highlight.getPoints().addAll(new Double[]
+				{
+						 w * 0.16333333333333333, h * 0.6703166666666667,
+						 w * 0.23, h * 0.5448500000000001,
+						 w * 0.23, h * 0.2115166666666667,
+						 w * 0.16333333333333333, h * 0.17031666666666667,
+						 w * 0.16333333333333333, h * 0.6703166666666667
+					});
+
+		
+		
+		//x1="29.5" 100/150 * 29,5 = 0.1966666666666667
+		//y1="30.2191" 100/60 * 30.2191 = 0,5036516666666667
+		//x2="39.5" 100/150 * 39,5 = 0,2633333333333333
+		//y2="30.2191" 100/60 * 30,2191 = 0,5036516666666667
+		
+		lg = new LinearGradient(w * 0.1966666666666667, 
+				h * 0.5036516666666667, 
+				w * 0.2633333333333333,
+				h * 0.5036516666666667, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.FRAME_LEFT_HIGHLIGHT));
+		frame_left_highlight.setFill(Color.web("#FF0000"));
 		
 		
 		

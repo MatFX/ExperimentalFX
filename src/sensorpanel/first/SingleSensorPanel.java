@@ -48,8 +48,8 @@ public class SingleSensorPanel extends Application
 
      
         
-        sensorPanel.setPrefWidth(300);
-        sensorPanel.setPrefHeight(120);
+        sensorPanel.setPrefWidth(150);
+        sensorPanel.setPrefHeight(60);
         pane.setCenter(sensorPanel);
         pane.setRight(test);
 
