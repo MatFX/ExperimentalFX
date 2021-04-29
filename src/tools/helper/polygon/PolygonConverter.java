@@ -1,5 +1,8 @@
 package tools.helper.polygon;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -60,9 +63,9 @@ public class PolygonConverter extends Application
         vBox.setPadding(new Insets(5,5,5,5));
         HBox initLinie = new HBox(5);
         initLinie.setPadding(new Insets(5,5,5,5));
-        //Breite/Hoehe kann verändert werden; Änderung werden übernommen durch button resize
-        initBreite = new TextField("46.0");
-        initHoehe = new TextField("64.0");
+        //Breite/Hoehe kann verï¿½ndert werden; ï¿½nderung werden ï¿½bernommen durch button resize
+        initBreite = new TextField("150.0");
+        initHoehe = new TextField("60.0");
         
         
         Button importButton = new Button("Import/Resize");
@@ -81,12 +84,47 @@ public class PolygonConverter extends Application
 				int nextLine = 0;
 				//leerzeichen und komma sind trenner
 				
+				//VorprÃ¼fung ob Komma vorhanden
+				//anscheinend wurde da irgendwas bei Illustrator und dem Export geÃ¤ndert,
+				StringBuilder convertToCommaSeperated = new StringBuilder();
+				if(!valueFromArea.contains(","))
+				{
+					String[] splitedValues = valueFromArea.split(" ");
+					List<String> arrayList = (List<String>) Arrays.asList(splitedValues);
+					Iterator<String> iterator = arrayList.iterator();
+					while(iterator.hasNext())
+					{
+						convertToCommaSeperated.append(iterator.next());
+						convertToCommaSeperated.append(",");
+						convertToCommaSeperated.append(iterator.next());
+						convertToCommaSeperated.append(" ");
+					}
+				}
+				System.out.println("valueFromArea vorher " +valueFromArea);
+				valueFromArea = convertToCommaSeperated.toString();
+				System.out.println("valueFromArea nachher " +valueFromArea);
+				
+				
 				//erstmal die paare herausfinden durch komma weghauen
 				String[] splitedValues = valueFromArea.split(" ");
 				for(int i = 0; i < splitedValues.length; i++)
 				{
 					String tempValue = splitedValues[i];
+					
+					//VorprÃ¼fung ob Komma vorhanden
+					//anscheinend wurde da irgendwas bei Illustrator und dem Export geÃ¤ndert
+					if(!tempValue.contains(","))
+					{
+						//kein Komman dann aufbereiten
+						
+						
+					}
+					
+					
+					
+					System.out.println("tempValue " + tempValue);
 					GenericPair<DoubleContainer, DoubleContainer> lineContainer = null;
+					//Hier der Fall fÃ¼r Komma getrennt
 					if(tempValue.contains(","))
 					{
 						String[] xyValues = tempValue.split(",");
@@ -110,9 +148,12 @@ public class PolygonConverter extends Application
 						catch(Exception e)
 						{
 							//wenn es scheppern sollte? alles verwerfen?
+							e.printStackTrace();
 						}
 					}
 					
+					
+					System.out.println("lineContainer " + lineContainer);
 					if(lineContainer != null)
 					{
 						
