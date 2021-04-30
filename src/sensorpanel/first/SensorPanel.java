@@ -36,6 +36,9 @@ public class SensorPanel extends Region
 	
 	private LED_Component x_led;
 	
+	private Canvas x_canvas;
+	
+	
 	public enum StopIndizes
 	{
 		BASE_BACKGROUND_SHINE,
@@ -435,6 +438,10 @@ public class SensorPanel extends Region
 
 		
 		x_led.setResizeValues(w, h);
+		
+		
+		
+		
 		
 		
 		

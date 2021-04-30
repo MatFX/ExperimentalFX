@@ -2,6 +2,8 @@ package sensorpanel.first.component;
 
 import java.util.HashMap;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -26,8 +28,11 @@ public class LED_Component extends Region
 	
 	private double radius_ratio, radius_ratio_base_color, radius_ratio_color_shine, radius_ratio_color_glow_circle;
 	
+	private double rect_height_ratio, rect_x_ratio, rect_y_ratio, rect_width_ratio;
+	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
+	private Canvas textCanvas;
 	
 	public enum ColorValue
 	{
@@ -62,9 +67,6 @@ public class LED_Component extends Region
 		
 		BASE_COLOR_SHINE,
 		
-		BASE_COLOR_GLOW_YELLOW,
-		
-		
 		;
 	}
 	
@@ -83,6 +85,25 @@ public class LED_Component extends Region
 		this.cx_ratio = UIToolBox.getPointRatio(start_w, start_cx); 
 		this.cy_ratio = UIToolBox.getPointRatio(start_h, start_cy); 
 		this.radius_ratio = UIToolBox.getAreaRatio(start_w, start_h, start_radius); 
+		
+		
+		double start_rect_x = start_cx - 10;
+		double start_rect_y = start_cy - start_radius;
+		
+		
+		
+		
+		
+		//rectangle for the text canvas
+		double rectHeight = start_radius * 2;
+		//quadratisch?
+		this.rect_height_ratio = UIToolBox.getPointRatio(start_h, rectHeight);
+		
+		double rectWidth = start_radius * 2;
+		this.rect_width_ratio = UIToolBox.getPointRatio(start_w, rectWidth);
+		this.rect_x_ratio = UIToolBox.getPointRatio(start_w, start_rect_x); 
+		this.rect_y_ratio = UIToolBox.getPointRatio(start_h, start_rect_y); 
+		
 		
 		this.bg_x1_ratio =  UIToolBox.getPointRatio(start_w, border_gradient_x1); 
 		this.bg_y1_ratio =  UIToolBox.getPointRatio(start_h, border_gradient_y1); 
@@ -144,29 +165,11 @@ public class LED_Component extends Region
 		
 		color_glow = new Circle();
 		
-		//TODO raus wird nur dann erzeugt wenn auch benötigt
-		stopArray = new Stop[]{
-				new Stop(0.04865, Color.web("#f9ea32B3")),
-				new Stop(0.28125, Color.web("#f9ea31B0")),
-				new Stop(0.42771, Color.web("#f9ea2fA7")),
-				new Stop(0.55034, Color.web("#f8e92b98")),
-				new Stop(0.65984, Color.web("#f8e92583")),
-				new Stop(0.76065, Color.web("#f7e81d67")),
-				new Stop(0.85502, Color.web("#f6e81345")),
-				new Stop(0.94271, Color.web("#f5e7081E")),
-				new Stop(1, Color.web("#f4e60000"))
-			};
-		stopMap.put(StopIndizes.BASE_COLOR_GLOW_YELLOW, stopArray);
+		textCanvas = new Canvas();
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		this.getChildren().addAll(led_base_component, base_border, base_color, base_color_shine, color_glow);
+		this.getChildren().addAll(led_base_component, base_border, base_color, base_color_shine, color_glow, textCanvas);
 	}
 
 
@@ -178,7 +181,15 @@ public class LED_Component extends Region
 		led_base_component.setCenterY(h * this.cy_ratio);
 		double radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio);
 		led_base_component.setRadius(radius);
+		
+		textCanvas.setWidth(w * rect_height_ratio);
+		textCanvas.setHeight(h * rect_height_ratio);
+		textCanvas.relocate(led_base_component.getCenterX() - (w * rect_x_ratio), h * rect_y_ratio);
 	
+		GraphicsContext g2 = textCanvas.getGraphicsContext2D();
+		g2.setFill(Color.CADETBLUE);
+		g2.fillRect(0, 0, textCanvas.getWidth(), textCanvas.getHeight());
+		
 		//same as base Component
 		base_border.setCenterX(w * this.cx_ratio);
 		base_border.setCenterY(h * this.cy_ratio);
