@@ -1,4 +1,4 @@
-package sensorpanel.first;
+package sensorpanel.first.component;
 
 
 import java.util.HashMap;
@@ -6,11 +6,10 @@ import java.util.HashMap;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
-import sensorpanel.first.SensorPanel.StopIndizes;
+import tools.helper.UIToolBox;
 
 public class TinyButton extends Region
 {
@@ -47,15 +46,13 @@ public class TinyButton extends Region
 	{
 		super();
 		
-		this.cx_ratio = 100D/start_w * start_cx / 100D;
-		this.cy_ratio = 100D/start_h * start_cy / 100D;
-		this.radius_ratio = ((100D/(start_w * start_h)) * (Math.pow(start_radius, 2) * Math.PI)) / 100D;
+		this.cx_ratio = UIToolBox.getPointRatio(start_w, start_cx); //100D/start_w * start_cx / 100D;
+		this.cy_ratio = UIToolBox.getPointRatio(start_h, start_cy); //100D/start_h * start_cy / 100D;
+		this.radius_ratio = UIToolBox.getAreaRatio(start_w, start_h, start_radius); //((100D/(start_w * start_h)) * (Math.pow(start_radius, 2) * Math.PI)) / 100D;
 		
-		this.cx_ratio_top_highlight = 100D/start_w * start_cx_top_highlight / 100D;
-		System.out.println("> " + cx_ratio_top_highlight);
-		this.cy_ratio_top_highlight = 100D/start_h * start_cy_top_highlight / 100D;
-		System.out.println("> " + cy_ratio_top_highlight);
-		this.radius_ratio_top_highlight = ((100D/(start_w * start_h)) * (Math.pow(radius_top_highlight, 2) * Math.PI)) / 100D;
+		this.cx_ratio_top_highlight = UIToolBox.getPointRatio(start_w, start_cx_top_highlight); //100D/start_w * start_cx_top_highlight / 100D;
+		this.cy_ratio_top_highlight = UIToolBox.getPointRatio(start_h, start_cy_top_highlight); //100D/start_h * start_cy_top_highlight / 100D;
+		this.radius_ratio_top_highlight = UIToolBox.getAreaRatio(start_w, start_h, radius_top_highlight);// ((100D/(start_w * start_h)) * (Math.pow(radius_top_highlight, 2) * Math.PI)) / 100D;
 		
 		
 		this.initGraphics();
@@ -91,17 +88,12 @@ public class TinyButton extends Region
 		button_top.setCenterX(w * this.cx_ratio);
 		button_top.setCenterY(h * this.cy_ratio);
 		
-		//calculation the new area from the circle
-		double circle_area = (w * h) * radius_ratio;
-		//calc the new radius
-		double radius = Math.sqrt(circle_area / Math.PI);
+		
+		double radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio);
 		button_top.setRadius(radius);
+
 		
-		
-		double circle_area_top_highlight = (w * h) * this.radius_ratio_top_highlight;
-		radius = Math.sqrt(circle_area_top_highlight / Math.PI);
-		
-		
+		radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio_top_highlight);
 		RadialGradient rg = new RadialGradient(0D, 0D, w * this.cx_ratio_top_highlight, h * this.cy_ratio_top_highlight, 
 				radius, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BUTTON_TOP_HIGHLIGHT));
 		

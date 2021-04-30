@@ -1,16 +1,22 @@
 package sensorpanel.first;
 
 import java.util.HashMap;
-
-import control.button.single.metal.SingleMetalButton;
+import javafx.geometry.Bounds;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import sensorpanel.first.component.LED_Component;
+import sensorpanel.first.component.TinyButton;
+import sensorpanel.first.component.LED_Component.ColorValue;
+import tools.helper.UIToolBox;
 
 public class SensorPanel extends Region
 {
@@ -26,7 +32,9 @@ public class SensorPanel extends Region
 	
 	private TinyButton button_up, button_down, button_automatic;
 	
-	private Circle circle_top;
+	private Canvas info_canvas;
+	
+	private LED_Component x_led;
 	
 	public enum StopIndizes
 	{
@@ -58,21 +66,6 @@ public class SensorPanel extends Region
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
 	}
-
-	/* TODO raus
-	private void resizeW() {
-		this.resize();
-		//r="6" 100/150 * 6 = 0,04
-		//circle_top.setRadius(w * 0.04);
-	}
-
-	private void resizeH() {
-		this.resize();
-		
-		//r="6" 100/60 * 6 = 0,1
-		//circle_top.setRadius(h * 0.1);
-		
-	}*/
 
 	private void initGraphics() {
 		
@@ -175,12 +168,29 @@ public class SensorPanel extends Region
 		button_automatic = new TinyButton(136.5, 15.8860, 150d, 60d, 6d,
 				136.5, 15.8860, 6d);
 		
+		x_led = new LED_Component(38.5, 50.54331, 150d, 60d, 4.5,
+				//gradient für den Border
+				38.5, 55.04331, 38.5, 46.04331,
+				//base_color cirle
+				3.75,
+				//radius RadialGradient for the shine over the color
+				3.25,
+				//radius color glow circle
+				6
+				);
+		x_led.setSelectedColor(ColorValue.YELLOW);
 		
+		
+		
+		info_canvas = new Canvas();
 		
 		
 		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
 				frame_component, frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight, 
-				display_lcd, display_overlay, button_up, button_down, button_automatic);
+				display_lcd, display_overlay, button_up, button_down, button_automatic, x_led);
+		
+		
+		this.getChildren().addAll(info_canvas);
 		
 		
 	}
@@ -422,28 +432,51 @@ public class SensorPanel extends Region
 		button_up.setResizeValues(w, h);
 		button_down.setResizeValues(w, h);
 		button_automatic.setResizeValues(w, h);
-		/* TODO raus
-		//cx="12.5077"  100/150 * 12.5077 = 0,0833846666666667
-		//cy="15.88609"  100/60 * 15.88609 = 0,2647681666666667
-		
-		//circle_top.setCenterX(w * 0.0833846666666667);
-		//circle_top.setCenterY(h * 0.2647681666666667);
-		
-		//radius wird ermittelt über das Verhältnis von Flächen von Rechteck zu Kreis
-		//150*60 = 9000; 100/9000 *(6^2 * pi) / 100 = 0,01256637061435917295385057353312
-		//Neue Flaeche Rechteck ermittlen
-		double flaecheRecheck = w * h;
-		//Fläche Kreise anhand der Prozent ermitteln
-		double flaecheKreis = flaecheRecheck * 0.01256637061435917295385057353312;
-		//Aus der ermittelten Kreisfläche den Radius ermitteln.
-		double radius = Math.sqrt(flaecheKreis / Math.PI);
-		//circle_top.setRadius(radius);
-		//TODO übergabe w und h an tinyButtons
-		
-		
-		//circle_top.setFill(Color.RED);
-		
-		 */
-	}
 
+		
+		x_led.setResizeValues(w, h);
+		
+		
+		
+		
+		
+		//x 24,5689 100/150 * 24,5689 = 0,16379266666666666666666666666667
+		//y 2,7, 100/60 * 2,7 = 0,05
+		//w 100,04888 = 100/150 * 100,0488 = 0,666992
+		//h 7,0005 = 100/60 * 7,0005 = 0,11675
+		GraphicsContext gc = info_canvas.getGraphicsContext2D();
+		gc.clearRect(0, 0, info_canvas.getWidth(), info_canvas.getHeight());
+		info_canvas.relocate(w * 0.16379266666666666666666666666667, h * 0.045);
+		info_canvas.setWidth(w * 0.666992);
+		info_canvas.setHeight(h * 0.11675);
+		
+		Font font =  new Font("Verdana", 12);
+		//TODO variable
+		String stringText = "Monet; Die japanische Brücke";
+		Bounds maxTextAbmasse = UIToolBox.getMaxTextWidth(font, stringText);
+		double tempSize;
+		 if(maxTextAbmasse.getWidth() < info_canvas.getWidth()  && maxTextAbmasse.getHeight() < info_canvas.getHeight())
+		 {
+			 tempSize = UIToolBox.getGreaterFont(font.getSize()+1, info_canvas.getWidth(), info_canvas.getHeight(), stringText, 0.01, font);
+		 }
+		 else
+		 {
+			  tempSize = UIToolBox.getLesserFont(font.getSize(), info_canvas.getWidth(), info_canvas.getHeight(), stringText,  0.01, font);
+		 }
+		
+		font = Font.font(font.getName(), tempSize);
+		gc.setFill(Color.web("#FFFFFF80"));
+		
+		gc.setFont(font);
+		
+		Text testText = new Text();
+		testText.setText(stringText);
+		testText.setFont(font);
+		
+		double masseinheitX = info_canvas.getWidth() - (testText.getLayoutBounds().getWidth());// + (gaugeSize * 0.015635));
+		
+		double haelfte =  testText.getLayoutBounds().getHeight() / 2d;
+		double masseinheitY =  info_canvas.getHeight()/2d +  (haelfte/2d);
+		gc.fillText(testText.getText(), masseinheitX, masseinheitY);
+	}
 }
