@@ -42,8 +42,8 @@ public class RoundRectangleCreator extends Application
         HBox initLinie = new HBox(5);
         initLinie.setPadding(new Insets(5,5,5,5));
         
-        initBreite = new TextField("130.0");
-        initHoehe = new TextField("55.0");
+        initBreite = new TextField("150.0");
+        initHoehe = new TextField("60.0");
         
         Button convertButton = new Button("create");
         convertButton.setOnAction(new EventHandler<ActionEvent>(){

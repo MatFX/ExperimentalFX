@@ -2,12 +2,13 @@ package sensorpanel.first;
 
 import java.util.HashMap;
 
-import control.button.combined.CombinedThreeButtonControl.StopIndizes;
+import control.button.single.metal.SingleMetalButton;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
@@ -22,6 +23,10 @@ public class SensorPanel extends Region
 	private Polygon frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight;
 	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
+	
+	private TinyButton button_up, button_down, button_automatic;
+	
+	private Circle circle_top;
 	
 	public enum StopIndizes
 	{
@@ -52,8 +57,22 @@ public class SensorPanel extends Region
 	private void registerListener() {
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
-		
 	}
+
+	/* TODO raus
+	private void resizeW() {
+		this.resize();
+		//r="6" 100/150 * 6 = 0,04
+		//circle_top.setRadius(w * 0.04);
+	}
+
+	private void resizeH() {
+		this.resize();
+		
+		//r="6" 100/60 * 6 = 0,1
+		//circle_top.setRadius(h * 0.1);
+		
+	}*/
 
 	private void initGraphics() {
 		
@@ -147,12 +166,21 @@ public class SensorPanel extends Region
 			};
 		stopMap.put(StopIndizes.DISPLAY_OVERLAY_HIGHLIGHT, stopArray);
 		
+		button_up = new TinyButton(12.5077, 15.88609, 150d, 60d, 6d,
+				12.5077, 15.88609, 6d);
+		
+		button_down = new TinyButton(12.74803, 32.96063, 150d, 60d, 6d,
+				12.74803, 32.96063, 6d);
+		
+		button_automatic = new TinyButton(136.5, 15.8860, 150d, 60d, 6d,
+				136.5, 15.8860, 6d);
+		
 		
 		
 		
 		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
 				frame_component, frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight, 
-				display_lcd, display_overlay);
+				display_lcd, display_overlay, button_up, button_down, button_automatic);
 		
 		
 	}
@@ -162,6 +190,9 @@ public class SensorPanel extends Region
 		
 		w = getWidth();
 		h = getHeight();
+		
+		//button_top.resize(w, h);
+		
 		//x 0
 		//y 0
 		
@@ -387,6 +418,32 @@ public class SensorPanel extends Region
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.DISPLAY_OVERLAY_HIGHLIGHT));
 		display_overlay.setFill(lg);
 		
+		
+		button_up.setResizeValues(w, h);
+		button_down.setResizeValues(w, h);
+		button_automatic.setResizeValues(w, h);
+		/* TODO raus
+		//cx="12.5077"  100/150 * 12.5077 = 0,0833846666666667
+		//cy="15.88609"  100/60 * 15.88609 = 0,2647681666666667
+		
+		//circle_top.setCenterX(w * 0.0833846666666667);
+		//circle_top.setCenterY(h * 0.2647681666666667);
+		
+		//radius wird ermittelt über das Verhältnis von Flächen von Rechteck zu Kreis
+		//150*60 = 9000; 100/9000 *(6^2 * pi) / 100 = 0,01256637061435917295385057353312
+		//Neue Flaeche Rechteck ermittlen
+		double flaecheRecheck = w * h;
+		//Fläche Kreise anhand der Prozent ermitteln
+		double flaecheKreis = flaecheRecheck * 0.01256637061435917295385057353312;
+		//Aus der ermittelten Kreisfläche den Radius ermitteln.
+		double radius = Math.sqrt(flaecheKreis / Math.PI);
+		//circle_top.setRadius(radius);
+		//TODO übergabe w und h an tinyButtons
+		
+		
+		//circle_top.setFill(Color.RED);
+		
+		 */
 	}
 
 }
