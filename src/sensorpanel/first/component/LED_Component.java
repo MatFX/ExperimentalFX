@@ -76,9 +76,7 @@ public class LED_Component extends Region
 			//radius for the shine circle gradient over the base color
 			double start_radius_color_shine,
 			//radius for the glow color circle
-			double start_radius_color_glow_circle,
-			//
-			String shortName)
+			double start_radius_color_glow_circle)
 	{
 		super();
 		this.setWidth(50);

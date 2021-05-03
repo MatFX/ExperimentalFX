@@ -187,8 +187,7 @@ public class SensorPanel extends Region
 				//radius RadialGradient for the shine over the color
 				3.25,
 				//radius color glow circle
-				6,
-				"X");
+				6);
 	
 		
 		middle_led = new LED_Component(80.75657, 50.54226, 150D, 60D, 4.5,
@@ -199,8 +198,7 @@ public class SensorPanel extends Region
 				//radius RadialGradient for the shine over the color
 				3.25,
 				//radius color glow circle
-				6,
-				"Y");
+				6);
 		
 		
 		right_led = new LED_Component(120D, 50.54331, 150D, 60D, 4.5,
@@ -211,11 +209,7 @@ public class SensorPanel extends Region
 				//radius RadialGradient for the shine over the color
 				3.25,
 				//radius color glow circle
-				6,
-				"0"
-				
-				
-				);
+				6);
 		
 		
 		
@@ -604,8 +598,6 @@ public class SensorPanel extends Region
 				break;
 			case MIDDLE:
 				middle_led.setSelectedColor(colorValue);
-				
-				
 				break;
 			case RIGHT:
 				right_led.setSelectedColor(colorValue);
