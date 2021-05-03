@@ -12,6 +12,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import sensorpanel.first.component.LED_Component;
 import sensorpanel.first.component.TinyButton;
@@ -32,11 +33,19 @@ public class SensorPanel extends Region
 	
 	private TinyButton button_up, button_down, button_automatic;
 	
-	private Canvas info_canvas;
+	private Canvas info_canvas, middle_text_canvas, left_text_canvas, right_text_canvas;
 	
-	private LED_Component x_led;
+	private LED_Component left_led, middle_led, right_led;
 	
-	private Canvas x_canvas;
+	public enum LED
+	{
+		LEFT,
+		
+		MIDDLE,
+		
+		RIGHT;
+		
+	}
 	
 	
 	public enum StopIndizes
@@ -170,8 +179,7 @@ public class SensorPanel extends Region
 		
 		button_automatic = new TinyButton(136.5, 15.8860, 150d, 60d, 6d,
 				136.5, 15.8860, 6d);
-		
-		x_led = new LED_Component(38.5, 50.54331, 150d, 60d, 4.5,
+		left_led = new LED_Component(38.5, 50.54331, 150d, 60d, 4.5,
 				//gradient für den Border
 				38.5, 55.04331, 38.5, 46.04331,
 				//base_color cirle
@@ -179,18 +187,46 @@ public class SensorPanel extends Region
 				//radius RadialGradient for the shine over the color
 				3.25,
 				//radius color glow circle
-				6
-				);
-		x_led.setSelectedColor(ColorValue.YELLOW);
+				6,
+				"X");
+		left_led.setSelectedColor(ColorValue.YELLOW);
 		
+		middle_led = new LED_Component(80.75657, 50.54226, 150D, 60D, 4.5,
+				//gradient für Border
+				80.75657, 55.04226, 80.75657, 46.04226,
+				//base_color cirle
+				3.75,
+				//radius RadialGradient for the shine over the color
+				3.25,
+				//radius color glow circle
+				6,
+				"Y");
+		middle_led.setSelectedColor(ColorValue.RED);
+		
+		right_led = new LED_Component(120D, 50.54331, 150D, 60D, 4.5,
+				//gradient für den Border
+				120D, 55.04331D, 120D, 46.04331D,
+				//base_color cirle
+				3.75,
+				//radius RadialGradient for the shine over the color
+				3.25,
+				//radius color glow circle
+				6,
+				"0"
+				
+				
+				);
+		right_led.setSelectedColor(ColorValue.GREEN);
 		
 		
 		info_canvas = new Canvas();
-		
+		left_text_canvas = new Canvas();
+		middle_text_canvas = new Canvas();
+		right_text_canvas = new Canvas();
 		
 		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
 				frame_component, frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight, 
-				display_lcd, display_overlay, button_up, button_down, button_automatic, x_led);
+				display_lcd, display_overlay, button_up, button_down, button_automatic, left_led,  middle_led, right_led, left_text_canvas, middle_text_canvas, right_text_canvas);
 		
 		
 		this.getChildren().addAll(info_canvas);
@@ -437,11 +473,33 @@ public class SensorPanel extends Region
 		button_automatic.setResizeValues(w, h);
 
 		
-		x_led.setResizeValues(w, h);
+		left_led.setResizeValues(w, h);
+		middle_led.setResizeValues(w, h);
+		right_led.setResizeValues(w, h);
 		
 		
 		
 		
+		//X = cx - radius - gap - width
+		//Y = cy - radius
+		
+		double radius_w_ratio = 100D/150D * 6D / 100D;
+		double radius_h_ratio = 100D/60D * 6D / 100D;
+		double gap_w_ratio = 100D/150D * 4D / 100D;
+		
+		double left_cx_ratio = 100D/150D * 38.5 / 100D;
+		double left_cy_ratio = 100D / 60D * 50.54331 / 100D;
+		
+		double mid_cx_ratio = 100D/150D * 80.75657 / 100D;
+		double mid_cy_ratio = 100D/60D * 50.54226 / 100D;
+		
+		double right_cx_ratio = 100D / 150D * 120D / 100D;
+		double right_cy_ratio = 100D / 60D * 50.54331 / 100D; 
+		
+		
+		drawLEDText(radius_w_ratio, radius_h_ratio, gap_w_ratio, left_cx_ratio, left_cy_ratio, left_text_canvas, "X");
+		drawLEDText(radius_w_ratio, radius_h_ratio, gap_w_ratio, mid_cx_ratio, mid_cy_ratio, middle_text_canvas, "Y");
+		drawLEDText(radius_w_ratio, radius_h_ratio, gap_w_ratio, right_cx_ratio, right_cy_ratio, right_text_canvas, "Z");
 		
 		
 		
@@ -457,19 +515,22 @@ public class SensorPanel extends Region
 		info_canvas.setWidth(w * 0.666992);
 		info_canvas.setHeight(h * 0.11675);
 		
-		Font font =  new Font("Verdana", 12);
+		
+		
+		
+		Font font = Font.font("Verdana", FontWeight.BOLD ,12);
 		//TODO variable
 		String stringText = "Monet; Die japanische Brücke";
 		Bounds maxTextAbmasse = UIToolBox.getMaxTextWidth(font, stringText);
 		double tempSize;
-		 if(maxTextAbmasse.getWidth() < info_canvas.getWidth()  && maxTextAbmasse.getHeight() < info_canvas.getHeight())
-		 {
+		if(maxTextAbmasse.getWidth() < info_canvas.getWidth()  && maxTextAbmasse.getHeight() < info_canvas.getHeight())
+		{
 			 tempSize = UIToolBox.getGreaterFont(font.getSize()+1, info_canvas.getWidth(), info_canvas.getHeight(), stringText, 0.01, font);
-		 }
-		 else
-		 {
+		}
+		else
+		{
 			  tempSize = UIToolBox.getLesserFont(font.getSize(), info_canvas.getWidth(), info_canvas.getHeight(), stringText,  0.01, font);
-		 }
+		}
 		
 		font = Font.font(font.getName(), tempSize);
 		gc.setFill(Color.web("#FFFFFF80"));
@@ -485,5 +546,73 @@ public class SensorPanel extends Region
 		double haelfte =  testText.getLayoutBounds().getHeight() / 2d;
 		double masseinheitY =  info_canvas.getHeight()/2d +  (haelfte/2d);
 		gc.fillText(testText.getText(), masseinheitX, masseinheitY);
+	
+	}
+	
+
+	private void drawLEDText(double radius_w_ratio, double radius_h_ratio, double gap_w_ratio, double mid_cx_ratio, double mid_cy_ratio, Canvas canvas_text, String textToDraw) 
+	{
+			
+		canvas_text.setWidth(w * radius_w_ratio);
+		canvas_text.setHeight(h * radius_h_ratio);
+		
+		double mid_text_x = (w * mid_cx_ratio) - ( w * radius_w_ratio + w * gap_w_ratio + canvas_text.getWidth());
+		double mid_text_y = (h * mid_cy_ratio)  - ((h * radius_h_ratio)/2D);
+		
+		canvas_text.relocate(mid_text_x, mid_text_y);
+		
+		GraphicsContext gc_text =  canvas_text.getGraphicsContext2D();
+		gc_text.clearRect(0, 0, canvas_text.getWidth(), canvas_text.getHeight());
+		
+		Font font = Font.font("Verdana", FontWeight.BOLD ,12);
+		
+		Bounds maxTextAbmasse = UIToolBox.getMaxTextWidth(font, textToDraw);
+		double tempSize;
+		
+		if(maxTextAbmasse.getWidth() < canvas_text.getWidth()  && maxTextAbmasse.getHeight() < canvas_text.getHeight())
+		{
+			 tempSize = UIToolBox.getGreaterFont(font.getSize()+1, canvas_text.getWidth(), canvas_text.getHeight(), textToDraw, 0.01, font);
+		}
+		else
+		{
+			  tempSize = UIToolBox.getLesserFont(font.getSize(), canvas_text.getWidth(), canvas_text.getHeight(), textToDraw,  0.01, font);
+		}
+		
+		font = Font.font(font.getName(), FontWeight.BOLD, tempSize);
+		gc_text.setFill(Color.web("#FFFFFFA0"));
+		
+		gc_text.setFont(font);
+		
+		Text midText = new Text();
+		midText.setText(textToDraw);
+		midText.setFont(font);
+		
+		double masseinheitX = canvas_text.getWidth() - (midText.getLayoutBounds().getWidth());// + (gaugeSize * 0.015635));
+		
+		double haelfte =  midText.getLayoutBounds().getHeight() / 2d;
+		double masseinheitY =  canvas_text.getHeight()/2d +  (haelfte/2d);
+		gc_text.fillText(midText.getText(), masseinheitX, masseinheitY);
+		
+	}
+	
+	public void setSelectedColor(LED led, ColorValue colorValue)
+	{
+		switch(led)
+		{
+			case LEFT:
+				left_led.setSelectedColor(colorValue);
+				
+				
+				break;
+			case MIDDLE:
+				middle_led.setSelectedColor(colorValue);
+				
+				
+				break;
+			case RIGHT:
+				right_led.setSelectedColor(colorValue);
+				break;
+		
+		}
 	}
 }

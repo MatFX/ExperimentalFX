@@ -1,9 +1,6 @@
 package sensorpanel.first.component;
 
 import java.util.HashMap;
-
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -28,11 +25,11 @@ public class LED_Component extends Region
 	
 	private double radius_ratio, radius_ratio_base_color, radius_ratio_color_shine, radius_ratio_color_glow_circle;
 	
-	private double rect_height_ratio, rect_x_ratio, rect_y_ratio, rect_width_ratio;
-	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
-	private Canvas textCanvas;
+	//variable to recoloring the glow
+	private double last_cx_ratio_glow, last_cy_ratio_glow, last_radius_glow;
+	
 	
 	public enum ColorValue
 	{
@@ -78,32 +75,17 @@ public class LED_Component extends Region
 			//radius for the shine circle gradient over the base color
 			double start_radius_color_shine,
 			//radius for the glow color circle
-			double start_radius_color_glow_circle)
+			double start_radius_color_glow_circle,
+			//
+			String shortName)
 	{
 		super();
+		this.setWidth(50);
+		this.setHeight(50);
 		
 		this.cx_ratio = UIToolBox.getPointRatio(start_w, start_cx); 
 		this.cy_ratio = UIToolBox.getPointRatio(start_h, start_cy); 
 		this.radius_ratio = UIToolBox.getAreaRatio(start_w, start_h, start_radius); 
-		
-		
-		double start_rect_x = start_cx - 10;
-		double start_rect_y = start_cy - start_radius;
-		
-		
-		
-		
-		
-		//rectangle for the text canvas
-		double rectHeight = start_radius * 2;
-		//quadratisch?
-		this.rect_height_ratio = UIToolBox.getPointRatio(start_h, rectHeight);
-		
-		double rectWidth = start_radius * 2;
-		this.rect_width_ratio = UIToolBox.getPointRatio(start_w, rectWidth);
-		this.rect_x_ratio = UIToolBox.getPointRatio(start_w, start_rect_x); 
-		this.rect_y_ratio = UIToolBox.getPointRatio(start_h, start_rect_y); 
-		
 		
 		this.bg_x1_ratio =  UIToolBox.getPointRatio(start_w, border_gradient_x1); 
 		this.bg_y1_ratio =  UIToolBox.getPointRatio(start_h, border_gradient_y1); 
@@ -111,9 +93,7 @@ public class LED_Component extends Region
 		this.bg_y2_ratio =  UIToolBox.getPointRatio(start_h, border_gradient_y2); 
 		
 		this.radius_ratio_base_color = UIToolBox.getAreaRatio(start_w, start_h, start_radius_base_color); 
-	
 		this.radius_ratio_color_shine = UIToolBox.getAreaRatio(start_w, start_h, start_radius_color_shine); 
-		
 		this.radius_ratio_color_glow_circle = UIToolBox.getAreaRatio(start_w, start_h, start_radius_color_glow_circle);
 		
 		
@@ -164,12 +144,7 @@ public class LED_Component extends Region
 		
 		
 		color_glow = new Circle();
-		
-		textCanvas = new Canvas();
-		
-		
-		
-		this.getChildren().addAll(led_base_component, base_border, base_color, base_color_shine, color_glow, textCanvas);
+		this.getChildren().addAll(led_base_component, base_border, base_color, base_color_shine, color_glow);
 	}
 
 
@@ -181,14 +156,6 @@ public class LED_Component extends Region
 		led_base_component.setCenterY(h * this.cy_ratio);
 		double radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio);
 		led_base_component.setRadius(radius);
-		
-		textCanvas.setWidth(w * rect_height_ratio);
-		textCanvas.setHeight(h * rect_height_ratio);
-		textCanvas.relocate(led_base_component.getCenterX() - (w * rect_x_ratio), h * rect_y_ratio);
-	
-		GraphicsContext g2 = textCanvas.getGraphicsContext2D();
-		g2.setFill(Color.CADETBLUE);
-		g2.fillRect(0, 0, textCanvas.getWidth(), textCanvas.getHeight());
 		
 		//same as base Component
 		base_border.setCenterX(w * this.cx_ratio);
@@ -206,7 +173,7 @@ public class LED_Component extends Region
 		base_color.setCenterY(h * this.cy_ratio);
 		radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio_base_color);
 		base_color.setRadius(radius);
-		base_color.setFill(selectedColor.getColor());
+	
 		
 		//same values as the base_color
 		base_color_shine.setCenterX(w * this.cx_ratio);
@@ -224,11 +191,25 @@ public class LED_Component extends Region
 		color_glow.setCenterY(h * this.cy_ratio);
 		color_glow.setRadius(radius);
 		
+		last_cx_ratio_glow = w * this.cx_ratio;
+		last_cy_ratio_glow = h * this.cy_ratio;
+		last_radius_glow = radius;
 		
+		setColorOnComponent();
+	
+		
+		
+	}
+	
+	
+	private void setColorOnComponent() {
+		
+		base_color.setFill(selectedColor.getColor());
+		//Glow setzen
 		if(selectedColor != ColorValue.OFF)
 		{
-			rg = new RadialGradient(0D, 0D, w * this.cx_ratio, h * this.cy_ratio, 
-					radius, false, CycleMethod.NO_CYCLE, getGlowForColor()
+			RadialGradient rg = new RadialGradient(0D, 0D, last_cx_ratio_glow, last_cy_ratio_glow, 
+					last_radius_glow, false, CycleMethod.NO_CYCLE, getGlowForColor()
 					);
 			color_glow.setFill(rg);
 		}
@@ -237,11 +218,11 @@ public class LED_Component extends Region
 			//Transparente Farbe setzen
 			color_glow.setFill(Color.web("#00000000"));
 		}
-		
-		
 	}
-	
-	
+
+
+
+
 	private Stop[] getGlowForColor() 
 	{
 		if(selectedColor == ColorValue.YELLOW)
@@ -296,7 +277,11 @@ public class LED_Component extends Region
 	public void setSelectedColor(ColorValue selectedValue)
 	{
 		this.selectedColor = selectedValue;
+		this.setColorOnComponent();
 	}
+	
+
+	
 	
 	
 }
