@@ -3,6 +3,11 @@ package sensorpanel.first.component;
 
 import java.util.HashMap;
 
+import control.button.single.metal.SingleMetalButton.Command;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Node;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -30,6 +35,24 @@ public class TinyButton extends Region
 	
 	private double radius_ratio_top_highlight;
 	
+	/**
+	 * Kommandos können hier empfangen werden (listener anschluss)
+	 * <br>to listen from outside connect via {@link #getCommandProperty()}
+	 */
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
+
+	private boolean isMousePressed = false;
+	
+	public enum Command
+	{
+		BUTTON_PRESSED, BUTTON_RELEASED,
+		/**
+		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
+		 * <br>you need the reset as a "acknowledge" from outside.
+		 */
+		RESET_COMMAND;
+	}
+	
 	public enum StopIndizes
 	{
 		BUTTON_TOP_HIGHLIGHT,
@@ -56,10 +79,20 @@ public class TinyButton extends Region
 		
 		
 		this.initGraphics();
+		registerListener();
+	}
+	
+	private void registerListener() 
+	{
+		button_top.setOnMousePressed(e -> setNodeMouseEvent(button_top, Command.BUTTON_PRESSED, e));
+		button_top.setOnMouseReleased(e -> setNodeMouseEvent(button_top,Command.BUTTON_RELEASED, e));
+		
+		button_top.setOnMouseEntered(e -> System.out.println("guck, wo bischd`?"));
 	}
 	
 	private void initGraphics() {
 		
+		this.setMouseTransparent(true);
 		button_top = new Circle();
 		
 		Stop[] stopArray = new Stop[]{
@@ -96,13 +129,41 @@ public class TinyButton extends Region
 		radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio_top_highlight);
 		RadialGradient rg = new RadialGradient(0D, 0D, w * this.cx_ratio_top_highlight, h * this.cy_ratio_top_highlight, 
 				radius, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BUTTON_TOP_HIGHLIGHT));
-		
+	
 		
 		button_top.setFill(rg);
 		
 	
 	
 	}
+	
+	private void setNodeMouseEvent(Node node, Command commandValue, MouseEvent e) 
+	{
+		System.out.println("commandValue " + commandValue);
+		if(commandValue == Command.BUTTON_PRESSED)
+		{
+			isMousePressed = true;
+			button_top.setEffect(new InnerShadow());
+			//ui stuff
+			//innerShadowStrong.setOpacity(1.0);
+			//innerShadowLight.setOpacity(0.0);
+			//contentRegion.setMousePressed();
+		
+		}
+		else if(commandValue == Command.BUTTON_RELEASED)
+		{
+			isMousePressed = false;
+			button_top.setEffect(null);
+			//ui stuff
+			//innerShadowStrong.setOpacity(0.0);
+			//innerShadowLight.setOpacity(1.0);
+			//contentRegion.setMouseReleased();
+		}
+		
+		commandProperty.set(commandValue);
+		e.consume();
+	}
+
 
 	
 }

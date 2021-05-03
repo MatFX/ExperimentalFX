@@ -226,9 +226,13 @@ public class SensorPanel extends Region
 		
 		
 		info_canvas = new Canvas();
+		info_canvas.setMouseTransparent(true);
 		left_text_canvas = new Canvas();
+		left_text_canvas.setMouseTransparent(true);
 		middle_text_canvas = new Canvas();
+		middle_text_canvas.setMouseTransparent(true);
 		right_text_canvas = new Canvas();
+		right_text_canvas.setMouseTransparent(true);
 		
 		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
 				frame_component, frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight, 

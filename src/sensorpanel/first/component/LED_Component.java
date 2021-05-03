@@ -79,6 +79,7 @@ public class LED_Component extends Region
 			double start_radius_color_glow_circle)
 	{
 		super();
+		this.setMouseTransparent(true);
 		this.setWidth(50);
 		this.setHeight(50);
 		
