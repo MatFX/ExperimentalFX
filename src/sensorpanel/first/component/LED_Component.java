@@ -33,7 +33,8 @@ public class LED_Component extends Region
 	
 	public enum ColorValue
 	{
-		OFF(Color.web("#777777")),
+		//TODO probieren noch was besser ist
+		OFF(Color.web("#404040")),
 		
 		YELLOW(Color.web("#baba0b")),
 		
@@ -123,10 +124,7 @@ public class LED_Component extends Region
 		
 		
 		base_color = new Circle();
-		//TODO Farbe muss tauschbar sein das ist die Farbe wenn aus.
-		//base_color.setFill(Color.web("#777777"));
-		//base_color.setFill(Color.web("#FF0000"));
-		base_color.setFill(selectedColor.getColor());
+		
 		
 		base_color_shine = new Circle();
 		//TODO evtl. noch mal an die Werte ran

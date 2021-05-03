@@ -189,7 +189,7 @@ public class SensorPanel extends Region
 				//radius color glow circle
 				6,
 				"X");
-		left_led.setSelectedColor(ColorValue.YELLOW);
+	
 		
 		middle_led = new LED_Component(80.75657, 50.54226, 150D, 60D, 4.5,
 				//gradient für Border
@@ -201,7 +201,7 @@ public class SensorPanel extends Region
 				//radius color glow circle
 				6,
 				"Y");
-		middle_led.setSelectedColor(ColorValue.RED);
+		
 		
 		right_led = new LED_Component(120D, 50.54331, 150D, 60D, 4.5,
 				//gradient für den Border
@@ -216,7 +216,7 @@ public class SensorPanel extends Region
 				
 				
 				);
-		right_led.setSelectedColor(ColorValue.GREEN);
+		
 		
 		
 		info_canvas = new Canvas();
@@ -601,8 +601,6 @@ public class SensorPanel extends Region
 		{
 			case LEFT:
 				left_led.setSelectedColor(colorValue);
-				
-				
 				break;
 			case MIDDLE:
 				middle_led.setSelectedColor(colorValue);
