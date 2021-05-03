@@ -51,7 +51,9 @@ public class SingleSensorPanel extends Application
 			}
 
 			private void stopAnimation() {
-				// TODO Auto-generated method stub
+				isAnimation = false;
+				if(animThread != null)
+					animThread.stop();
 				
 			}
 
