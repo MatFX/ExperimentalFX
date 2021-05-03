@@ -1,6 +1,8 @@
 package sensorpanel.first;
 
 import java.util.HashMap;
+
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -33,9 +35,13 @@ public class SensorPanel extends Region
 	
 	private TinyButton button_up, button_down, button_automatic;
 	
-	private Canvas info_canvas, middle_text_canvas, left_text_canvas, right_text_canvas;
+	private Canvas info_canvas, middle_text_canvas, left_text_canvas, right_text_canvas, lcd_text_canvas;
 	
 	private LED_Component left_led, middle_led, right_led;
+	
+	private SimpleStringProperty descriptionProperty = new SimpleStringProperty();
+	
+	private SimpleStringProperty valueProperty = new SimpleStringProperty();
 	
 	public enum LED
 	{
@@ -104,6 +110,7 @@ public class SensorPanel extends Region
 		base_background_inlay = new Rectangle();
 		base_background_inlay.setFill(Color.web("#111110"));
 		
+		lcd_text_canvas = new Canvas();
 		
 		base_background_inlay_shine = new Rectangle();
 		stopArray = new Stop[]{
@@ -115,6 +122,10 @@ public class SensorPanel extends Region
 				
 		};
 		stopMap.put(StopIndizes.BASE_BACKGROUND_INLAY_SHINE, stopArray);
+		
+		
+		
+		
 		
 		//TODO frame_component gehts weiter
 		frame_component = new Rectangle();
@@ -156,6 +167,7 @@ public class SensorPanel extends Region
 		stopMap.put(StopIndizes.FRAME_TOP_HIGHLIGHT, stopArray);
 		
 		display_lcd = new Rectangle();
+		//TODO color cornflower looks pretty
 		display_lcd.setFill(Color.web("#7cb928"));
 		
 		display_overlay = new Rectangle();
@@ -220,7 +232,7 @@ public class SensorPanel extends Region
 		
 		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
 				frame_component, frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight, 
-				display_lcd, display_overlay, button_up, button_down, button_automatic, left_led,  middle_led, right_led, left_text_canvas, middle_text_canvas, right_text_canvas);
+				display_lcd, lcd_text_canvas, display_overlay, button_up, button_down, button_automatic, left_led,  middle_led, right_led, left_text_canvas, middle_text_canvas, right_text_canvas);
 		
 		
 		this.getChildren().addAll(info_canvas);
@@ -279,7 +291,6 @@ public class SensorPanel extends Region
 		base_background_inlay.setHeight(h * 0.9333333333333333);
 		base_background_inlay.setArcWidth(w * 0.0666666666666667);
 		base_background_inlay.setArcHeight(w * 0.0666666666666667);
-		
 		
 		
 		
@@ -437,7 +448,65 @@ public class SensorPanel extends Region
 		display_lcd.setWidth(w * 0.5355344);
 		display_lcd.setHeight(h * 0.3360891666666667);
 		
+		
 		//TODO Fläche für den Text des Display
+		//first cleaning the area
+		GraphicsContext gcLcd = lcd_text_canvas.getGraphicsContext2D();
+		gcLcd.clearRect(0, 0, lcd_text_canvas.getWidth(), lcd_text_canvas.getHeight());
+		
+		lcd_text_canvas.relocate(w * 0.22898, h * 0.2141731666666667);
+		lcd_text_canvas.setWidth(w * 0.5355344);
+		lcd_text_canvas.setHeight(h * 0.3360891666666667);
+		
+		//TODO variabel
+		descriptionProperty.set("Temperatur:");
+		valueProperty.set("27,5 °C");
+		
+		Font fontLcd = Font.font("Verdana", 10);
+		Bounds maxTextAbmasseLCD = UIToolBox.getMaxTextWidth(fontLcd, descriptionProperty.get());
+		double tempSizeLCD;
+		if(maxTextAbmasseLCD.getWidth() < lcd_text_canvas.getWidth()*0.97  && maxTextAbmasseLCD.getHeight() < lcd_text_canvas.getHeight() *0.33)
+		{
+			tempSizeLCD = UIToolBox.getGreaterFont(fontLcd.getSize()+1, lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.33, descriptionProperty.get(), 0.01, fontLcd);
+		}
+		else
+		{
+			tempSizeLCD = UIToolBox.getLesserFont(fontLcd.getSize(), lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.33, descriptionProperty.get(),  0.01, fontLcd);
+		}
+		
+		fontLcd = Font.font(fontLcd.getName(), tempSizeLCD);
+		gcLcd.setFill(Color.web("#333333"));
+		gcLcd.setFont(fontLcd);
+		Text descriptionText = new Text();
+		descriptionText.setText(descriptionProperty.get());
+		descriptionText.setFont(fontLcd);
+		
+		double masseinheitXLCD = lcd_text_canvas.getWidth()*0.97 - (descriptionText.getLayoutBounds().getWidth());
+		gcLcd.fillText(descriptionText.getText(), masseinheitXLCD, descriptionText.getLayoutBounds().getHeight());
+		
+		
+		maxTextAbmasseLCD = UIToolBox.getMaxTextWidth(fontLcd, valueProperty.get());
+		if(maxTextAbmasseLCD.getWidth() < lcd_text_canvas.getWidth()*0.97  && maxTextAbmasseLCD.getHeight() < lcd_text_canvas.getHeight() *0.6)
+		{
+			tempSizeLCD = UIToolBox.getGreaterFont(fontLcd.getSize()+1, lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.6, valueProperty.get(), 0.01, fontLcd);
+		}
+		else
+		{
+			tempSizeLCD = UIToolBox.getLesserFont(fontLcd.getSize(), lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.6, valueProperty.get(),  0.01, fontLcd);
+		}
+		
+		fontLcd = Font.font(fontLcd.getName(), tempSizeLCD);
+		gcLcd.setFill(Color.web("#333333"));
+		gcLcd.setFont(fontLcd);
+		Text valueText = new Text();
+		valueText.setText(valueProperty.get());
+		valueText.setFont(fontLcd);
+		masseinheitXLCD = lcd_text_canvas.getWidth()*0.97 - (valueText.getLayoutBounds().getWidth());
+		
+		gcLcd.fillText(valueText.getText(), masseinheitXLCD,  descriptionText.getLayoutBounds().getHeight() + valueText.getLayoutBounds().getHeight() );
+		
+		
+		
 		
 		//x="34.347" 100/150 * 34,347 = 0.22898
 		//y="12.85039" 100/60 * 12.85039 = 0.2141731666666667
