@@ -4,6 +4,7 @@ package sensorpanel.first.component;
 import java.util.HashMap;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -11,6 +12,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
+import sensorpanel.first.component.TinyButtonText.TextValue;
 import tools.helper.UIToolBox;
 
 public class TinyButton extends Circle
@@ -39,6 +41,11 @@ public class TinyButton extends Circle
 	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
 
 	private boolean isMousePressed = false;
+	
+	private Canvas textCanvas;
+	
+	
+	
 	
 	public enum Command
 	{

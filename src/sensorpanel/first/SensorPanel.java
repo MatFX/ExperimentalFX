@@ -17,8 +17,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import sensorpanel.first.component.LED_Component;
-import sensorpanel.first.component.TinyButton;
 import sensorpanel.first.component.LED_Component.ColorValue;
+import sensorpanel.first.component.TextCanvas;
+import sensorpanel.first.component.TextCanvas.TextValue;
+import sensorpanel.first.component.TinyButton;
 import tools.helper.UIToolBox;
 
 public class SensorPanel extends Region
@@ -36,6 +38,8 @@ public class SensorPanel extends Region
 	private TinyButton button_up, button_down, button_automatic;
 	
 	private Canvas info_canvas, middle_text_canvas, left_text_canvas, right_text_canvas, lcd_text_canvas;
+	
+	private TextCanvas up_arrow_canvas, down_arrow_canvas, auto_canvas;
 	
 	private LED_Component left_led, middle_led, right_led;
 	
@@ -183,11 +187,20 @@ public class SensorPanel extends Region
 			};
 		stopMap.put(StopIndizes.DISPLAY_OVERLAY_HIGHLIGHT, stopArray);
 		
-		button_up = new TinyButton(12.5077, 15.88609, 150d, 60d, 6d,
-				12.5077, 15.88609, 6d);
+		up_arrow_canvas = new TextCanvas(12.5077, 15.88609, 150d, 60d, 6d, TextValue.UP_ARROW);
+		up_arrow_canvas.setMouseTransparent(true);
+		
+		button_up = new TinyButton(12.5077, 15.88609, 150d, 60d, 6d, 12.5077, 15.88609, 6d);
+	
+		
+		down_arrow_canvas = new TextCanvas(12.74803, 32.96063, 150d, 60d, 6d, TextValue.DOWN_ARROW);
+		down_arrow_canvas.setMouseTransparent(true);
 		
 		button_down = new TinyButton(12.74803, 32.96063, 150d, 60d, 6d,
 				12.74803, 32.96063, 6d);
+		
+		auto_canvas = new TextCanvas(136.5, 15.8860, 150d, 60d, 6d, TextValue.AUTO);
+		auto_canvas.setMouseTransparent(true);
 		
 		button_automatic = new TinyButton(136.5, 15.8860, 150d, 60d, 6d,
 				136.5, 15.8860, 6d);
@@ -234,9 +247,11 @@ public class SensorPanel extends Region
 		right_text_canvas = new Canvas();
 		right_text_canvas.setMouseTransparent(true);
 		
+	
+		
 		this.getChildren().addAll(this.base_background_component, base_background_shine, base_background_inlay, base_background_inlay_shine,
 				frame_component, frame_left_highlight, frame_right_highlight, frame_bottom_highlight, frame_top_highlight, 
-				display_lcd, lcd_text_canvas, display_overlay, button_up, button_down, button_automatic, left_led,  middle_led, right_led, left_text_canvas, middle_text_canvas, right_text_canvas);
+				display_lcd, lcd_text_canvas, display_overlay, up_arrow_canvas, button_up, down_arrow_canvas, button_down, auto_canvas, button_automatic, left_led,  middle_led, right_led, left_text_canvas, middle_text_canvas, right_text_canvas);
 		
 		
 		this.getChildren().addAll(info_canvas);
@@ -535,8 +550,14 @@ public class SensorPanel extends Region
 		display_overlay.setFill(lg);
 		
 		
+		
+		up_arrow_canvas.setResizeValues(w, h);
 		button_up.setResizeValues(w, h);
+		
+		down_arrow_canvas.setResizeValues(w, h);
 		button_down.setResizeValues(w, h);
+		
+		auto_canvas.setResizeValues(w, h);
 		button_automatic.setResizeValues(w, h);
 
 		
