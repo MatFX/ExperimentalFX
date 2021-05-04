@@ -2,13 +2,10 @@ package sensorpanel.first.component;
 
 
 import java.util.HashMap;
-
-import control.button.single.metal.SingleMetalButton.Command;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
@@ -16,7 +13,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import tools.helper.UIToolBox;
 
-public class TinyButton extends Region
+public class TinyButton extends Circle
 {
 	
 	private Circle button_top;
@@ -84,16 +81,16 @@ public class TinyButton extends Region
 	
 	private void registerListener() 
 	{
-		button_top.setOnMousePressed(e -> setNodeMouseEvent(button_top, Command.BUTTON_PRESSED, e));
-		button_top.setOnMouseReleased(e -> setNodeMouseEvent(button_top,Command.BUTTON_RELEASED, e));
+		this.setOnMousePressed(e -> setNodeMouseEvent(button_top, Command.BUTTON_PRESSED, e));
+		this.setOnMouseReleased(e -> setNodeMouseEvent(button_top,Command.BUTTON_RELEASED, e));
 		
-		button_top.setOnMouseEntered(e -> System.out.println("guck, wo bischd`?"));
+		this.setOnMouseEntered(e -> System.out.println("guck, wo bischd`?"));
 	}
 	
 	private void initGraphics() {
 		
-		this.setMouseTransparent(true);
-		button_top = new Circle();
+		this.setMouseTransparent(false);
+		//button_top = new Circle();
 		
 		Stop[] stopArray = new Stop[]{
 				new Stop(0.57444, Color.web("#16141200")),
@@ -111,53 +108,45 @@ public class TinyButton extends Region
 		
 		
 		
-		this.getChildren().add(button_top);
+		//this.getChildren().add(button_top);
 		
 	}
 
 	
 	public void setResizeValues(double w, double h) 
 	{
-		button_top.setCenterX(w * this.cx_ratio);
-		button_top.setCenterY(h * this.cy_ratio);
+		this.setCenterX(w * this.cx_ratio);
+		this.setCenterY(h * this.cy_ratio);
+		//button_top.setCenterX(w * this.cx_ratio);
+		//button_top.setCenterY(h * this.cy_ratio);
 		
 		
 		double radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio);
-		button_top.setRadius(radius);
-
+		//button_top.setRadius(radius);
+		this.setRadius(radius);
 		
 		radius = UIToolBox.getRadiusFromRatio(w, h, radius_ratio_top_highlight);
 		RadialGradient rg = new RadialGradient(0D, 0D, w * this.cx_ratio_top_highlight, h * this.cy_ratio_top_highlight, 
 				radius, false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BUTTON_TOP_HIGHLIGHT));
 	
 		
-		button_top.setFill(rg);
-		
+		//button_top.setFill(rg);
+		this.setFill(rg);
 	
 	
 	}
 	
 	private void setNodeMouseEvent(Node node, Command commandValue, MouseEvent e) 
 	{
-		System.out.println("commandValue " + commandValue);
 		if(commandValue == Command.BUTTON_PRESSED)
 		{
 			isMousePressed = true;
-			button_top.setEffect(new InnerShadow());
-			//ui stuff
-			//innerShadowStrong.setOpacity(1.0);
-			//innerShadowLight.setOpacity(0.0);
-			//contentRegion.setMousePressed();
-		
+			this.setEffect(new InnerShadow());
 		}
 		else if(commandValue == Command.BUTTON_RELEASED)
 		{
 			isMousePressed = false;
-			button_top.setEffect(null);
-			//ui stuff
-			//innerShadowStrong.setOpacity(0.0);
-			//innerShadowLight.setOpacity(1.0);
-			//contentRegion.setMouseReleased();
+			this.setEffect(null);
 		}
 		
 		commandProperty.set(commandValue);
