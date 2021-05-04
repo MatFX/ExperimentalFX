@@ -12,22 +12,17 @@ import tools.helper.UIToolBox;
 public class TextCanvas extends Canvas
 {
 	
-	private double center_x_ratio, center_y_ratio, radius_ratio_w;
+	private double center_x_ratio, center_y_ratio, radius_ratio_w, radius_ratio_h;
 	
 	private TextValue textValue;
 	
 	public enum TextValue
 	{
-		//UP_ARROW("\u21E7"),
-		
 		UP_ARROW("\u2B06"),
-		
 		
 		DOWN_ARROW("\u2B07"),
 		
 		AUTO("A"),
-		
-		
 		
 		;
 		
@@ -52,6 +47,8 @@ public class TextCanvas extends Canvas
 		center_x_ratio = 100D/w * center_x / 100D;
 		center_y_ratio = 100D/h * center_y / 100D;
 		radius_ratio_w = 100D/w * radius / 100D;
+		radius_ratio_h = 100D/h * radius / 100D;
+		
 		this.textValue = textValue;
 	
 	}
@@ -68,16 +65,33 @@ public class TextCanvas extends Canvas
 		double new_center_y = h * center_y_ratio;
 		double new_radius = w * radius_ratio_w;
 		
+		double new_radius_h = h * radius_ratio_h;
+		//System.out.println("w rad " + new_radius + " > " + new_radius_h);
+		
 		this.setLayoutX(new_center_x - new_radius);  
 		this.setLayoutY(new_center_y - new_radius);  
 		
-		//Basis Seitenverhältnis wäre besser dann skaliert es auch gleichmäßiger
-		this.setWidth(new_radius*2);
-		this.setHeight(new_radius*2);
-
+		//besser, aber noch nicht das gelbe vom Ei
+		if(new_radius <= new_radius_h)
+		{
+			//Basis Seitenverhältnis wäre besser dann skaliert es auch gleichmäßiger
+			this.setWidth(new_radius*2);
+			this.setHeight(new_radius*2);
+			this.setLayoutX(new_center_x - new_radius);  
+			this.setLayoutY(new_center_y - new_radius);  
+			
+		}
+		else
+		{
+			this.setWidth(new_radius_h*2);
+			this.setHeight(new_radius_h*2);
+			this.setLayoutX(new_center_x - new_radius_h);  
+			this.setLayoutY(new_center_y - new_radius_h);  
+			
+		}
+		
 		
 		Font font = Font.font("Verdana", FontWeight.BOLD ,12);
-		//TODO variable
 		String stringText = textValue.getContent();
 		Bounds maxTextAbmasse = UIToolBox.getMaxTextWidth(font, stringText);
 		double tempSize;
@@ -99,16 +113,11 @@ public class TextCanvas extends Canvas
 		testText.setText(stringText);
 		testText.setFont(font);
 		
-		double masseinheitX = this.getWidth()/2d - (testText.getLayoutBounds().getWidth()/2d);// + (gaugeSize * 0.015635));
-		System.out.println("masseinheitX " + masseinheitX);
+		double masseinheitX = this.getWidth()/2d - (testText.getLayoutBounds().getWidth()/2d);
 		double haelfte =  testText.getLayoutBounds().getHeight() / 2d;
 		double masseinheitY =  this.getHeight()/2d +  (haelfte/2d);
 	
 		gc.fillText(testText.getText(), masseinheitX, masseinheitY);
-		
-		//gc.setFill(Color.web("#FF000045"));
-		//gc.fillRect(0, 0, this.getWidth(), this.getHeight());
-		
 	}
 
 }
