@@ -27,18 +27,21 @@ public class SingleSensorPanel extends Application
 	
 	private boolean isAnimation;
 	
+	private Thread autoThread;
+	
+	private boolean isAutoRunning;
+	
+	private HelperClass helperClass = new HelperClass();
+	
+	private  SensorPanel sensorPanel = new SensorPanel();
 
 	@Override 
     public void start(Stage stage) 
     {
 		//Storage for different values
-		HelperClass helperClass = new HelperClass();
-		
 		
         BorderPane pane = new BorderPane();
-        
-        SensorPanel sensorPanel = new SensorPanel();
-        
+         
         sensorPanel.getCommandProperty().addListener(new ChangeListener<Command>()
         {
 
@@ -51,38 +54,25 @@ public class SingleSensorPanel extends Application
 				switch(newValue)
 				{
 					case NEXT_SENSOR_VALUE:
-						
-						helperClass.addCurrentSensorToShow();
-						if(helperClass.getCurrentSensorToShow() >= helperClass.getMapSize())
-							helperClass.setCurrentSensorToShow(0);
-						sensorValue = helperClass.getSelectedSensorValue(); 
-						
-						sensorPanel.getDescriptionProperty().set(sensorValue.getDescription());
-						sensorPanel.getValueProperty().set(getValueAsString(sensorValue, helperClass.getCurrentSensorToShow()));
+						nextSensorValue();
 						
 						break;
 					case PREVIOUS_SENSOR_VALUE:
-						helperClass.subCurrentSensorToShow();
-					
-						if(helperClass.getCurrentSensorToShow() < 0)
-							helperClass.setCurrentSensorToShow(helperClass.getMapSize()-1);
-						sensorValue = helperClass.getSelectedSensorValue(); 
-						
-						sensorPanel.getDescriptionProperty().set(sensorValue.getDescription());
-						sensorPanel.getValueProperty().set(getValueAsString(sensorValue, helperClass.getCurrentSensorToShow()));
+						previousSensorValue();
 						
 						break;
 					case AUTO_CHANGE:
+						System.out.println("sensorPanel " + sensorPanel.getAutoProperty().get());
 						if(sensorPanel.getAutoProperty().get())
 						{
 							//wechsle automatisch die Einstellung immer nach vorwärts
-						
+							startAutoThread();
 							
 						}
 						else
 						{
 							//schieße Thread ab.
-							
+							stopAutoThread();
 						}
 						
 						break;
@@ -168,12 +158,6 @@ public class SingleSensorPanel extends Application
 							
 							}
 							
-							
-							
-							
-							
-							
-							
 							try 
 							{
 								Thread.sleep(500);
@@ -220,7 +204,72 @@ public class SingleSensorPanel extends Application
         });*/
     }
 
-    protected String getValueAsString(SensorValue sensorValue, int currentSensorToShow)
+    protected void previousSensorValue() {
+    	helperClass.subCurrentSensorToShow();
+		
+		if(helperClass.getCurrentSensorToShow() < 0)
+			helperClass.setCurrentSensorToShow(helperClass.getMapSize()-1);
+		SensorValue sensorValue = helperClass.getSelectedSensorValue(); 
+		
+		sensorPanel.getDescriptionProperty().set(sensorValue.getDescription());
+		sensorPanel.getValueProperty().set(getValueAsString(sensorValue, helperClass.getCurrentSensorToShow()));
+		
+	}
+
+	protected void nextSensorValue() {
+
+		helperClass.addCurrentSensorToShow();
+		if(helperClass.getCurrentSensorToShow() >= helperClass.getMapSize())
+			helperClass.setCurrentSensorToShow(0);
+		SensorValue sensorValue = helperClass.getSelectedSensorValue(); 
+		
+		sensorPanel.getDescriptionProperty().set(sensorValue.getDescription());
+		sensorPanel.getValueProperty().set(getValueAsString(sensorValue, helperClass.getCurrentSensorToShow()));
+		
+		
+	}
+
+	protected void stopAutoThread() 
+    {
+		isAutoRunning = false;
+		if(autoThread != null)
+			autoThread.stop();
+		
+	}
+
+	protected void startAutoThread() 
+	{
+		if(autoThread != null && autoThread.isAlive())
+			autoThread.stop();
+		
+		isAutoRunning = true;
+		
+		Runnable runnable = new Runnable()
+		{
+			public void run()
+			{
+				System.out.println("isAutoRunning " + isAutoRunning);
+				while(isAutoRunning)
+				{
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					nextSensorValue();
+					
+				}
+			}
+		};
+		
+		
+		autoThread = new Thread(runnable);
+		autoThread.start();
+		
+	}
+
+	protected String getValueAsString(SensorValue sensorValue, int currentSensorToShow)
     {
     	//sensorValue, currentSensorToShow
     	

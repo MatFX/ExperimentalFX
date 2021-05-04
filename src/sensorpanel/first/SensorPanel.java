@@ -304,13 +304,15 @@ public class SensorPanel extends Region
 			{
 				if(newValue == sensorpanel.first.component.TinyButton.Command.BUTTON_RELEASED)
 				{
-					commandProperty.set(Command.RESET_COMMAND);
-					commandProperty.set(Command.AUTO_CHANGE);
 					isAutoProperty.set(!isAutoProperty.get());
 					if(isAutoProperty.get())
 						auto_canvas.setColor(Color.web("#53ff1aAA"));
 					else
 						auto_canvas.resetColor();
+					
+					commandProperty.set(Command.RESET_COMMAND);
+					commandProperty.set(Command.AUTO_CHANGE);
+					
 				}
 		
 				
