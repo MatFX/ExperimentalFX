@@ -2,7 +2,11 @@ package sensorpanel.first;
 
 import java.util.HashMap;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -47,6 +51,10 @@ public class SensorPanel extends Region
 	
 	private SimpleStringProperty valueProperty = new SimpleStringProperty();
 	
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
+	
+	private SimpleBooleanProperty isAutoProperty = new SimpleBooleanProperty();
+	
 	public enum LED
 	{
 		LEFT,
@@ -74,6 +82,18 @@ public class SensorPanel extends Region
 		;
 	}
 	
+	public enum Command
+	{
+		PREVIOUS_SENSOR_VALUE, NEXT_SENSOR_VALUE, AUTO_CHANGE,
+		
+
+		/**
+		 * der wird dann von außerhalb gesetzt, damit auch das aktuelle Kommando nochmal gesetzt werden kann.
+		 * <br>you need the reset as a "acknowledge" from outside.
+		 */
+		RESET_COMMAND;
+	}
+	
 	
 	public SensorPanel()
 	{
@@ -87,6 +107,39 @@ public class SensorPanel extends Region
 	private void registerListener() {
 		widthProperty().addListener(observable -> resize());
 		heightProperty().addListener(observable -> resize());
+		
+
+		descriptionProperty.addListener(new ChangeListener<String>(){
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) 
+			{
+				System.out.println("newValue " + newValue);
+				double refresh_w = lcd_text_canvas.getWidth();
+				double refresh_h = lcd_text_canvas.getHeight();
+				
+				refreshLCDContent(refresh_w, refresh_h);
+				
+			}
+			
+		});
+		
+		valueProperty.addListener(new ChangeListener<String>(){
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) 
+			{
+				double refresh_w = lcd_text_canvas.getWidth();
+				double refresh_h = lcd_text_canvas.getHeight();
+				
+				refreshLCDContent(refresh_w, refresh_h);
+				
+				
+			}
+			
+		});
+		
+		
 	}
 
 	private void initGraphics() {
@@ -191,19 +244,79 @@ public class SensorPanel extends Region
 		up_arrow_canvas.setMouseTransparent(true);
 		
 		button_up = new TinyButton(12.5077, 15.88609, 150d, 60d, 6d, 12.5077, 15.88609, 6d);
-	
+		button_up.getSimpleObjectPropertyCommand().addListener(new ChangeListener<TinyButton.Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends sensorpanel.first.component.TinyButton.Command> observable,
+					sensorpanel.first.component.TinyButton.Command oldValue,
+					sensorpanel.first.component.TinyButton.Command newValue) 
+			{
+				if(newValue == sensorpanel.first.component.TinyButton.Command.BUTTON_RELEASED)
+				{
+					commandProperty.set(Command.RESET_COMMAND);
+					commandProperty.set(Command.NEXT_SENSOR_VALUE);
+				}
+				
+				
+			}
+			
+		});
 		
 		down_arrow_canvas = new TextCanvas(12.74803, 32.96063, 150d, 60d, 6d, TextValue.DOWN_ARROW);
 		down_arrow_canvas.setMouseTransparent(true);
 		
 		button_down = new TinyButton(12.74803, 32.96063, 150d, 60d, 6d,
 				12.74803, 32.96063, 6d);
+		button_down.getSimpleObjectPropertyCommand().addListener(new ChangeListener<TinyButton.Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends sensorpanel.first.component.TinyButton.Command> observable,
+					sensorpanel.first.component.TinyButton.Command oldValue,
+					sensorpanel.first.component.TinyButton.Command newValue) 
+			{
+				if(newValue == sensorpanel.first.component.TinyButton.Command.BUTTON_RELEASED)
+				{
+					commandProperty.set(Command.RESET_COMMAND);
+					commandProperty.set(Command.PREVIOUS_SENSOR_VALUE);
+				}
+				
+				
+			}
+			
+		});
 		
 		auto_canvas = new TextCanvas(136.5, 15.8860, 150d, 60d, 6d, TextValue.AUTO);
 		auto_canvas.setMouseTransparent(true);
 		
+		
+		
 		button_automatic = new TinyButton(136.5, 15.8860, 150d, 60d, 6d,
 				136.5, 15.8860, 6d);
+		button_automatic.getSimpleObjectPropertyCommand().addListener(new ChangeListener<TinyButton.Command>()
+		{
+
+			@Override
+			public void changed(ObservableValue<? extends sensorpanel.first.component.TinyButton.Command> observable,
+					sensorpanel.first.component.TinyButton.Command oldValue,
+					sensorpanel.first.component.TinyButton.Command newValue) 
+			{
+				if(newValue == sensorpanel.first.component.TinyButton.Command.BUTTON_RELEASED)
+				{
+					commandProperty.set(Command.RESET_COMMAND);
+					commandProperty.set(Command.AUTO_CHANGE);
+					isAutoProperty.set(!isAutoProperty.get());
+					if(isAutoProperty.get())
+						auto_canvas.setColor(Color.web("#53ff1aAA"));
+					else
+						auto_canvas.resetColor();
+				}
+		
+				
+			}
+			
+		});
 		left_led = new LED_Component(38.5, 50.54331, 150d, 60d, 4.5,
 				//gradient für den Border
 				38.5, 55.04331, 38.5, 46.04331,
@@ -467,63 +580,16 @@ public class SensorPanel extends Region
 		display_lcd.setWidth(w * 0.5355344);
 		display_lcd.setHeight(h * 0.3360891666666667);
 		
-		
-		//TODO Fläche für den Text des Display
-		//first cleaning the area
-		GraphicsContext gcLcd = lcd_text_canvas.getGraphicsContext2D();
-		gcLcd.clearRect(0, 0, lcd_text_canvas.getWidth(), lcd_text_canvas.getHeight());
+		//Werte müssen gesichert werden damit beim stpäteren zeichnen erstmal die alten Werte gelöscht werden können.
+		double refresh_w = lcd_text_canvas.getWidth();
+		double refresh_h = lcd_text_canvas.getHeight();
 		
 		lcd_text_canvas.relocate(w * 0.22898, h * 0.2141731666666667);
 		lcd_text_canvas.setWidth(w * 0.5355344);
 		lcd_text_canvas.setHeight(h * 0.3360891666666667);
+
 		
-		//TODO variabel
-		descriptionProperty.set("Temperatur:");
-		valueProperty.set("27,5 °C");
-		
-		Font fontLcd = Font.font("Verdana", 10);
-		Bounds maxTextAbmasseLCD = UIToolBox.getMaxTextWidth(fontLcd, descriptionProperty.get());
-		double tempSizeLCD;
-		if(maxTextAbmasseLCD.getWidth() < lcd_text_canvas.getWidth()*0.97  && maxTextAbmasseLCD.getHeight() < lcd_text_canvas.getHeight() *0.33)
-		{
-			tempSizeLCD = UIToolBox.getGreaterFont(fontLcd.getSize()+1, lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.33, descriptionProperty.get(), 0.01, fontLcd);
-		}
-		else
-		{
-			tempSizeLCD = UIToolBox.getLesserFont(fontLcd.getSize(), lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.33, descriptionProperty.get(),  0.01, fontLcd);
-		}
-		
-		fontLcd = Font.font(fontLcd.getName(), tempSizeLCD);
-		gcLcd.setFill(Color.web("#333333"));
-		gcLcd.setFont(fontLcd);
-		Text descriptionText = new Text();
-		descriptionText.setText(descriptionProperty.get());
-		descriptionText.setFont(fontLcd);
-		
-		double masseinheitXLCD = lcd_text_canvas.getWidth()*0.97 - (descriptionText.getLayoutBounds().getWidth());
-		gcLcd.fillText(descriptionText.getText(), masseinheitXLCD, descriptionText.getLayoutBounds().getHeight());
-		
-		
-		maxTextAbmasseLCD = UIToolBox.getMaxTextWidth(fontLcd, valueProperty.get());
-		if(maxTextAbmasseLCD.getWidth() < lcd_text_canvas.getWidth()*0.97  && maxTextAbmasseLCD.getHeight() < lcd_text_canvas.getHeight() *0.6)
-		{
-			tempSizeLCD = UIToolBox.getGreaterFont(fontLcd.getSize()+1, lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.6, valueProperty.get(), 0.01, fontLcd);
-		}
-		else
-		{
-			tempSizeLCD = UIToolBox.getLesserFont(fontLcd.getSize(), lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.6, valueProperty.get(),  0.01, fontLcd);
-		}
-		
-		fontLcd = Font.font(fontLcd.getName(), tempSizeLCD);
-		gcLcd.setFill(Color.web("#333333"));
-		gcLcd.setFont(fontLcd);
-		Text valueText = new Text();
-		valueText.setText(valueProperty.get());
-		valueText.setFont(fontLcd);
-		masseinheitXLCD = lcd_text_canvas.getWidth()*0.97 - (valueText.getLayoutBounds().getWidth());
-		
-		gcLcd.fillText(valueText.getText(), masseinheitXLCD,  descriptionText.getLayoutBounds().getHeight() + valueText.getLayoutBounds().getHeight() );
-		
+		refreshLCDContent(refresh_w, refresh_h);
 		
 		
 		
@@ -617,7 +683,7 @@ public class SensorPanel extends Region
 		}
 		else
 		{
-			  tempSize = UIToolBox.getLesserFont(font.getSize(), info_canvas.getWidth(), info_canvas.getHeight(), stringText,  0.01, font);
+			 tempSize = UIToolBox.getLesserFont(font.getSize(), info_canvas.getWidth(), info_canvas.getHeight(), stringText,  0.01, font);
 		}
 		
 		font = Font.font(font.getName(), tempSize);
@@ -637,6 +703,57 @@ public class SensorPanel extends Region
 	
 	}
 	
+	//TODO param nicht benötigt?
+	private void refreshLCDContent(double previous_w, double previous_h) 
+	{
+		GraphicsContext gcLcd = lcd_text_canvas.getGraphicsContext2D();
+		gcLcd.clearRect(0, 0, previous_w, previous_h);
+
+		Font fontLcd = Font.font("Verdana", 10);
+		Bounds maxTextAbmasseLCD = UIToolBox.getMaxTextWidth(fontLcd, descriptionProperty.get());
+		double tempSizeLCD;
+		if(maxTextAbmasseLCD.getWidth() < lcd_text_canvas.getWidth()*0.97  && maxTextAbmasseLCD.getHeight() < lcd_text_canvas.getHeight() *0.33)
+		{
+			tempSizeLCD = UIToolBox.getGreaterFont(fontLcd.getSize()+1, lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.33, descriptionProperty.get(), 0.01, fontLcd);
+		}
+		else
+		{
+			tempSizeLCD = UIToolBox.getLesserFont(fontLcd.getSize(), lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.33, descriptionProperty.get(),  0.01, fontLcd);
+		}
+		
+		fontLcd = Font.font(fontLcd.getName(), tempSizeLCD);
+		gcLcd.setFill(Color.web("#333333"));
+		gcLcd.setFont(fontLcd);
+		Text descriptionText = new Text();
+		descriptionText.setText(descriptionProperty.get());
+		descriptionText.setFont(fontLcd);
+		
+		double masseinheitXLCD = lcd_text_canvas.getWidth()*0.97 - (descriptionText.getLayoutBounds().getWidth());
+		gcLcd.fillText(descriptionText.getText(), masseinheitXLCD, descriptionText.getLayoutBounds().getHeight());
+		
+		
+		maxTextAbmasseLCD = UIToolBox.getMaxTextWidth(fontLcd, valueProperty.get());
+		if(maxTextAbmasseLCD.getWidth() < lcd_text_canvas.getWidth()*0.97  && maxTextAbmasseLCD.getHeight() < lcd_text_canvas.getHeight() *0.6)
+		{
+			tempSizeLCD = UIToolBox.getGreaterFont(fontLcd.getSize()+1, lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.6, valueProperty.get(), 0.01, fontLcd);
+		}
+		else
+		{
+			tempSizeLCD = UIToolBox.getLesserFont(fontLcd.getSize(), lcd_text_canvas.getWidth()*0.97, lcd_text_canvas.getHeight()*0.6, valueProperty.get(),  0.01, fontLcd);
+		}
+		
+		fontLcd = Font.font(fontLcd.getName(), tempSizeLCD);
+		gcLcd.setFill(Color.web("#333333"));
+		gcLcd.setFont(fontLcd);
+		Text valueText = new Text();
+		valueText.setText(valueProperty.get());
+		valueText.setFont(fontLcd);
+		masseinheitXLCD = lcd_text_canvas.getWidth()*0.97 - (valueText.getLayoutBounds().getWidth());
+		
+		gcLcd.fillText(valueText.getText(), masseinheitXLCD,  descriptionText.getLayoutBounds().getHeight() + valueText.getLayoutBounds().getHeight() );
+		
+		
+	}
 
 	private void drawLEDText(double radius_w_ratio, double radius_h_ratio, double gap_w_ratio, double mid_cx_ratio, double mid_cy_ratio, Canvas canvas_text, String textToDraw) 
 	{
@@ -699,4 +816,31 @@ public class SensorPanel extends Region
 		
 		}
 	}
+
+	/**
+	 * for listing the commands
+	 * @return
+	 */
+	public SimpleObjectProperty<Command> getCommandProperty() 
+	{
+		return this.commandProperty;
+	}
+	
+	public SimpleStringProperty getDescriptionProperty()
+	{
+		return descriptionProperty;
+	}
+	
+	public SimpleStringProperty getValueProperty()
+	{
+		return valueProperty;
+	}
+	
+	public SimpleBooleanProperty getAutoProperty()
+	{
+		return isAutoProperty;
+	}
+	
+	
+	
 }

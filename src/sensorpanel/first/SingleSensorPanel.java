@@ -1,15 +1,23 @@
 package sensorpanel.first;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
+import control.universaldisplay.SensorValue;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import sensorpanel.first.SensorPanel.Command;
 import sensorpanel.first.component.LED_Component.ColorValue;
+import sensorpanel.first.helper.HelperClass;
 
 
 public class SingleSensorPanel extends Application
@@ -19,15 +27,71 @@ public class SingleSensorPanel extends Application
 	
 	private boolean isAnimation;
 	
-	
 
 	@Override 
     public void start(Stage stage) 
     {
+		//Storage for different values
+		HelperClass helperClass = new HelperClass();
+		
+		
         BorderPane pane = new BorderPane();
         
         SensorPanel sensorPanel = new SensorPanel();
         
+        sensorPanel.getCommandProperty().addListener(new ChangeListener<Command>()
+        {
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) {
+				
+				
+				SensorValue sensorValue = null;
+				System.out.println("newValue " + newValue);
+				switch(newValue)
+				{
+					case NEXT_SENSOR_VALUE:
+						
+						helperClass.addCurrentSensorToShow();
+						if(helperClass.getCurrentSensorToShow() >= helperClass.getMapSize())
+							helperClass.setCurrentSensorToShow(0);
+						sensorValue = helperClass.getSelectedSensorValue(); 
+						
+						sensorPanel.getDescriptionProperty().set(sensorValue.getDescription());
+						sensorPanel.getValueProperty().set(getValueAsString(sensorValue, helperClass.getCurrentSensorToShow()));
+						
+						break;
+					case PREVIOUS_SENSOR_VALUE:
+						helperClass.subCurrentSensorToShow();
+					
+						if(helperClass.getCurrentSensorToShow() < 0)
+							helperClass.setCurrentSensorToShow(helperClass.getMapSize()-1);
+						sensorValue = helperClass.getSelectedSensorValue(); 
+						
+						sensorPanel.getDescriptionProperty().set(sensorValue.getDescription());
+						sensorPanel.getValueProperty().set(getValueAsString(sensorValue, helperClass.getCurrentSensorToShow()));
+						
+						break;
+					case AUTO_CHANGE:
+						if(sensorPanel.getAutoProperty().get())
+						{
+							//wechsle automatisch die Einstellung immer nach vorwärts
+						
+							
+						}
+						else
+						{
+							//schieße Thread ab.
+							
+						}
+						
+						break;
+				}
+				
+				
+			}
+        	
+        });
      
         //start and stop animation with random values
         ToggleButton test = new ToggleButton("Start");
@@ -156,7 +220,28 @@ public class SingleSensorPanel extends Application
         });*/
     }
 
-    public static void main(String[] args) {
+    protected String getValueAsString(SensorValue sensorValue, int currentSensorToShow)
+    {
+    	//sensorValue, currentSensorToShow
+    	
+    	//Feuchtigkeit Ganzzahl
+    	if(currentSensorToShow == HelperClass.HUMIDITY)
+    	{
+    		int roundedHum = (int) Math.round(sensorValue.getCurrentValue());
+    		return roundedHum + " " + sensorValue.getMeasurementUnit();
+    	}
+    	//Rest mit einer Nachkommastelle
+    	else
+    	{
+    		double rounded = (double) Math.round(sensorValue.getCurrentValue()*10D)/10D;
+    		return String.format("%1.2f", rounded) + " " + sensorValue.getMeasurementUnit();
+    	}
+    	
+    	
+    	
+	}
+
+	public static void main(String[] args) {
         Application.launch(args);
     }
 

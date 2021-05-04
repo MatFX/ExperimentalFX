@@ -16,6 +16,10 @@ public class TextCanvas extends Canvas
 	
 	private TextValue textValue;
 	
+	private Color STANDARD_TEXT_COLOR = Color.web("#FFFFFFAA");
+	
+	private Color colorToSet = STANDARD_TEXT_COLOR;
+	
 	public enum TextValue
 	{
 		UP_ARROW("\u2B06"),
@@ -56,10 +60,12 @@ public class TextCanvas extends Canvas
 	
 	public void setResizeValues(double w, double h)
 	{
-		//first delete the content
-		GraphicsContext gc = this.getGraphicsContext2D();
-		gc.clearRect(0, 0, this.getWidth(), this.getHeight());
-
+		
+		double previous_w = this.getWidth();
+		double previous_h = this.getHeight();
+		
+		
+	
 		//calculate the new pos and size
 		double new_center_x = w * center_x_ratio;
 		double new_center_y = h * center_y_ratio;
@@ -89,7 +95,16 @@ public class TextCanvas extends Canvas
 			this.setLayoutY(new_center_y - new_radius_h);  
 			
 		}
-		
+		refreshText(previous_w, previous_h);
+	}
+	
+	private void refreshText(double previous_w, double previous_h) 
+	{
+
+
+		// delete the content
+		GraphicsContext gc = this.getGraphicsContext2D();
+		gc.clearRect(0, 0, previous_w, previous_h);
 		
 		Font font = Font.font("Verdana", FontWeight.BOLD ,12);
 		String stringText = textValue.getContent();
@@ -105,10 +120,11 @@ public class TextCanvas extends Canvas
 		}
 		
 		font = Font.font(font.getName(), FontWeight.BOLD , tempSize);
-		gc.setFill(Color.web("#FFFFFFAA"));
+		gc.setFill(colorToSet);
 		
 		gc.setFont(font);
-		
+	
+	
 		Text testText = new Text();
 		testText.setText(stringText);
 		testText.setFont(font);
@@ -118,6 +134,19 @@ public class TextCanvas extends Canvas
 		double masseinheitY =  this.getHeight()/2d +  (haelfte/2d);
 	
 		gc.fillText(testText.getText(), masseinheitX, masseinheitY);
+	}
+	
+	public void setColor(Color newColor)
+	{
+		this.colorToSet = newColor;
+		double previous_w = this.getWidth();
+		double previous_h = this.getHeight();
+		this.refreshText(previous_w, previous_h);
+	}
+	
+	public void resetColor()
+	{
+		this.setColor(STANDARD_TEXT_COLOR);
 	}
 
 }

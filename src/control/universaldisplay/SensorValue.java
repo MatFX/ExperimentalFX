@@ -29,6 +29,7 @@ public class SensorValue
 	
 	private double[] presetValues = null;
 	
+	private String description;
 	
 	public SensorValue(double currentValue, double von, double bis, String measurementUnit, String imageName, double[] presetValues)
 	{
@@ -45,6 +46,12 @@ public class SensorValue
 		this.bis = bis;
 		this.measurementUnit = measurementUnit;
 		this.imageName = imageName;
+	}
+	
+	public SensorValue(double currentValue, double von, double bis, String measurementUnit, String imageName, String description)
+	{
+		this(currentValue, von, bis, measurementUnit, imageName);
+		this.description = description;
 	}
 
 	public double getVon() {
@@ -119,5 +126,10 @@ public class SensorValue
 	public double[] getPresetValues()
 	{
 		return presetValues;
+	}
+	
+	public String getDescription()
+	{
+		return description;
 	}
 }
