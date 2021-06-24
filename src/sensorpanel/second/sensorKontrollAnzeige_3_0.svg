@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 150 80">
+  <defs>
+    <linearGradient id="Neues_Verlaufsfeld_1" data-name="Neues Verlaufsfeld 1" y1="40" x2="150" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1d1b" stop-opacity="0.9"/>
+      <stop offset="0.27211" stop-color="#b2b2b2" stop-opacity="0.2"/>
+      <stop offset="0.31916" stop-color="#b5b5b5" stop-opacity="0.23227"/>
+      <stop offset="0.39341" stop-color="#bebebe" stop-opacity="0.32055"/>
+      <stop offset="0.48555" stop-color="#ccc" stop-opacity="0.46466"/>
+      <stop offset="0.59098" stop-color="#e0e0e0" stop-opacity="0.66273"/>
+      <stop offset="0.65642" stop-color="#ededed" stop-opacity="0.8"/>
+      <stop offset="0.83862" stop-color="#7c7c7b" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_100" data-name="Unbenannter Verlauf 100" x1="75.26704" y1="72.47088" x2="75.2461" y2="64.54949" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1d1b"/>
+      <stop offset="0.2043" stop-color="#1d1d1b" stop-opacity="0.67331"/>
+      <stop offset="0.63698" stop-color="#1d1d1b" stop-opacity="0.17312"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_179" data-name="Unbenannter Verlauf 179" cx="33.94882" cy="74.20472" r="3.66535" gradientTransform="translate(-5 -4.94982) scale(1 0.98996)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.57444" stop-color="#3c3c3b" stop-opacity="0"/>
+      <stop offset="0.59244" stop-color="#454544" stop-opacity="0.22223"/>
+      <stop offset="0.61566" stop-color="#4d4d4c" stop-opacity="0.41461"/>
+      <stop offset="0.64457" stop-color="#535352" stop-opacity="0.55046"/>
+      <stop offset="0.68512" stop-color="#565655" stop-opacity="0.62847"/>
+      <stop offset="0.79771" stop-color="#575756" stop-opacity="0.65"/>
+      <stop offset="0.918" stop-color="#2b2a28" stop-opacity="0.85212"/>
+      <stop offset="1" stop-color="#161412" stop-opacity="0.95"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_415" data-name="Unbenannter Verlauf 415" x1="75.10427" y1="79.44073" x2="74.89445" y2="0.07424" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1d1b" stop-opacity="0.3"/>
+      <stop offset="0.37573" stop-color="#afafaf" stop-opacity="0.36746"/>
+      <stop offset="0.54749" stop-color="#f6f6f6" stop-opacity="0.4"/>
+      <stop offset="0.69898" stop-color="#b6b6b5" stop-opacity="0.42952"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="Neues_Verlaufsfeld_2" data-name="Neues Verlaufsfeld 2" x1="24.5" y1="24.966" x2="34.5" y2="24.966" gradientUnits="userSpaceOnUse">
+      <stop offset="0.02244" stop-color="#1d1d1b" stop-opacity="0.8"/>
+      <stop offset="0.58653" stop-color="#8e8e8d" stop-opacity="0.40103"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_330" data-name="Unbenannter Verlauf 330" x1="115.5" y1="24.966" x2="125.5" y2="24.966" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.41347" stop-color="#8e8e8d" stop-opacity="0.40103"/>
+      <stop offset="0.97756" stop-color="#1d1d1b" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="Neues_Verlaufsfeld_3" data-name="Neues Verlaufsfeld 3" x1="75" y1="33.01422" x2="75" y2="45.92408" gradientUnits="userSpaceOnUse">
+      <stop offset="0.00559" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_355" data-name="Unbenannter Verlauf 355" x1="75" y1="7.22434" x2="75" y2="16.64389" gradientUnits="userSpaceOnUse">
+      <stop offset="0.26398" stop-color="#1d1d1b" stop-opacity="0.8"/>
+      <stop offset="0.63141" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_148" data-name="Unbenannter Verlauf 148" x1="74.51208" y1="6.67204" x2="74.51208" y2="45.69087" gradientUnits="userSpaceOnUse">
+      <stop offset="0.00562" stop-color="#fff" stop-opacity="0.5"/>
+      <stop offset="0.19031" stop-color="#fff" stop-opacity="0.3635"/>
+      <stop offset="0.43688" stop-color="#fff" stop-opacity="0.20691"/>
+      <stop offset="0.66252" stop-color="#fff" stop-opacity="0.09349"/>
+      <stop offset="0.85762" stop-color="#fff" stop-opacity="0.0245"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_428" data-name="Unbenannter Verlauf 428" cx="143.55494" cy="20.69712" r="6" gradientTransform="translate(-5 -4.94982) scale(1 0.98996)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.57444" stop-color="#161412" stop-opacity="0"/>
+      <stop offset="0.58364" stop-color="#272524" stop-opacity="0.12281"/>
+      <stop offset="0.60244" stop-color="#42403f" stop-opacity="0.31636"/>
+      <stop offset="0.62466" stop-color="#575555" stop-opacity="0.46709"/>
+      <stop offset="0.65213" stop-color="#656464" stop-opacity="0.57265"/>
+      <stop offset="0.69069" stop-color="#6e6d6d" stop-opacity="0.63327"/>
+      <stop offset="0.79771" stop-color="#706f6f" stop-opacity="0.65"/>
+      <stop offset="0.82478" stop-color="#616060" stop-opacity="0.69895"/>
+      <stop offset="0.93813" stop-color="#2b2927" stop-opacity="0.88098"/>
+      <stop offset="1" stop-color="#161412" stop-opacity="0.95"/>
+    </radialGradient>
+    <radialGradient id="Unbenannter_Verlauf_428-2" cx="143.55494" cy="37.69712" r="6" xlink:href="#Unbenannter_Verlauf_428"/>
+    <radialGradient id="Unbenannter_Verlauf_428-3" cx="17.5077" cy="20.88609" r="6" xlink:href="#Unbenannter_Verlauf_428"/>
+    <radialGradient id="Unbenannter_Verlauf_428-4" cx="17.74803" cy="37.96063" r="6" xlink:href="#Unbenannter_Verlauf_428"/>
+    <linearGradient id="Unbenannter_Verlauf_14" data-name="Unbenannter Verlauf 14" x1="45.5" y1="54.49089" x2="45.5" y2="45.58121" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.8"/>
+      <stop offset="0.13896" stop-color="#fafafa" stop-opacity="0.79769"/>
+      <stop offset="0.28628" stop-color="#eaeaea" stop-opacity="0.79081"/>
+      <stop offset="0.43744" stop-color="#d0d0d0" stop-opacity="0.77936"/>
+      <stop offset="0.59126" stop-color="#ababab" stop-opacity="0.76331"/>
+      <stop offset="0.7472" stop-color="#7c7c7c" stop-opacity="0.74266"/>
+      <stop offset="0.90262" stop-color="#434343" stop-opacity="0.71776"/>
+      <stop offset="1" stop-color="#1b1b1b" stop-opacity="0.7"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_25" data-name="Unbenannter Verlauf 25" cx="50.40259" cy="55.54331" r="2.5" gradientTransform="translate(-30.10388 -32.44276) scale(1.5 1.48495)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.7"/>
+      <stop offset="0.17334" stop-color="#fff" stop-opacity="0.68551"/>
+      <stop offset="0.33475" stop-color="#fff" stop-opacity="0.64133"/>
+      <stop offset="0.49153" stop-color="#fff" stop-opacity="0.56731"/>
+      <stop offset="0.64538" stop-color="#fff" stop-opacity="0.46336"/>
+      <stop offset="0.79715" stop-color="#fff" stop-opacity="0.32935"/>
+      <stop offset="0.94534" stop-color="#fff" stop-opacity="0.16755"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0.1"/>
+    </radialGradient>
+    <radialGradient id="Unbenannter_Verlauf_56" data-name="Unbenannter Verlauf 56" cx="58.81415" cy="50.82711" r="3.35417" gradientTransform="translate(-59.70792 -39.97202) scale(1.78882 1.77087)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.04865" stop-color="#f9ea32" stop-opacity="0.7"/>
+      <stop offset="0.28125" stop-color="#f9ea31" stop-opacity="0.68951"/>
+      <stop offset="0.42771" stop-color="#f9ea2f" stop-opacity="0.65499"/>
+      <stop offset="0.55034" stop-color="#f8e92b" stop-opacity="0.59617"/>
+      <stop offset="0.65984" stop-color="#f8e925" stop-opacity="0.51293"/>
+      <stop offset="0.76065" stop-color="#f7e81d" stop-opacity="0.40505"/>
+      <stop offset="0.85502" stop-color="#f6e813" stop-opacity="0.27249"/>
+      <stop offset="0.94271" stop-color="#f5e708" stop-opacity="0.11835"/>
+      <stop offset="1" stop-color="#f4e600" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14-2" x1="79.75657" y1="54.48986" x2="79.75657" y2="45.58018" xlink:href="#Unbenannter_Verlauf_14"/>
+    <radialGradient id="Unbenannter_Verlauf_25-2" cx="73.2403" cy="55.54261" r="2.5" xlink:href="#Unbenannter_Verlauf_25"/>
+    <radialGradient id="Unbenannter_Verlauf_228" data-name="Unbenannter Verlauf 228" cx="77.96452" cy="50.82653" r="3.35417" gradientTransform="translate(-59.70792 -39.97202) scale(1.78882 1.77087)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.04865" stop-color="#e50b42" stop-opacity="0.7"/>
+      <stop offset="0.28787" stop-color="#e50b42" stop-opacity="0.6886"/>
+      <stop offset="0.43849" stop-color="#e50b40" stop-opacity="0.65107"/>
+      <stop offset="0.56467" stop-color="#e50c3e" stop-opacity="0.58708"/>
+      <stop offset="0.67731" stop-color="#e50c3b" stop-opacity="0.49653"/>
+      <stop offset="0.78097" stop-color="#e50d37" stop-opacity="0.37924"/>
+      <stop offset="0.87805" stop-color="#e40e32" stop-opacity="0.23503"/>
+      <stop offset="0.96827" stop-color="#e40f2c" stop-opacity="0.06735"/>
+      <stop offset="1" stop-color="#e40f2a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14-3" x1="115" y1="54.49089" x2="115" y2="45.58121" xlink:href="#Unbenannter_Verlauf_14"/>
+    <radialGradient id="Unbenannter_Verlauf_25-3" cx="96.73592" cy="55.54331" r="2.5" xlink:href="#Unbenannter_Verlauf_25"/>
+    <radialGradient id="Unbenannter_Verlauf_236" data-name="Unbenannter Verlauf 236" cx="97.66658" cy="50.82711" r="3.35417" gradientTransform="translate(-59.70792 -39.97202) scale(1.78882 1.77087)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.04865" stop-color="#4fae32" stop-opacity="0.7"/>
+      <stop offset="0.31094" stop-color="#4dad32" stop-opacity="0.68499"/>
+      <stop offset="0.47605" stop-color="#48aa32" stop-opacity="0.63562"/>
+      <stop offset="0.61431" stop-color="#3fa433" stop-opacity="0.5515"/>
+      <stop offset="0.73779" stop-color="#339c34" stop-opacity="0.4324"/>
+      <stop offset="0.85137" stop-color="#229234" stop-opacity="0.27823"/>
+      <stop offset="0.95628" stop-color="#0f8635" stop-opacity="0.09162"/>
+      <stop offset="1" stop-color="#058036" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g id="base_background_component" data-name="base background component">
+    <rect width="150" height="80" rx="4" style="fill: #121616"/>
+  </g>
+  <g id="base_background_shine" data-name="base background shine">
+    <rect width="150" height="80" rx="4" style="fill: url(#Neues_Verlaufsfeld_1)"/>
+  </g>
+  <g id="base_background_inlay" data-name="base background inlay">
+    <rect x="2" y="2.66667" width="146" height="74.66667" rx="4" style="fill: #111110"/>
+  </g>
+  <g id="Slider_base" data-name="Slider base">
+    <rect x="24.5" y="64.67505" width="101" height="7.67027" rx="3"/>
+  </g>
+  <g id="Slider_base_Kopie" data-name="Slider base Kopie">
+    <rect x="24.75657" y="64.67505" width="101" height="7.67027" rx="3" style="fill: url(#Unbenannter_Verlauf_100)"/>
+  </g>
+  <g id="button_slider_Kopie" data-name="button slider Kopie">
+    <g id="button_automatic_top_Kopie_Kopie" data-name="button automatic top Kopie Kopie">
+      <ellipse cx="28.94882" cy="68.51018" rx="3.66535" ry="3.62857" style="fill: #161615"/>
+    </g>
+  </g>
+  <g id="button_slider" data-name="button slider">
+    <g id="button_automatic_top_Kopie" data-name="button automatic top Kopie">
+      <ellipse cx="28.94882" cy="68.51018" rx="3.66535" ry="3.62857" style="fill: url(#Unbenannter_Verlauf_179)"/>
+    </g>
+  </g>
+  <g id="base_background_inlay_shine" data-name="base background inlay shine">
+    <rect x="2" y="2.66667" width="146" height="74.66667" rx="4" style="fill: url(#Unbenannter_Verlauf_415)"/>
+  </g>
+  <g id="frame_compoent" data-name="frame compoent">
+    <rect x="24.72441" y="9.86846" width="100.27559" height="29.49651" style="fill: #090a0a"/>
+  </g>
+  <g id="frame_left_highlight" data-name="frame left highlight">
+    <polygon points="24.5 39.815 34.5 32.363 34.5 12.564 24.5 10.117 24.5 39.815" style="fill: url(#Neues_Verlaufsfeld_2)"/>
+  </g>
+  <g id="frame_right_highlight" data-name="frame right highlight">
+    <polygon points="115.5 32.363 125.5 39.815 125.5 10.117 115.5 12.564 115.5 32.363" style="fill: url(#Unbenannter_Verlauf_330)"/>
+  </g>
+  <g id="frame_bottom_highlight" data-name="frame bottom highlight">
+    <polygon points="35 32.407 25 39.86 125 39.86 115 32.407 35 32.407" style="fill: url(#Neues_Verlaufsfeld_3)"/>
+  </g>
+  <g id="frame_top_highlight" data-name="frame top highlight">
+    <polygon points="25 10.117 35 12.564 115 12.564 125 10.117 25 10.117" style="fill: url(#Unbenannter_Verlauf_355)"/>
+  </g>
+  <g id="display_component" data-name="display component">
+    <rect id="display_lcd" data-name="display lcd" x="34.347" y="12.72143" width="80.33016" height="19.96297" style="fill: #7cb928"/>
+    <text transform="translate(70.71387 27.24048) scale(1.19632 1)" style="font-size: 10.888890266418457px;fill: #010101;font-family: MyriadPro-Regular, Myriad Pro">55,75%</text>
+    <rect id="display_overlay" data-name="display overlay" x="34.347" y="12.72143" width="80.33016" height="19.96297" style="fill: url(#Unbenannter_Verlauf_148)"/>
+  </g>
+  <g id="button_automatic" data-name="button automatic">
+    <g id="button_automatic_top" data-name="button automatic top">
+      <ellipse cx="138.55494" cy="15.53958" rx="6" ry="5.93978" style="fill: url(#Unbenannter_Verlauf_428)"/>
+    </g>
+  </g>
+  <g id="button_free_definied" data-name="button free definied">
+    <g id="button_free_definied_top_Kopie" data-name="button free definied top Kopie">
+      <ellipse cx="138.55494" cy="32.36897" rx="6" ry="5.93978" style="fill: url(#Unbenannter_Verlauf_428-2)"/>
+    </g>
+  </g>
+  <g id="button_top" data-name="button top">
+    <g id="button_top_top" data-name="button top top">
+      <ellipse cx="12.5077" cy="15.72666" rx="6" ry="5.93978" style="fill: url(#Unbenannter_Verlauf_428-3)"/>
+    </g>
+  </g>
+  <g id="button_bottom" data-name="button bottom">
+    <g id="button_bottom_top" data-name="button bottom top">
+      <ellipse cx="12.74803" cy="32.62984" rx="6" ry="5.93978" style="fill: url(#Unbenannter_Verlauf_428-4)"/>
+    </g>
+  </g>
+  <g id="LED_left" data-name="LED left">
+    <ellipse id="led_left_base_component" data-name="led left base component" cx="45.5" cy="50.03605" rx="4.5" ry="4.45484" style="fill: #353535"/>
+    <ellipse id="led_left_border" data-name="led left border" cx="45.5" cy="50.03605" rx="4.5" ry="4.45484" style="fill: url(#Unbenannter_Verlauf_14)"/>
+    <ellipse id="lef_left_base_color" data-name="lef left base color" cx="45.5" cy="50.03605" rx="3.75" ry="3.71236" style="fill: #baba0b"/>
+    <ellipse id="led_left_base_color_shine" data-name="led left base color shine" cx="45.5" cy="50.03605" rx="3.75" ry="3.71236" style="fill: url(#Unbenannter_Verlauf_25)"/>
+    <ellipse id="led_left_glow" data-name="led left glow" cx="45.5" cy="50.03605" rx="6" ry="5.93978" style="fill: url(#Unbenannter_Verlauf_56)"/>
+  </g>
+  <g id="LED_middle" data-name="LED middle">
+    <ellipse id="led_middle_base_component" data-name="led middle base component" cx="79.75657" cy="50.03502" rx="4.5" ry="4.45484" style="fill: #353535"/>
+    <ellipse id="led_middle_border" data-name="led middle border" cx="79.75657" cy="50.03502" rx="4.5" ry="4.45484" style="fill: url(#Unbenannter_Verlauf_14-2)"/>
+    <ellipse id="led_middle_base_color" data-name="led middle base color" cx="79.75657" cy="50.03502" rx="3.75" ry="3.71236" style="fill: #e5251c"/>
+    <ellipse id="led_middle_base_color_shine" data-name="led middle base color shine" cx="79.75657" cy="50.03502" rx="3.75" ry="3.71236" style="fill: url(#Unbenannter_Verlauf_25-2)"/>
+    <ellipse id="led_middle_glow" data-name="led middle glow" cx="79.75657" cy="50.03502" rx="6" ry="5.93978" style="fill: url(#Unbenannter_Verlauf_228)"/>
+  </g>
+  <g id="LED_right" data-name="LED right">
+    <ellipse id="led_right_base_component" data-name="led right base component" cx="115" cy="50.03605" rx="4.5" ry="4.45484" style="fill: #353535"/>
+    <ellipse id="led_right_border" data-name="led right border" cx="115" cy="50.03605" rx="4.5" ry="4.45484" style="fill: url(#Unbenannter_Verlauf_14-3)"/>
+    <ellipse id="led_right_base_color" data-name="led right base color" cx="115" cy="50.03605" rx="3.75" ry="3.71236" style="fill: #65b32e"/>
+    <ellipse id="led_right_base_color_shine" data-name="led right base color shine" cx="115" cy="50.03605" rx="3.75" ry="3.71236" style="fill: url(#Unbenannter_Verlauf_25-3)"/>
+    <ellipse id="led_right_glow" data-name="led right glow" cx="115" cy="50.03605" rx="6" ry="5.93978" style="fill: url(#Unbenannter_Verlauf_236)"/>
+  </g>
+  <g id="Z">
+    <text transform="translate(99.13379 54.49097) scale(1.01014 1)" style="font-size: 11.87956714630127px;fill: #c6c6c6;font-family: Verdana-Bold, Verdana;font-weight: 700">Z</text>
+  </g>
+  <g id="Y">
+    <text transform="translate(62.78564 54.49097) scale(1.01014 1)" style="font-size: 11.87956714630127px;fill: #c6c6c6;font-family: Verdana-Bold, Verdana;font-weight: 700">Y</text>
+  </g>
+  <g id="X">
+    <text transform="translate(29.71436 54.49) scale(1.01014 1)" style="font-size: 11.87956714630127px;fill: #c6c6c6;font-family: Verdana-Bold, Verdana;font-weight: 700">X</text>
+  </g>
+  <g id="info_component">
+    <text transform="translate(24.99805 7.6399) scale(1.01014 1)" style="font-size: 5.939783573150635px;fill: #ededed;font-family: Verdana-Bold, Verdana;font-weight: 700">Monet; Die japanische Brücke</text>
+  </g>
+</svg>
