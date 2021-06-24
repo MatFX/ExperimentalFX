@@ -27,6 +27,7 @@ import javafx.stage.Stage;
  */
 public class FontScaling extends Application 
 {
+	
 	private String msg = "Testtext";
 	
 	private DoubleProperty fontSize = new SimpleDoubleProperty(24);
