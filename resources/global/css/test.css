@@ -1,0 +1,18 @@
+  
+.root
+{
+	-fx-smooth: true;
+	/**
+	 * Die Grundfarbe von diese werden die späteren Properties teilweise abgeleitet
+	 */
+	-fx-base: #FF4545;
+	
+	-fx-disabled-opacity: 0.4;
+	
+	 
+	
+}
+
+
+
+
