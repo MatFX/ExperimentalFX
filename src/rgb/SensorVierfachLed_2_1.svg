@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 110 110">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Unbenannter_Verlauf_25-3);
+      }
+
+      .cls-2 {
+        fill: url(#Unbenannter_Verlauf_25);
+      }
+
+      .cls-3 {
+        fill: url(#Unbenannter_Verlauf_56-2);
+      }
+
+      .cls-4 {
+        fill: url(#Unbenannter_Verlauf_14-3);
+      }
+
+      .cls-5 {
+        fill: url(#Unbenannter_Verlauf_25-2);
+      }
+
+      .cls-6 {
+        fill: url(#Unbenannter_Verlauf_14);
+      }
+
+      .cls-7 {
+        fill: url(#Unbenannter_Verlauf_56-4);
+      }
+
+      .cls-8 {
+        fill: url(#Unbenannter_Verlauf_14-2);
+      }
+
+      .cls-9 {
+        fill: url(#Unbenannter_Verlauf_25-4);
+      }
+
+      .cls-10 {
+        fill: url(#Unbenannter_Verlauf_56);
+      }
+
+      .cls-11 {
+        fill: #353535;
+      }
+
+      .cls-12 {
+        fill: url(#Unbenannter_Verlauf_14-4);
+      }
+
+      .cls-13 {
+        fill: url(#Unbenannter_Verlauf_50);
+      }
+
+      .cls-14 {
+        fill: url(#Neues_Verlaufsfeld_1);
+      }
+
+      .cls-15 {
+        fill: #baba0b;
+      }
+
+      .cls-16 {
+        fill: url(#Unbenannter_Verlauf_56-3);
+      }
+    </style>
+    <linearGradient id="Neues_Verlaufsfeld_1" data-name="Neues Verlaufsfeld 1" x1="0" y1="55" x2="110" y2="55" gradientTransform="matrix(1, 0, 0, 1, 0, 0)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1d1b" stop-opacity=".9"/>
+      <stop offset=".27211" stop-color="#b2b2b2" stop-opacity=".2"/>
+      <stop offset=".31916" stop-color="#b5b5b5" stop-opacity=".23227"/>
+      <stop offset=".39341" stop-color="#bdbdbd" stop-opacity=".32055"/>
+      <stop offset=".48555" stop-color="#ccc" stop-opacity=".46466"/>
+      <stop offset=".59098" stop-color="#dfdfdf" stop-opacity=".66273"/>
+      <stop offset=".65642" stop-color="#ededed" stop-opacity=".8"/>
+      <stop offset=".83862" stop-color="#7c7c7a" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#1d1d1b" stop-opacity=".8"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_50" data-name="Unbenannter Verlauf 50" x1="55" y1="107.5" x2="55" y2="2.5" gradientTransform="matrix(1, 0, 0, 1, 0, 0)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#575756" stop-opacity=".1"/>
+      <stop offset=".00982" stop-color="#5c5c5b" stop-opacity=".11888"/>
+      <stop offset=".09474" stop-color="#888887" stop-opacity=".26543"/>
+      <stop offset=".18262" stop-color="#acacac" stop-opacity=".38666"/>
+      <stop offset=".27296" stop-color="#c9c9c8" stop-opacity=".4806"/>
+      <stop offset=".36678" stop-color="#ddd" stop-opacity=".5474"/>
+      <stop offset=".46627" stop-color="#e9e9e9" stop-opacity=".58715"/>
+      <stop offset=".58101" stop-color="#ededed" stop-opacity=".6"/>
+      <stop offset=".64591" stop-color="#e7e7e7" stop-opacity=".58576"/>
+      <stop offset=".72494" stop-color="#d5d5d5" stop-opacity=".54469"/>
+      <stop offset=".81132" stop-color="#b9b9b9" stop-opacity=".47678"/>
+      <stop offset=".90232" stop-color="#929191" stop-opacity=".3827"/>
+      <stop offset=".96927" stop-color="#706f6f" stop-opacity=".3"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_14" data-name="Unbenannter Verlauf 14" x1="19.6811" y1="30.18799" x2="19.6811" y2="11.70965" gradientTransform="matrix(1, 0, 0, 1, 0, 0)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".8"/>
+      <stop offset=".13896" stop-color="#f9f9f9" stop-opacity=".79769"/>
+      <stop offset=".28628" stop-color="#eaeaea" stop-opacity=".79081"/>
+      <stop offset=".43744" stop-color="#cfcfcf" stop-opacity=".77936"/>
+      <stop offset=".59126" stop-color="#ababab" stop-opacity=".76331"/>
+      <stop offset=".7472" stop-color="#7c7c7c" stop-opacity=".74266"/>
+      <stop offset=".90262" stop-color="#434343" stop-opacity=".71776"/>
+      <stop offset="1" stop-color="#1b1b1b" stop-opacity=".7"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_25" data-name="Unbenannter Verlauf 25" cx="21.52332" cy="39.48031" fx="21.52332" fy="39.48031" r="5.13287" gradientTransform="translate(-12.60388 -38.27165) scale(1.5)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".7"/>
+      <stop offset=".17334" stop-color="#fff" stop-opacity=".68551"/>
+      <stop offset=".33475" stop-color="#fff" stop-opacity=".64133"/>
+      <stop offset=".49153" stop-color="#fff" stop-opacity=".56731"/>
+      <stop offset=".64538" stop-color="#fff" stop-opacity=".46336"/>
+      <stop offset=".79715" stop-color="#fff" stop-opacity=".32935"/>
+      <stop offset=".94534" stop-color="#fff" stop-opacity=".16755"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".1"/>
+    </radialGradient>
+    <radialGradient id="Unbenannter_Verlauf_56" data-name="Unbenannter Verlauf 56" cx="30.56122" cy="40.74825" fx="30.56122" fy="40.74825" r="6.88661" gradientTransform="translate(-35.79111 -53.01405) scale(1.81512)" gradientUnits="userSpaceOnUse">
+      <stop offset=".04865" stop-color="#f9ea32" stop-opacity=".7"/>
+      <stop offset=".28125" stop-color="#f8e931" stop-opacity=".68951"/>
+      <stop offset=".42771" stop-color="#f8e92e" stop-opacity=".65499"/>
+      <stop offset=".55034" stop-color="#f8e92a" stop-opacity=".59617"/>
+      <stop offset=".65984" stop-color="#f7e824" stop-opacity=".51293"/>
+      <stop offset=".76065" stop-color="#f6e81c" stop-opacity=".40505"/>
+      <stop offset=".85502" stop-color="#f5e713" stop-opacity=".27249"/>
+      <stop offset=".94271" stop-color="#f4e608" stop-opacity=".11835"/>
+      <stop offset="1" stop-color="#f4e600" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14-2" data-name="Unbenannter Verlauf 14" x1="91.6811" x2="91.6811" xlink:href="#Unbenannter_Verlauf_14"/>
+    <radialGradient id="Unbenannter_Verlauf_25-2" data-name="Unbenannter Verlauf 25" cx="69.52332" fx="69.52332" xlink:href="#Unbenannter_Verlauf_25"/>
+    <radialGradient id="Unbenannter_Verlauf_56-2" data-name="Unbenannter Verlauf 56" cx="70.22807" fx="70.22807" r="6.88661" xlink:href="#Unbenannter_Verlauf_56"/>
+    <linearGradient id="Unbenannter_Verlauf_14-3" data-name="Unbenannter Verlauf 14" x1="91.6811" y1="96.18799" x2="91.6811" y2="77.70965" xlink:href="#Unbenannter_Verlauf_14"/>
+    <radialGradient id="Unbenannter_Verlauf_25-3" data-name="Unbenannter Verlauf 25" cx="69.52332" cy="83.48031" fx="69.52332" fy="83.48031" r="5.13287" xlink:href="#Unbenannter_Verlauf_25"/>
+    <radialGradient id="Unbenannter_Verlauf_56-3" data-name="Unbenannter Verlauf 56" cx="70.22807" cy="77.10953" fx="70.22807" fy="77.10953" r="6.88661" xlink:href="#Unbenannter_Verlauf_56"/>
+    <linearGradient id="Unbenannter_Verlauf_14-4" data-name="Unbenannter Verlauf 14" x1="20.1811" y1="95.31299" x2="20.1811" y2="77.58465" xlink:href="#Unbenannter_Verlauf_14"/>
+    <radialGradient id="Unbenannter_Verlauf_25-4" data-name="Unbenannter Verlauf 25" cx="21.85665" cy="83.14698" fx="21.85665" fy="83.14698" r="4.92454" xlink:href="#Unbenannter_Verlauf_25"/>
+    <radialGradient id="Unbenannter_Verlauf_56-4" data-name="Unbenannter Verlauf 56" cx="30.68843" cy="77.48641" fx="30.68843" fy="77.48641" r="6.60709" gradientTransform="translate(-37.87854 -60.14822) scale(1.89191)" xlink:href="#Unbenannter_Verlauf_56"/>
+  </defs>
+  <g id="base_background_component" data-name="base background component">
+    <rect width="110" height="110" rx="4" ry="4"/>
+  </g>
+  <g id="base_background_shine" data-name="base background shine">
+    <rect width="110" height="110" rx="4" ry="4" style="fill: url(#Neues_Verlaufsfeld_1);"/>
+  </g>
+  <g id="base_background_inlay" data-name="base background inlay">
+    <rect x="2.5" y="2.5" width="105" height="105" rx="4" ry="4"/>
+  </g>
+  <g id="base_background_inlay_shine" data-name="base background inlay shine">
+    <rect x="2.5" y="2.5" width="105" height="105" rx="4" ry="4" style="fill: url(#Unbenannter_Verlauf_50);"/>
+  </g>
+  <g id="Led_links_oben" data-name="Led links oben">
+    <circle id="led_lo_base_component" data-name="led lo base component" cx="19.6811" cy="20.94882" r="9.23917" style="fill: #353535;"/>
+    <circle id="led_lo_border" data-name="led lo border" cx="19.6811" cy="20.94882" r="9.23917" style="fill: url(#Unbenannter_Verlauf_14);"/>
+    <circle id="lef_lo_base_color" data-name="lef lo base color" cx="19.6811" cy="20.94882" r="7.69931" style="fill: #baba0b;"/>
+    <circle id="led_lo_base_color_shine" data-name="led lo base color shine" cx="19.6811" cy="20.94882" r="7.69931" style="fill: url(#Unbenannter_Verlauf_25);"/>
+    <circle id="led_lo_glow" data-name="led lo glow" cx="19.6811" cy="20.94882" r="12.5" style="fill: url(#Unbenannter_Verlauf_56);"/>
+  </g>
+  <g id="Led_rechts_oben" data-name="Led rechts oben">
+    <circle id="led_lo_base_component-2" data-name="led lo base component" cx="91.6811" cy="20.94882" r="9.23917" style="fill: #353535;"/>
+    <circle id="led_lo_border-2" data-name="led lo border" cx="91.6811" cy="20.94882" r="9.23917" style="fill: url(#Unbenannter_Verlauf_14-2);"/>
+    <circle id="lef_lo_base_color-2" data-name="lef lo base color" cx="91.6811" cy="20.94882" r="7.69931" style="fill: #baba0b;"/>
+    <circle id="led_lo_base_color_shine-2" data-name="led lo base color shine" cx="91.6811" cy="20.94882" r="7.69931" style="fill: url(#Unbenannter_Verlauf_25-2);"/>
+    <circle id="led_lo_glow-2" data-name="led lo glow" cx="91.6811" cy="20.94882" r="12.5" style="fill: url(#Unbenannter_Verlauf_56-2);"/>
+  </g>
+  <g id="Led_rechts_unten" data-name="Led rechts unten">
+    <circle id="led_lo_base_component-3" data-name="led lo base component" cx="91.6811" cy="86.94882" r="9.23917" style="fill: #353535;"/>
+    <circle id="led_lo_border-3" data-name="led lo border" cx="91.6811" cy="86.94882" r="9.23917" style="fill: url(#Unbenannter_Verlauf_14-3);"/>
+    <circle id="lef_lo_base_color-3" data-name="lef lo base color" cx="91.6811" cy="86.94882" r="7.69931" style="fill: #baba0b;"/>
+    <circle id="led_lo_base_color_shine-3" data-name="led lo base color shine" cx="91.6811" cy="86.94882" r="7.69931" style="fill: url(#Unbenannter_Verlauf_25-3);"/>
+    <circle id="led_lo_glow-3" data-name="led lo glow" cx="91.6811" cy="86.94882" r="12.5" style="fill: url(#Unbenannter_Verlauf_56-3);"/>
+  </g>
+  <g id="Led_links_unten" data-name="Led links unten">
+    <circle id="led_lo_base_component-4" data-name="led lo base component" cx="20.1811" cy="86.44882" r="8.86417" style="fill: #353535;"/>
+    <circle id="led_lo_border-4" data-name="led lo border" cx="20.1811" cy="86.44882" r="8.86417" style="fill: url(#Unbenannter_Verlauf_14-4);"/>
+    <circle id="lef_lo_base_color-4" data-name="lef lo base color" cx="20.1811" cy="86.44882" r="7.38681" style="fill: #baba0b;"/>
+    <circle id="led_lo_base_color_shine-4" data-name="led lo base color shine" cx="20.1811" cy="86.44882" r="7.38681" style="fill: url(#Unbenannter_Verlauf_25-4);"/>
+    <circle id="led_lo_glow-4" data-name="led lo glow" cx="20.1811" cy="86.44882" r="12.5" style="fill: url(#Unbenannter_Verlauf_56-4);"/>
+  </g>
+</svg>

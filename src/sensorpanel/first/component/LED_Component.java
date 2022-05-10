@@ -1,6 +1,8 @@
 package sensorpanel.first.component;
 
 import java.util.HashMap;
+
+import javafx.scene.effect.Glow;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -8,6 +10,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
+import sensorpanel.first.component.LED_Component.ColorValue;
 import tools.helper.UIToolBox;
 
 /**
@@ -40,7 +43,9 @@ public class LED_Component extends Region
 		
 		GREEN(Color.web("#65b32e")),
 		
-		RED(Color.web("#e5251c"));
+		RED(Color.web("#e5251c")),
+		
+		NOT_SPECIFIED(Color.BLACK);
 		
 		
 		private Color color;
@@ -54,6 +59,15 @@ public class LED_Component extends Region
 		{
 			return this.color;
 		}
+		
+		public void setColor(Color color)
+		{
+			if(this == NOT_SPECIFIED)
+			{
+				this.color = color;
+			}
+		}
+		
 	}
 	
 	private ColorValue selectedColor = ColorValue.OFF;
@@ -203,10 +217,24 @@ public class LED_Component extends Region
 		
 		base_color.setFill(selectedColor.getColor());
 		//Glow setzen
-		if(selectedColor != ColorValue.OFF)
+		if(selectedColor != ColorValue.OFF && selectedColor != ColorValue.NOT_SPECIFIED)
 		{
 			RadialGradient rg = new RadialGradient(0D, 0D, last_cx_ratio_glow, last_cy_ratio_glow, 
 					last_radius_glow, false, CycleMethod.NO_CYCLE, getGlowForColor()
+					);
+			color_glow.setFill(rg);
+		}
+		else if(selectedColor == ColorValue.NOT_SPECIFIED)
+		{
+			Color glowColor = new Color( selectedColor.getColor().getRed(),  selectedColor.getColor().getGreen(),  selectedColor.getColor().getBlue(), 0.3);
+			
+			//ist noch nicht das gelbe vom Ei, geht aber erstmal für die Testversion
+			Stop[] stopColor =  new Stop[]{ new Stop(0.0, glowColor.deriveColor(0, 0.3, 1.1, 0.5)),
+                    new Stop(0.75, glowColor),
+                    new Stop(1, glowColor.deriveColor(0, 0.3, 0.7, 0.3))};
+		
+			RadialGradient rg = new RadialGradient(0D, 0D, last_cx_ratio_glow, last_cy_ratio_glow, 
+					last_radius_glow, false, CycleMethod.NO_CYCLE, stopColor          
 					);
 			color_glow.setFill(rg);
 		}
