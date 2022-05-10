@@ -45,6 +45,9 @@ public class LED_Component extends Region
 		
 		RED(Color.web("#e5251c")),
 		
+		/**
+		 * no constant color
+		 */
 		NOT_SPECIFIED(Color.BLACK);
 		
 		
