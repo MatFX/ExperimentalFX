@@ -35,6 +35,8 @@ public class FontScaling extends Application
 	private Label label;
 	
 	private final double GAP = 20;
+	
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
