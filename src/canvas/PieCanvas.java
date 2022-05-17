@@ -34,8 +34,6 @@ public class PieCanvas extends Application
 	
 	private void drawShapes(GraphicsContext gc) 
 	{
-		
-		Circle circle = new Circle(18, 18 , 9.0);
 		gc.beginPath();
 		//Left corner top
 		gc.setFill(Color.RED);
