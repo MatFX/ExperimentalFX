@@ -3,6 +3,8 @@ package tools.helper;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -120,5 +122,15 @@ public class UIToolBox
 		//calc the new radius from the circle area
 		double radius = Math.sqrt(circle_area / Math.PI);
 		return radius;
+	}
+
+	//test scaling
+	public static Image getScaledImage(Image imageFx, double w, double h)
+	{
+		ImageView imageView = new ImageView(imageFx);
+		imageView.setFitWidth(w);
+		imageView.setFitHeight(h);
+		imageView.setPreserveRatio(false);
+		return imageView.snapshot(null, null);
 	}
 }

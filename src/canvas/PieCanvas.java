@@ -24,6 +24,7 @@ public class PieCanvas extends Application
 		primaryStage.setTitle("Test pie canvas");
         Group root = new Group();
         Canvas canvas = new Canvas(300, 250);
+  
         GraphicsContext gc = canvas.getGraphicsContext2D();
         drawShapes(gc);
         root.getChildren().add(canvas);
