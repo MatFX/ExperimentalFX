@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -95,12 +96,9 @@ public class TestPreviewCellDragNDrop extends Application
 					}
 					System.out.println("MAX_W " + MAX_W);
 					System.out.println("MAX_H " + MAX_H);
-					
-					
-					
+			
 					Canvas canvas = new Canvas(MAX_W, MAX_H);
-
-
+				
 					
 					GraphicsContext gc = canvas.getGraphicsContext2D();
 				
@@ -127,7 +125,7 @@ public class TestPreviewCellDragNDrop extends Application
 						
 						//Image scaledImage = UIToolBox.getScaledImage(selectedCellList.get(i).getImage(), W, H);
 						
-						Image scaledImage = ImageLoader.getImageFromIconFolder("hi_schloss.png");
+						Image scaledImage = ImageLoader.getImageFromIconFolder(selectedCellList.get(i).getFileName(), 32, 32, false, true);
 						
 						//gc.drawRectangle(0,0, 32, 32);
 						//gc.fillRect(0, 0, W,H);
@@ -145,12 +143,12 @@ public class TestPreviewCellDragNDrop extends Application
 					
 					
 					Dragboard dragboard = gridPane.startDragAndDrop(TransferMode.MOVE);
-				
+					 SnapshotParameters param = new SnapshotParameters();
+					 param.setFill(Color.TRANSPARENT);
 					ClipboardContent content = new ClipboardContent();
 					content.put(DataFormatImageAllocation, cellNamesList);
-					dragboard.setDragView(canvas.snapshot(null, null));
-					//dragboard.setDragView(dragItem.snapshot(null, null));
-					//wird nicht mehr benötigt
+					dragboard.setDragView(canvas.snapshot(param, null));
+					
 					dragboard.setContent(content);
 					
 				}

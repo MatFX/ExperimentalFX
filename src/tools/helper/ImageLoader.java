@@ -46,5 +46,24 @@ public class ImageLoader
 		return image;
 	}
 
+	public static Image getImageFromIconFolder(String fileName, double newW, double newH, boolean preservationRatio, boolean smooth)
+	{
+		Image image = null;
+		
+		if(!fileName.contains(ImageLoader.SUFFIX_FILE))
+			fileName = fileName + ImageLoader.SUFFIX_FILE;
+		try
+		{
+			InputStream ins = ImageLoader.getResourceStream(ICONS, fileName);
+			image = new Image(ins, newW, newH, preservationRatio, smooth);
+			ins.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return image;
+	}
+
 
 }

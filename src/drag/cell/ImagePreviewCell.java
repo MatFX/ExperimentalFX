@@ -65,12 +65,15 @@ public class ImagePreviewCell extends VBox implements Serializable
 	 */
 	protected VBox verticalBox;
 	
-	private String dateiName;
+	private String anzeigeName;
+	
+	private String fileName;
 
 	
-	public ImagePreviewCell(Image bild, String text)
+	public ImagePreviewCell(Image bild, String fileName)
 	{
 		this.image = bild;
+		this.fileName = fileName;
 		
 		//Diese Vbox besteht aus dem verkleinerten Bild/ImageView
 		//und einem label mit der Bezeichnung
@@ -118,17 +121,17 @@ public class ImagePreviewCell extends VBox implements Serializable
 		imageBezeichnung.setId("label_directory");
 		imageBezeichnung.setTextFill(Color.web("#FFFFFF"));
 		
-		dateiName = text;
+		anzeigeName = fileName;
 		//im Tooltip ist immer die volle Bezeichnung hinterlegt
-		imageBezeichnung.setTooltip(new Tooltip(dateiName));
+		imageBezeichnung.setTooltip(new Tooltip(anzeigeName));
 		
 	
-		if(dateiName.length() > 16)
+		if(anzeigeName.length() > 16)
 		{
-			dateiName = dateiName.substring(0, 5) + "..." + dateiName.substring(dateiName.length()-8 , dateiName.length());
+			anzeigeName = anzeigeName.substring(0, 5) + "..." + anzeigeName.substring(anzeigeName.length()-8 , anzeigeName.length());
 		}
 		
-		imageBezeichnung.setText(dateiName);
+		imageBezeichnung.setText(anzeigeName);
 		
 		
 		verticalBox.getChildren().addAll(stackPane, imageBezeichnung);
@@ -198,9 +201,9 @@ public class ImagePreviewCell extends VBox implements Serializable
 	 * Das ist die komplette Dateibezeichnung die hier zurückkommt.
 	 * @return
 	 */
-	public String getName()
+	public String getFileName()
 	{
-		return dateiName;
+		return fileName;
 	}
 	
 	/**
