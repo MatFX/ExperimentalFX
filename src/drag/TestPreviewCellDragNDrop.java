@@ -111,26 +111,10 @@ public class TestPreviewCellDragNDrop extends Application
 					double calculatedGap_h = MAX_H;
 					
 					
-				//	ImageView testView = new ImageView();
 					for(int i = selectedCellList.size()-1; i >= 0; i--)
 					{
-						//gc.setFill(Color.RED);
-					//	testView.setImage(selectedCellList.get(i).getImage());
-						
-						//testView.setFitWidth(W);
-						//testView.setFitHeight(H);
-					
-					//	System.out.println ("testimage " + testView.getImage().getWidth());
-						
-						
-						//Image scaledImage = UIToolBox.getScaledImage(selectedCellList.get(i).getImage(), W, H);
-						
 						Image scaledImage = ImageLoader.getImageFromIconFolder(selectedCellList.get(i).getFileName(), 32, 32, false, true);
-						
-						//gc.drawRectangle(0,0, 32, 32);
-						//gc.fillRect(0, 0, W,H);
 						gc.drawImage(scaledImage, calculatedGap_w - 32d , calculatedGap_h - 32d);
-						
 						calculatedGap_w = calculatedGap_w - GAP;
 						calculatedGap_h = calculatedGap_h - GAP;
 					}
