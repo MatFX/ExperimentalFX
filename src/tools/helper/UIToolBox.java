@@ -5,10 +5,14 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -132,5 +136,31 @@ public class UIToolBox
 		imageView.setFitHeight(h);
 		imageView.setPreserveRatio(false);
 		return imageView.snapshot(null, null);
+	}
+	
+	public static Image getColorizedImage(Image imageToRecolor, Color newColor) 
+	{
+		
+		int maxX = (int) imageToRecolor.getWidth();
+		int maxY = (int) imageToRecolor.getHeight();
+		
+		PixelReader pixelReader =   imageToRecolor.getPixelReader();
+		
+		WritableImage writableImage = new WritableImage(maxX, maxY);
+		PixelWriter pixelWriter = writableImage.getPixelWriter();
+		
+		for (int y = 0; y < maxY; y++) 
+		{
+			for (int x = 0; x < maxX; x++) 
+			{
+				Color color = pixelReader.getColor(x, y);
+				Color blendedColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), color.getOpacity());
+				pixelWriter.setColor(x, y, blendedColor);
+			}
+		}
+		
+		return writableImage;
+		
+		
 	}
 }

@@ -5,10 +5,17 @@ import java.util.Random;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import sensorpanel.first.component.LED_Component.ColorValue;
 
@@ -37,6 +44,7 @@ public class GlassPaneSensorTest extends Application {
     public void start(Stage stage) 
     {
 		BorderPane pane = new BorderPane();
+		
 		
 		  ToggleButton test = new ToggleButton("Start");
 		  test.setOnAction(new EventHandler<ActionEvent>(){
@@ -141,9 +149,10 @@ public class GlassPaneSensorTest extends Application {
         sensorPanel.setPrefHeight(140);
         pane.setCenter(sensorPanel);
         pane.setRight(test);
+        pane.setBackground(new Background(new BackgroundFill(Color.DARKSLATEGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
 
         Scene scene = new Scene(pane);
-
+       
         stage.setTitle("Sensor Panel");
         stage.setScene(scene);
         stage.show();
