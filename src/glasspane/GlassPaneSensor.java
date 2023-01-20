@@ -1,5 +1,7 @@
 package glasspane;
 
+import java.util.HashMap;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Bounds;
@@ -8,6 +10,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -16,6 +21,13 @@ import tools.helper.UIToolBox;
 
 public class GlassPaneSensor extends Region
 {
+	
+	public enum StopIndizes
+	{
+		BASE_BACKGROUND_LINEAR_GRADIENT;
+	}
+	
+	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
 	private Rectangle base_background_component, button_down, button_up;
 	
@@ -34,6 +46,8 @@ public class GlassPaneSensor extends Region
 	private SimpleObjectProperty<Image> imageProperty = new SimpleObjectProperty<Image>();
 	
 	
+	
+	
 	public GlassPaneSensor()
 	{
 		this.initGraphics();
@@ -42,6 +56,14 @@ public class GlassPaneSensor extends Region
 	
 	private void initGraphics() 
 	{
+		
+		Stop[] stopArray = new Stop[]{
+				new Stop(0, Color.web("#ffffff00")),
+				//TODO hier evtl. noch am Alpha Kanal fummeln.
+				new Stop(1, Color.web("#ffffff33"))
+			};
+		stopMap.put(StopIndizes.BASE_BACKGROUND_LINEAR_GRADIENT, stopArray);
+		
 		base_background_component = new Rectangle();
 		base_background_component.setFill(Color.TRANSPARENT);
 		//TODO
@@ -70,6 +92,12 @@ public class GlassPaneSensor extends Region
 		width_component = getWidth();
 		height_component = getHeight();
 		
+		
+
+		
+		
+		
+		
 		//w und h immer auf die volle zugewiesene Breite und Höhe
 		base_background_component.setWidth(width_component);
 		base_background_component.setHeight(height_component);
@@ -77,6 +105,13 @@ public class GlassPaneSensor extends Region
 		base_background_component.setArcWidth(width_component * 0.044444444444444446);
 		base_background_component.setArcHeight(width_component * 0.044444444444444446);
 		base_background_component.setStrokeWidth(width_component * 0.022222222222222223);
+		
+		LinearGradient lg = new LinearGradient(width_component * 0.8452471254888888, 
+				height_component * 1.03818700626, 
+				width_component * 0.15475287451111114,
+				height_component *  -0.03818700626, 
+				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BASE_BACKGROUND_LINEAR_GRADIENT));
+		base_background_component.setFill(lg);
 		
 		//als erstes die gezeichnete Fläche leeren
 		//imageCanvas.getGraphicsContext2D().clearRect(imageCanvas.getLayoutX(), imageCanvas.getLayoutY(), imageCanvas.getWidth(), imageCanvas.getHeight());
