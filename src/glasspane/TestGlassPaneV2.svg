@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 100">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #9f5c5c;
+      }
+
+      .cls-3 {
+        fill: #dd1c1b;
+      }
+
+      .cls-4 {
+        fill: #5abaa0;
+      }
+    </style>
+  </defs>
+  <g id="Basisflaeche">
+    <rect class="cls-1" width="90" height="100" rx="4" ry="4"/>
+  </g>
+  <g id="RahmenBasis">
+    <rect class="cls-3" width="90" height="100" rx="4" ry="4"/>
+  </g>
+  <g id="RahmenSubtraktion">
+    <rect class="cls-2" x="1.499985" y="1.66665" width="87.00003" height="96.6667" rx="4.000000406" ry="4.000000406"/>
+  </g>
+  <g id="ButtonDown">
+    <rect class="cls-4" x="21.200000006" y="92.000000001" width="47.599999985" height="7.999999995" rx="2.000000001" ry="2.000000001"/>
+  </g>
+  <g id="ButtonUp">
+    <rect class="cls-4" x="21.200000006" y=".000000001" width="47.599999985" height="7.999999995" rx="2.000000001" ry="2.000000001"/>
+  </g>
+  <g id="IconCanvas">
+    <rect x="21.200000007" y="9.619787962" width="47.599999986" height="27.54100729"/>
+  </g>
+  <g id="TextCanvas">
+    <rect x="1.499984999" y="38.780583213" width="87.00003" height="51.865887269"/>
+  </g>
+</svg>

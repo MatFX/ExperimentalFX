@@ -79,17 +79,16 @@ public class GlassPaneSensor extends Region
 		base_background_component.setStrokeWidth(width_component * 0.022222222222222223);
 		
 		//als erstes die gezeichnete Fläche leeren
-		imageCanvas.getGraphicsContext2D().clearRect(imageCanvas.getLayoutX(), imageCanvas.getLayoutY(), imageCanvas.getWidth(), imageCanvas.getHeight());
+		//imageCanvas.getGraphicsContext2D().clearRect(imageCanvas.getLayoutX(), imageCanvas.getLayoutY(), imageCanvas.getWidth(), imageCanvas.getHeight());
 		
 		double newX = width_component * 0.23555555562222225;
-		double newY = height_component * 0.07619787965000001;
+		double newY = height_component * 0.09619787962;
 		
 		
 		double refresh_w_i = imageCanvas.getWidth();
 		double refresh_h_i = imageCanvas.getHeight();
 		
-		
-		
+	
 		double newWidth = width_component * 0.5288888887333334;
 		double newHeight = height_component * 0.27541007289999997;
 		imageCanvas.setWidth(newWidth);
@@ -120,18 +119,18 @@ public class GlassPaneSensor extends Region
 		
 		
 		button_down.setX(width_component * 0.23555555562222225);
-		button_down.setY(height_component * 0.9599999999800001);
+		button_down.setY(height_component * 0.92000000001);
 		button_down.setWidth(width_component * 0.5288888887222222);
-		button_down.setHeight(height_component * 0.040000000040000004);
-		button_down.setArcWidth(width_component * 0.015406095722222221);
-		button_down.setArcHeight(width_component * 0.015406095722222221);
+		button_down.setHeight(height_component *  0.07999999995);
+		button_down.setArcWidth(width_component * 0.022222222222222223);
+		button_down.setArcHeight(width_component * 0.022222222222222223);
 		
 		button_up.setX(width_component * 0.23555555563333336);
 		button_up.setY(height_component * 0.0);
 		button_up.setWidth(width_component * 0.5288888887222222);
-		button_up.setHeight(height_component * 0.040000000040000004);
-		button_up.setArcWidth(width_component * 0.015406095722222221);
-		button_up.setArcHeight(width_component * 0.015406095722222221);
+		button_up.setHeight(height_component * 0.07999999995);
+		button_up.setArcWidth(width_component * 0.022222222222222223);
+		button_up.setArcHeight(width_component * 0.022222222222222223);
 		
 		
 	}
