@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -43,10 +45,7 @@ public class GlassPaneSensor extends Region
 	 */
 	private SimpleStringProperty valueProperty = new SimpleStringProperty();
 	
-	private SimpleObjectProperty<Image> imageProperty = new SimpleObjectProperty<Image>();
-	
-	
-	
+	private SimpleStringProperty imageFileNameProperty = new SimpleStringProperty();
 	
 	public GlassPaneSensor()
 	{
@@ -80,6 +79,18 @@ public class GlassPaneSensor extends Region
 		button_up.setFill(Color.web("#5abaa0"));
 
 		this.getChildren().addAll(base_background_component, textCanvas, imageCanvas, button_down, button_up);
+		
+		imageFileNameProperty.set("hi_temp");
+		valueProperty.set("22.5°C");
+		valueProperty.addListener(new ChangeListener<String>(){
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				resize();
+				
+			}
+			
+		});
 	}
 	
 	private void registerListener() 
@@ -192,7 +203,7 @@ public class GlassPaneSensor extends Region
 		
 		
 		
-		Image rawImage = ImageLoader.getImageFromIconFolder("hi_temp");
+		Image rawImage = ImageLoader.getImageFromIconFolder(imageFileNameProperty.get());
 		System.out.println("rawImage " + rawImage.getWidth() + " rawImage "  + rawImage.getHeight());
 		//bei Gleichheit 1
 		//Breite größer dann Wert > 1
@@ -253,7 +264,7 @@ public class GlassPaneSensor extends Region
 		
 		Color colorImage = Color.web("#5abaa0");
 
-		Image scaledImage = ImageLoader.getImageFromIconFolder("hi_temp", newIconWidth, newIconHeight, false, true);
+		Image scaledImage = ImageLoader.getImageFromIconFolder(imageFileNameProperty.get(), newIconWidth, newIconHeight, false, true);
 		
 		Image coloredImage = UIToolBox.getColorizedImage(scaledImage, colorImage);
 		
@@ -263,7 +274,7 @@ public class GlassPaneSensor extends Region
 
 	private void refreshLCDContent(double previous_w, double previous_h) 
 	{
-		valueProperty.set("22.5°C");
+		
 		GraphicsContext gc = textCanvas.getGraphicsContext2D();
 		gc.clearRect(0, 0, previous_w, previous_h);
 		
@@ -342,5 +353,22 @@ public class GlassPaneSensor extends Region
 		gc.fillText(textMasseinheit.getText(), masseinheitX, masseinheitY);
 		
 	
+	}
+
+	/**
+	 * value property to set text from outer the class
+	 * @return
+	 */
+	public SimpleStringProperty getValueProperty() {
+		return valueProperty;
+	}
+	
+	/**
+	 * image property to set icon from outer the class.
+	 * @return
+	 */
+	public SimpleStringProperty getImageProperty() 
+	{
+		return imageFileNameProperty;
 	}
 }
