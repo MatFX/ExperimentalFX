@@ -24,7 +24,7 @@ public class HelperClass
 	public HelperClass()
 	{
 		sensorList = new ArrayList<SensorValue>();
-		sensorList.add(new SensorValue(25, -40, 60, "°C", "img_temperatur", "Temperatur:"));
+		sensorList.add(new SensorValue(25, -40, 60, "°C", "hi_temp", "Temperatur:"));
 		//sensorList.add(new SensorValue(22.5, 8, 40, "°C", "", new double[]{21.5, 24.5, 30}));
 		sensorMap.put(TEMPERATURE, sensorList);
 		

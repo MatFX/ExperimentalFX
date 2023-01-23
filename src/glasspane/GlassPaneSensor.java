@@ -2,14 +2,18 @@ package glasspane;
 
 import java.util.HashMap;
 
+import glasspane.ButtonRectangle.PositionGradient;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -23,7 +27,6 @@ import tools.helper.UIToolBox;
 
 public class GlassPaneSensor extends Region
 {
-	
 	public enum StopIndizes
 	{
 		BASE_BACKGROUND_LINEAR_GRADIENT;
@@ -31,7 +34,7 @@ public class GlassPaneSensor extends Region
 	
 	private HashMap<StopIndizes, Stop[]> stopMap = new HashMap<StopIndizes, Stop[]>();
 	
-	private Rectangle base_background_component, button_down, button_up;
+	private Rectangle base_background_component;// button_down, button_up;
 	
 	private Canvas textCanvas;
 	
@@ -39,6 +42,8 @@ public class GlassPaneSensor extends Region
 	
 	private double width_component = 90;
 	private double height_component = 100;
+	
+	private ButtonRectangle button_down, button_up;
 	
 	/**
 	 * Wert der später in der Anzeige erscheint
@@ -72,12 +77,13 @@ public class GlassPaneSensor extends Region
 		textCanvas = new Canvas();
 		imageCanvas = new Canvas();
 		
-		button_down = new Rectangle();
+		button_down = new ButtonRectangle(PositionGradient.FROM_UP_TO_DOWN);
 		button_down.setFill(Color.web("#5abaa0"));
 		
-		button_up = new Rectangle();
+		
+		button_up = new ButtonRectangle(PositionGradient.FROM_DOWN_TO_UP);
 		button_up.setFill(Color.web("#5abaa0"));
-
+	
 		this.getChildren().addAll(base_background_component, textCanvas, imageCanvas, button_down, button_up);
 		
 		imageFileNameProperty.set("hi_temp");
@@ -91,6 +97,7 @@ public class GlassPaneSensor extends Region
 			}
 			
 		});
+		
 	}
 	
 	private void registerListener() 
@@ -156,7 +163,7 @@ public class GlassPaneSensor extends Region
 		newWidth = width_component * 0.966667;
 		newHeight = height_component * 0.51865887269;
 		
-		System.out.println("new Width " + newWidth + " newHeight " + newHeight);
+		//System.out.println("new Width " + newWidth + " newHeight " + newHeight);
 		textCanvas.setWidth(newWidth);
 		textCanvas.setHeight(newHeight);
 		textCanvas.relocate(newX, newY);
@@ -170,6 +177,8 @@ public class GlassPaneSensor extends Region
 		button_down.setHeight(height_component *  0.07999999995);
 		button_down.setArcWidth(width_component * 0.022222222222222223);
 		button_down.setArcHeight(width_component * 0.022222222222222223);
+		
+	
 		
 		button_up.setX(width_component * 0.23555555563333336);
 		button_up.setY(height_component * 0.0);
@@ -204,7 +213,7 @@ public class GlassPaneSensor extends Region
 		
 		
 		Image rawImage = ImageLoader.getImageFromIconFolder(imageFileNameProperty.get());
-		System.out.println("rawImage " + rawImage.getWidth() + " rawImage "  + rawImage.getHeight());
+		//System.out.println("rawImage " + rawImage.getWidth() + " rawImage "  + rawImage.getHeight());
 		//bei Gleichheit 1
 		//Breite größer dann Wert > 1
 		//Höhe größer dann Wert < 1
@@ -212,7 +221,7 @@ public class GlassPaneSensor extends Region
 	
 		double newIconWidth = newCanvasWidth * 0.9;
 		double newIconHeight = newCanvasHeight * 0.9;
-		System.out.println("newIconWidth: " + newIconWidth + " newIconHeight: " +newIconHeight );
+		//System.out.println("newIconWidth: " + newIconWidth + " newIconHeight: " +newIconHeight );
 		if(ratio == 1)
 		{
 			if(newCanvasWidth <= newCanvasHeight)
@@ -249,7 +258,7 @@ public class GlassPaneSensor extends Region
 			}
 		}
 		
-		System.out.println("after recalculate " + newIconWidth + "  X " + newIconHeight);
+		//System.out.println("after recalculate " + newIconWidth + "  X " + newIconHeight);
 		
 		//x und y berechnen damit es in der Mitte liegt
 		
@@ -278,10 +287,10 @@ public class GlassPaneSensor extends Region
 		GraphicsContext gc = textCanvas.getGraphicsContext2D();
 		gc.clearRect(0, 0, previous_w, previous_h);
 		
-		double w = textCanvas.getWidth();
-		double h = textCanvas.getHeight();
-		double x = textCanvas.getLayoutX();
-		double y = textCanvas.getLayoutY();
+//		double w = textCanvas.getWidth();
+//		double h = textCanvas.getHeight();
+//		double x = textCanvas.getLayoutX();
+//		double y = textCanvas.getLayoutY();
 		
 		//TODO raus nur für die Entwicklung
 		//gc.setFill(Color.ROSYBROWN);
@@ -307,53 +316,52 @@ public class GlassPaneSensor extends Region
 		valueText.setText(valueProperty.get());
 		valueText.setFont(fontLcd);
 		double masseinheitXLCD = textCanvas.getWidth()*0.97 - (valueText.getLayoutBounds().getWidth());
-		System.out.println("x " + masseinheitXLCD);
-		System.out.println("y " + valueText.getLayoutBounds().getHeight());
 		gc.fillText(valueText.getText(), masseinheitXLCD,   valueText.getLayoutBounds().getHeight() );
 		
 	}
 	
-	private void drawTextValues(boolean clearing) 
-	{
-		double w = textCanvas.getWidth();
-		double h = textCanvas.getHeight();
-		double x = textCanvas.getLayoutX();
-		double y = textCanvas.getLayoutY();
-		System.out.println("textCanvasDraw " + w + " h " + h);
-		
-		GraphicsContext gc = textCanvas.getGraphicsContext2D();
-		//TODO prüfen ob hier oder weiter oben. Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
-		if(clearing)
-		{
-		
-			gc.clearRect(0, 0, w, h);
-		}
-		//TODO raus nur für die Entwicklung
-		//gc.setFill(Color.ROSYBROWN);
-		//gc.fillRect(0, 0, w, h);
-		
-		
-		
-		
-		gc.setFill(Color.BLACK);
-		//Font masseinheitFont = new Font("Verdana", h * 0.12);
-		Font masseinheitFont = new Font("Verdana", h * 0.5);
-		
-		Text textMasseinheit = new Text();
-		
-		textMasseinheit.setText("°C");
-		textMasseinheit.setFont(masseinheitFont);
-		
-		gc.setFont(masseinheitFont);
-		
-		double masseinheitX = w - (textMasseinheit.getLayoutBounds().getWidth() + (w * 0.015635));
-		
-		//keien Ahnung wieso ich nicht den Mittelpunkt von H als Basis nehmen kann.
-		double masseinheitY = textMasseinheit.getLayoutBounds().getHeight() -  (h * 0.015635);
-		gc.fillText(textMasseinheit.getText(), masseinheitX, masseinheitY);
-		
-	
-	}
+	//TODO raus
+//	private void drawTextValues(boolean clearing) 
+//	{
+//		double w = textCanvas.getWidth();
+//		double h = textCanvas.getHeight();
+//		double x = textCanvas.getLayoutX();
+//		double y = textCanvas.getLayoutY();
+//		System.out.println("textCanvasDraw " + w + " h " + h);
+//		
+//		GraphicsContext gc = textCanvas.getGraphicsContext2D();
+//		//TODO prüfen ob hier oder weiter oben. Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
+//		if(clearing)
+//		{
+//		
+//			gc.clearRect(0, 0, w, h);
+//		}
+//		//TODO raus nur für die Entwicklung
+//		//gc.setFill(Color.ROSYBROWN);
+//		//gc.fillRect(0, 0, w, h);
+//		
+//		
+//		
+//		
+//		gc.setFill(Color.BLACK);
+//		//Font masseinheitFont = new Font("Verdana", h * 0.12);
+//		Font masseinheitFont = new Font("Verdana", h * 0.5);
+//		
+//		Text textMasseinheit = new Text();
+//		
+//		textMasseinheit.setText("°C");
+//		textMasseinheit.setFont(masseinheitFont);
+//		
+//		gc.setFont(masseinheitFont);
+//		
+//		double masseinheitX = w - (textMasseinheit.getLayoutBounds().getWidth() + (w * 0.015635));
+//		
+//		//keien Ahnung wieso ich nicht den Mittelpunkt von H als Basis nehmen kann.
+//		double masseinheitY = textMasseinheit.getLayoutBounds().getHeight() -  (h * 0.015635);
+//		gc.fillText(textMasseinheit.getText(), masseinheitX, masseinheitY);
+//		
+//	
+//	}
 
 	/**
 	 * value property to set text from outer the class
