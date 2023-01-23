@@ -1,4 +1,4 @@
-package chatGBT_test;
+package chatGPT_test;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
