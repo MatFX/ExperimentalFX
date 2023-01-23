@@ -3,6 +3,7 @@ package glasspane;
 import java.util.HashMap;
 
 import glasspane.ButtonRectangle.PositionGradient;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +23,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import sensorpanel.first.SensorPanel.Command;
 import tools.helper.ImageLoader;
 import tools.helper.UIToolBox;
 
@@ -52,6 +54,8 @@ public class GlassPaneSensor extends Region
 	
 	private SimpleStringProperty imageFileNameProperty = new SimpleStringProperty();
 	
+	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
+	
 	public GlassPaneSensor()
 	{
 		this.initGraphics();
@@ -79,10 +83,39 @@ public class GlassPaneSensor extends Region
 		
 		button_down = new ButtonRectangle(PositionGradient.FROM_UP_TO_DOWN);
 		button_down.setFill(Color.web("#5abaa0"));
+		button_down.getCommandProperty().addListener(new ChangeListener<ButtonRectangle.Command>(){
+
+			@Override
+			public void changed(ObservableValue<? extends glasspane.ButtonRectangle.Command> observable, glasspane.ButtonRectangle.Command oldValue, glasspane.ButtonRectangle.Command newValue) {
+				if(newValue == glasspane.ButtonRectangle.Command.BUTTON_RELEASED)
+				{
+					commandProperty.set(Command.RESET_COMMAND);
+					commandProperty.set(Command.NEXT_SENSOR_VALUE);
+					
+				}
+				
+			}
+			
+		});
+		
 		
 		
 		button_up = new ButtonRectangle(PositionGradient.FROM_DOWN_TO_UP);
 		button_up.setFill(Color.web("#5abaa0"));
+		button_up.getCommandProperty().addListener(new ChangeListener<ButtonRectangle.Command>(){
+
+			@Override
+			public void changed(ObservableValue<? extends glasspane.ButtonRectangle.Command> observable, glasspane.ButtonRectangle.Command oldValue, glasspane.ButtonRectangle.Command newValue) {
+				if(newValue == glasspane.ButtonRectangle.Command.BUTTON_RELEASED)
+				{
+					commandProperty.set(Command.RESET_COMMAND);
+					commandProperty.set(Command.PREVIOUS_SENSOR_VALUE);
+					
+				}
+				
+			}
+			
+		});
 	
 		this.getChildren().addAll(base_background_component, textCanvas, imageCanvas, button_down, button_up);
 		
@@ -109,12 +142,6 @@ public class GlassPaneSensor extends Region
 	private void resize() {
 		width_component = getWidth();
 		height_component = getHeight();
-		
-		
-
-		
-		
-		
 		
 		//w und h immer auf die volle zugewiesene Breite und Höhe
 		base_background_component.setWidth(width_component);
@@ -287,15 +314,6 @@ public class GlassPaneSensor extends Region
 		GraphicsContext gc = textCanvas.getGraphicsContext2D();
 		gc.clearRect(0, 0, previous_w, previous_h);
 		
-//		double w = textCanvas.getWidth();
-//		double h = textCanvas.getHeight();
-//		double x = textCanvas.getLayoutX();
-//		double y = textCanvas.getLayoutY();
-		
-		//TODO raus nur für die Entwicklung
-		//gc.setFill(Color.ROSYBROWN);
-		//gc.fillRect(0, 0, w, h);
-		
 		Font fontLcd = Font.font("Verdana", 10);
 		
 		Bounds maxTextAbmasseLCD = UIToolBox.getMaxTextWidth(fontLcd, valueProperty.get());
@@ -319,49 +337,7 @@ public class GlassPaneSensor extends Region
 		gc.fillText(valueText.getText(), masseinheitXLCD,   valueText.getLayoutBounds().getHeight() );
 		
 	}
-	
-	//TODO raus
-//	private void drawTextValues(boolean clearing) 
-//	{
-//		double w = textCanvas.getWidth();
-//		double h = textCanvas.getHeight();
-//		double x = textCanvas.getLayoutX();
-//		double y = textCanvas.getLayoutY();
-//		System.out.println("textCanvasDraw " + w + " h " + h);
-//		
-//		GraphicsContext gc = textCanvas.getGraphicsContext2D();
-//		//TODO prüfen ob hier oder weiter oben. Dieses ist dann zu vollziehen, wenn nur der Wert sich geändert hat.
-//		if(clearing)
-//		{
-//		
-//			gc.clearRect(0, 0, w, h);
-//		}
-//		//TODO raus nur für die Entwicklung
-//		//gc.setFill(Color.ROSYBROWN);
-//		//gc.fillRect(0, 0, w, h);
-//		
-//		
-//		
-//		
-//		gc.setFill(Color.BLACK);
-//		//Font masseinheitFont = new Font("Verdana", h * 0.12);
-//		Font masseinheitFont = new Font("Verdana", h * 0.5);
-//		
-//		Text textMasseinheit = new Text();
-//		
-//		textMasseinheit.setText("°C");
-//		textMasseinheit.setFont(masseinheitFont);
-//		
-//		gc.setFont(masseinheitFont);
-//		
-//		double masseinheitX = w - (textMasseinheit.getLayoutBounds().getWidth() + (w * 0.015635));
-//		
-//		//keien Ahnung wieso ich nicht den Mittelpunkt von H als Basis nehmen kann.
-//		double masseinheitY = textMasseinheit.getLayoutBounds().getHeight() -  (h * 0.015635);
-//		gc.fillText(textMasseinheit.getText(), masseinheitX, masseinheitY);
-//		
-//	
-//	}
+
 
 	/**
 	 * value property to set text from outer the class
@@ -378,5 +354,14 @@ public class GlassPaneSensor extends Region
 	public SimpleStringProperty getImageProperty() 
 	{
 		return imageFileNameProperty;
+	}
+
+	/**
+	 * for listing the commands
+	 * @return
+	 */
+	public SimpleObjectProperty<Command> getCommandProperty() 
+	{
+		return this.commandProperty;
 	}
 }

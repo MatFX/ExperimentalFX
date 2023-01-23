@@ -2,6 +2,8 @@ package glasspane;
 
 import control.universaldisplay.SensorValue;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import sensorpanel.first.SensorPanel.Command;
 import sensorpanel.first.helper.HelperClass;
 
 
@@ -42,6 +45,49 @@ public class GlassPaneSensorTest extends Application {
     public void start(Stage stage) 
     {
 		BorderPane pane = new BorderPane();
+		
+		  
+        sensorPanel.getCommandProperty().addListener(new ChangeListener<Command>()
+        {
+
+			@Override
+			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) {
+				
+				
+				SensorValue sensorValue = null;
+				System.out.println("newValue " + newValue);
+				switch(newValue)
+				{
+					case NEXT_SENSOR_VALUE:
+						nextSensorValue();
+						
+						break;
+					case PREVIOUS_SENSOR_VALUE:
+						previousSensorValue();
+						
+						break;
+					case AUTO_CHANGE:
+						/*
+						System.out.println("sensorPanel " + sensorPanel.getAutoProperty().get());
+						if(sensorPanel.getAutoProperty().get())
+						{
+							//wechsle automatisch die Einstellung immer nach vorwärts
+							startAutoThread();
+							
+						}
+						else
+						{
+							//schieße Thread ab.
+							stopAutoThread();
+						}
+						*/
+						break;
+				}
+				
+				
+			}
+        	
+        });
 		
 		
 		  ToggleButton test = new ToggleButton("Start");
@@ -94,8 +140,6 @@ public class GlassPaneSensorTest extends Application {
 								//helperClass.setCurrentSensorToShow(1);
 								
 								SensorValue sensorValue = helperClass.getSelectedSensorValue();
-								
-								
 								sensorPanel.getImageProperty().set(sensorValue.getImageBezeichnung());
 								sensorPanel.getValueProperty().set(sensorValue.getCurrentValue() + "" + sensorValue.getMeasurementUnit());
 								
@@ -136,6 +180,32 @@ public class GlassPaneSensorTest extends Application {
        
 		
     }
+	
+	 protected void previousSensorValue() {
+	    	helperClass.subCurrentSensorToShow();
+			
+			if(helperClass.getCurrentSensorToShow() < 0)
+				helperClass.setCurrentSensorToShow(helperClass.getMapSize()-1);
+			
+			SensorValue sensorValue = helperClass.getSelectedSensorValue(); 
+			sensorPanel.getImageProperty().set(sensorValue.getImageBezeichnung());
+			sensorPanel.getValueProperty().set(sensorValue.getCurrentValue() + "" + sensorValue.getMeasurementUnit());
+			
+			
+		}
+
+		protected void nextSensorValue() {
+
+			helperClass.addCurrentSensorToShow();
+			if(helperClass.getCurrentSensorToShow() >= helperClass.getMapSize())
+				helperClass.setCurrentSensorToShow(0);
+			
+			SensorValue sensorValue = helperClass.getSelectedSensorValue(); 
+			sensorPanel.getImageProperty().set(sensorValue.getImageBezeichnung());
+			sensorPanel.getValueProperty().set(sensorValue.getCurrentValue() + "" + sensorValue.getMeasurementUnit());
+			
+			
+		}
 	
 	
 	
