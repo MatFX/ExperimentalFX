@@ -7,6 +7,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
@@ -14,7 +16,7 @@ import javafx.stage.Stage;
  * @author chatGBT
  *
  */
-public class NewmorphismButton extends Application {
+public class StopSignExample2 extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -22,23 +24,22 @@ public class NewmorphismButton extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("newmorphism");
+        primaryStage.setTitle("Glossy Button Example");
 
-        Button button = new Button("Button");
-      	     // Create a canvas
-	     Canvas canvas = new Canvas(50, 50);
-	     GraphicsContext gc = canvas.getGraphicsContext2D();
-	
-	     // Draw the lamp on the canvas
-	     gc.setFill(Color.YELLOW);
-	     gc.fillOval(10, 10, 30, 30);
-	     gc.setStroke(Color.BLACK);
-	     gc.strokeOval(10, 10, 30, 30);
-	     gc.setFill(Color.BLACK);
-	     gc.fillRect(22, 20, 6, 20);
-	
-	     //Add the canvas to the button
-	     button.setGraphic(canvas);
+        Button button = new Button();
+     // Create a canvas
+        Canvas canvas = new Canvas(50, 50);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        // Draw the stop sign on the canvas
+        gc.setFill(Color.RED);
+        gc.fillPolygon(new double[]{0, 25, 50}, new double[]{0, 50, 0}, 3);
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        gc.fillText("STOP", 15, 30);
+
+        //Add the canvas to the button
+        button.setGraphic(canvas);
         StackPane layout = new StackPane();
         layout.getChildren().add(button);
 
