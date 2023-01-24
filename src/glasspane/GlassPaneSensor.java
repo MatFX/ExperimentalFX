@@ -3,18 +3,14 @@ package glasspane;
 import java.util.HashMap;
 
 import glasspane.ButtonRectangle.PositionGradient;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -81,7 +77,7 @@ public class GlassPaneSensor extends Region
 		textCanvas = new Canvas();
 		imageCanvas = new Canvas();
 		
-		button_down = new ButtonRectangle(PositionGradient.FROM_UP_TO_DOWN);
+		button_down = new ButtonRectangle(PositionGradient.FROM_UP_TO_DOWN, 0.23555555562222225, 0.92000000001, 0.5288888887222222, 0.07999999995, 0.022222222222222223);
 		button_down.setFill(Color.web("#5abaa0"));
 		button_down.getCommandProperty().addListener(new ChangeListener<ButtonRectangle.Command>(){
 
@@ -100,7 +96,7 @@ public class GlassPaneSensor extends Region
 		
 		
 		
-		button_up = new ButtonRectangle(PositionGradient.FROM_DOWN_TO_UP);
+		button_up = new ButtonRectangle(PositionGradient.FROM_DOWN_TO_UP, 0.23555555563333336, 0.0, 0.5288888887222222, 0.07999999995, 0.022222222222222223);
 		button_up.setFill(Color.web("#5abaa0"));
 		button_up.getCommandProperty().addListener(new ChangeListener<ButtonRectangle.Command>(){
 
@@ -198,23 +194,24 @@ public class GlassPaneSensor extends Region
 		refreshLCDContent(refresh_w, refresh_h);
 		
 		
-		button_down.setX(width_component * 0.23555555562222225);
-		button_down.setY(height_component * 0.92000000001);
-		button_down.setWidth(width_component * 0.5288888887222222);
-		button_down.setHeight(height_component *  0.07999999995);
-		button_down.setArcWidth(width_component * 0.022222222222222223);
-		button_down.setArcHeight(width_component * 0.022222222222222223);
+//		button_down.setX(width_component * 0.23555555562222225);
+//		button_down.setY(height_component * 0.92000000001);
+//		button_down.setWidth(width_component * 0.5288888887222222);
+//		button_down.setHeight(height_component *  0.07999999995);
+//		button_down.setArcWidth(width_component * 0.022222222222222223);
+//		button_down.setArcHeight(width_component * 0.022222222222222223);
 		
+		button_down.refreshSize(width_component, height_component);
 	
+//		
+//		button_up.setX(width_component * 0.23555555563333336);
+//		button_up.setY(height_component * 0.0);
+//		button_up.setWidth(width_component * 0.5288888887222222);
+//		button_up.setHeight(height_component * 0.07999999995);
+//		button_up.setArcWidth(width_component * 0.022222222222222223);
+//		button_up.setArcHeight(width_component * 0.022222222222222223);
 		
-		button_up.setX(width_component * 0.23555555563333336);
-		button_up.setY(height_component * 0.0);
-		button_up.setWidth(width_component * 0.5288888887222222);
-		button_up.setHeight(height_component * 0.07999999995);
-		button_up.setArcWidth(width_component * 0.022222222222222223);
-		button_up.setArcHeight(width_component * 0.022222222222222223);
-		
-		
+		button_up.refreshSize(width_component, height_component);
 	}
 	
 	private void refreshImageContent(double previous_w, double previous_h)
