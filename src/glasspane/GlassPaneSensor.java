@@ -66,6 +66,8 @@ public class GlassPaneSensor extends Region
 	
 	private SimpleIntegerProperty alphaChannelProperty  = new SimpleIntegerProperty();
 	
+	private Color baseColor = Color.web("#5abaa0");
+	
 	public GlassPaneSensor()
 	{
 		this.initGraphics();
@@ -114,12 +116,10 @@ public class GlassPaneSensor extends Region
 		});
 		alphaChannelProperty.set(0x33);
 		
-		
-		
 		base_background_component = new Rectangle();
 		//base_background_component.setFill(Color.TRANSPARENT);
 		//TODO
-		base_background_component.setStroke(Color.web("#5abaa0"));
+		base_background_component.setStroke(baseColor);
 		//base_background_component.setSmooth(false);
 		
 		
@@ -154,7 +154,7 @@ public class GlassPaneSensor extends Region
 		imageCanvas = new Canvas();
 		
 		button_down = new ButtonRectangle(PositionGradient.FROM_UP_TO_DOWN, 0.23555555562222225, 0.92000000001, 0.5288888887222222, 0.07999999995, 0.022222222222222223);
-		button_down.setFill(Color.web("#5abaa0"));
+		button_down.setFill(baseColor);
 		button_down.getCommandProperty().addListener(new ChangeListener<ButtonRectangle.Command>(){
 
 			@Override
@@ -173,7 +173,7 @@ public class GlassPaneSensor extends Region
 		
 		
 		button_up = new ButtonRectangle(PositionGradient.FROM_DOWN_TO_UP, 0.23555555563333336, 0.0, 0.5288888887222222, 0.07999999995, 0.022222222222222223);
-		button_up.setFill(Color.web("#5abaa0"));
+		button_up.setFill(baseColor);
 		button_up.getCommandProperty().addListener(new ChangeListener<ButtonRectangle.Command>(){
 
 			@Override
@@ -353,13 +353,10 @@ public class GlassPaneSensor extends Region
 		double halfedHeight = newIconHeight / 2d;
 		
 		double newYLocation = middle_y - halfedHeight;
-		
-		
-		Color colorImage = Color.web("#5abaa0");
-
+	
 		Image scaledImage = ImageLoader.getImageFromIconFolder(imageFileNameProperty.get(), newIconWidth, newIconHeight, false, true);
 		
-		Image coloredImage = UIToolBox.getColorizedImage(scaledImage, colorImage);
+		Image coloredImage = UIToolBox.getColorizedImage(scaledImage, baseColor);
 		
 		gc.drawImage(coloredImage, newXLocation, newYLocation);
 		
@@ -385,7 +382,7 @@ public class GlassPaneSensor extends Region
 		}
 		
 		fontLcd = Font.font(fontLcd.getName(), tempSizeLCD);
-		gc.setFill(Color.web("#5abaa0"));
+		gc.setFill(baseColor);
 		gc.setFont(fontLcd);
 		Text valueText = new Text();
 		valueText.setText(valueProperty.get());
@@ -446,6 +443,29 @@ public class GlassPaneSensor extends Region
 	public SimpleIntegerProperty getAlphaChannelProperty()
 	{
 		return alphaChannelProperty;
+	}
+
+	public Color getBaseColor() 
+	{
+		return baseColor;
+	}
+
+	public void setBaseColor(Color colorSelected) 
+	{
+		this.baseColor = colorSelected;
+		this.reColoredComponent();
+		
+	}
+
+
+
+
+	private void reColoredComponent() {
+		base_background_component.setStroke(baseColor);
+		button_down.setFill(baseColor);
+		button_up.setFill(baseColor);
+		this.resize();
+		
 	}
 	
 }

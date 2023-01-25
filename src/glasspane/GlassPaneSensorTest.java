@@ -1,23 +1,27 @@
 package glasspane;
 
+import com.sun.corba.se.impl.orbutil.graph.Node;
+
 import control.universaldisplay.SensorValue;
 import javafx.application.Application;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -188,6 +192,28 @@ public class GlassPaneSensorTest extends Application {
         vBoxControl.getChildren().add(test);
         
         
+        Label labelBaseColor = new Label("Base color:");
+        labelBaseColor.setTextFill(Color.web("#FFFFFF80"));
+        
+        ColorPicker colorPicker = new ColorPicker();
+	    colorPicker.setValue(sensorPanel.getBaseColor());
+		colorPicker.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e)
+            {
+            	Color colorSelected = colorPicker.getValue();
+            	sensorPanel.setBaseColor(colorSelected);
+            	
+            	
+            }
+        });
+    
+        
+        
+        vBoxControl.getChildren().addAll(labelBaseColor, colorPicker);
+        
+        
+        
         Label label = new Label("Blur radius slider:");
         label.setTextFill(Color.web("#FFFFFF80"));
         
@@ -232,8 +258,41 @@ public class GlassPaneSensorTest extends Application {
 			}});
         vBoxControl.getChildren().addAll(labelTransparenz, sliderTransparence);
         
+        Separator seperator = new Separator();
+        seperator.setOrientation(Orientation.HORIZONTAL);
+     
         
-        pane.setRight(vBoxControl);
+    
+        
+        vBoxControl.setBackground(new Background(new BackgroundFill(Color.DARKSLATEGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        ScrollPane scrollRight = new ScrollPane();
+        scrollRight.setContent(vBoxControl); 
+        pane.setRight(scrollRight);
+        
+        VBox vBoxBackgroundControl = new VBox(10);
+        vBoxBackgroundControl.setPadding(new Insets(5,5,5,5));
+        vBoxBackgroundControl.getChildren().add(test);
+        
+        
+         
+        Label labelBackground = new Label("Background color");
+        labelBackground.setTextFill(Color.web("#FFFFFF80"));
+         
+        ColorPicker colorPickerBackground = new ColorPicker();
+        colorPickerBackground.setValue(Color.DARKSLATEGRAY);
+        colorPickerBackground.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e)
+            {
+            	Color colorSelected = colorPickerBackground.getValue();
+            	pane.setBackground(new Background(new BackgroundFill(colorSelected, CornerRadii.EMPTY, Insets.EMPTY)));
+            	
+             	
+            }
+        });
+        vBoxBackgroundControl.getChildren().addAll(labelBackground, colorPickerBackground);
+        pane.setLeft(vBoxBackgroundControl);
+        
         pane.setBackground(new Background(new BackgroundFill(Color.DARKSLATEGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
 
         Scene scene = new Scene(pane);
