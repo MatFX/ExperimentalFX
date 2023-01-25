@@ -3,6 +3,7 @@ package glasspane;
 import java.util.HashMap;
 
 import glasspane.ButtonRectangle.PositionGradient;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -10,6 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -52,6 +54,12 @@ public class GlassPaneSensor extends Region
 	
 	private SimpleObjectProperty<Command> commandProperty = new SimpleObjectProperty<Command>();
 	
+	private SimpleIntegerProperty blurRadiusProperty = new SimpleIntegerProperty();
+	
+	private int MIN_BLUR_RADIUS = 0;
+	
+	private int MAX_BLUR_RADIUS = 10;
+	
 	public GlassPaneSensor()
 	{
 		this.initGraphics();
@@ -60,6 +68,10 @@ public class GlassPaneSensor extends Region
 	
 	private void initGraphics() 
 	{
+	
+		
+	
+		
 		
 		Stop[] stopArray = new Stop[]{
 				new Stop(0, Color.web("#ffffff00")),
@@ -72,7 +84,35 @@ public class GlassPaneSensor extends Region
 		base_background_component.setFill(Color.TRANSPARENT);
 		//TODO
 		base_background_component.setStroke(Color.web("#5abaa0"));
+		//base_background_component.setSmooth(false);
 		
+		
+        //Von außerhalb kann dann verändert werden.
+    	blurRadiusProperty.addListener(new ChangeListener<Number>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) 
+			{
+				if(newValue != null)
+				{
+					if(newValue.intValue() < MIN_BLUR_RADIUS)
+						newValue = new Integer(MIN_BLUR_RADIUS);
+					else if(newValue.intValue()  > MAX_BLUR_RADIUS)
+						newValue = new Integer(MAX_BLUR_RADIUS);
+					
+					
+					GaussianBlur g = new GaussianBlur();  
+			        g.setRadius(newValue.intValue());  
+			        base_background_component.setEffect(g);
+				}
+			
+				
+			}
+    		
+    	});
+    	//initial blur
+		blurRadiusProperty.set(4);
+        
 		
 		textCanvas = new Canvas();
 		imageCanvas = new Canvas();
@@ -361,4 +401,18 @@ public class GlassPaneSensor extends Region
 	{
 		return this.commandProperty;
 	}
+
+	public SimpleIntegerProperty getBlurRadiusProperty()
+	{
+		return blurRadiusProperty;
+	}
+
+	public int getMinBlurRadiusValue() {
+		return MIN_BLUR_RADIUS;
+	}
+
+	public int getMaxBlurRadiusValue() {
+		return MAX_BLUR_RADIUS;
+	}
+	
 }

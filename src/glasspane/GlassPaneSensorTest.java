@@ -2,17 +2,23 @@ package glasspane;
 
 import control.universaldisplay.SensorValue;
 import javafx.application.Application;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sensorpanel.first.SensorPanel.Command;
@@ -45,6 +51,9 @@ public class GlassPaneSensorTest extends Application {
     public void start(Stage stage) 
     {
 		BorderPane pane = new BorderPane();
+		
+	
+		
 		
 		  
         sensorPanel.getCommandProperty().addListener(new ChangeListener<Command>()
@@ -164,11 +173,49 @@ public class GlassPaneSensorTest extends Application {
 	        	
 	        });
      
-        
+		BorderPane.setMargin(sensorPanel, new Insets(15, 15, 15, 15));
         sensorPanel.setPrefWidth(120);
         sensorPanel.setPrefHeight(140);
         pane.setCenter(sensorPanel);
-        pane.setRight(test);
+        
+        
+        
+        
+        
+        
+        
+        
+        VBox vBoxControl = new VBox(10);
+        vBoxControl.setPadding(new Insets(5,5,5,5));
+        vBoxControl.getChildren().add(test);
+        
+        
+        Label label = new Label("Blur radius slider:");
+        label.setTextFill(Color.web("#FFFFFF80"));
+        
+        Slider slider = new Slider(sensorPanel.getMinBlurRadiusValue(), sensorPanel.getMaxBlurRadiusValue(), 1);
+        slider.setMajorTickUnit(1);
+        slider.setBlockIncrement(1);
+        slider.setMinorTickCount(0);
+        slider.setValue(sensorPanel.getBlurRadiusProperty().get());
+        slider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) 
+			{
+				if(newValue != null)
+				{
+					sensorPanel.getBlurRadiusProperty().set((int)Math.round(newValue.doubleValue()));
+				}
+				
+			}});
+      
+        
+        vBoxControl.getChildren().addAll(label, slider);
+        
+        
+        
+        pane.setRight(vBoxControl);
         pane.setBackground(new Background(new BackgroundFill(Color.DARKSLATEGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
 
         Scene scene = new Scene(pane);
