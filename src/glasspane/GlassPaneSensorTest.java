@@ -62,8 +62,6 @@ public class GlassPaneSensorTest extends Application {
 			@Override
 			public void changed(ObservableValue<? extends Command> observable, Command oldValue, Command newValue) {
 				
-				
-				SensorValue sensorValue = null;
 				System.out.println("newValue " + newValue);
 				switch(newValue)
 				{
@@ -213,6 +211,26 @@ public class GlassPaneSensorTest extends Application {
         
         vBoxControl.getChildren().addAll(label, slider);
         
+        Label labelTransparenz = new Label("Background transparence:");
+        labelTransparenz.setTextFill(Color.web("#FFFFFF80"));
+        
+        Slider sliderTransparence = new Slider(sensorPanel.getMinGradientAlphaChannel(), sensorPanel.getMaxGradientAlphaChannel(), 1);
+        sliderTransparence.setMajorTickUnit(1);
+        sliderTransparence.setBlockIncrement(1);
+        sliderTransparence.setMinorTickCount(0);
+        sliderTransparence.setValue(sensorPanel.getAlphaChannelProperty().get());
+        sliderTransparence.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) 
+			{
+				if(newValue != null)
+				{
+					sensorPanel.getAlphaChannelProperty().set((int)Math.round(newValue.doubleValue()));
+				}
+				
+			}});
+        vBoxControl.getChildren().addAll(labelTransparenz, sliderTransparence);
         
         
         pane.setRight(vBoxControl);

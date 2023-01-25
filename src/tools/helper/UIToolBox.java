@@ -163,4 +163,17 @@ public class UIToolBox
 		
 		
 	}
+
+	public static String getWebColorString(double red, double green, double blue, double alpha) 
+	{
+		StringBuilder sb = new StringBuilder("#");
+		String redValue = String.format("%02X", (int)( red * 255 ));
+		String greenValue = String.format("%02X", (int)( green * 255 ));
+		String blueValue = String.format("%02X", (int)( blue * 255 ));
+		String alphaValue = String.format("%02X", (int)( alpha * 255 ));
+		
+		sb.append(redValue).append(greenValue).append(blueValue).append(alphaValue);
+		System.out.println(" sb " + sb.toString());
+		return sb.toString();
+	}
 }

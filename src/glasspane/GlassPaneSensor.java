@@ -60,18 +60,23 @@ public class GlassPaneSensor extends Region
 	
 	private int MAX_BLUR_RADIUS = 10;
 	
+	private int MIN_GRADIENT_ALPHA_CHANNEL = 0;
+	
+	private int MAX_GRADIENT_ALPHA_CHANNEL = 0x80;
+	
+	private SimpleIntegerProperty alphaChannelProperty  = new SimpleIntegerProperty();
+	
 	public GlassPaneSensor()
 	{
 		this.initGraphics();
 		this.registerListener();
 	}
 	
+	
+	
+	
 	private void initGraphics() 
 	{
-	
-		
-	
-		
 		
 		Stop[] stopArray = new Stop[]{
 				new Stop(0, Color.web("#ffffff00")),
@@ -79,9 +84,40 @@ public class GlassPaneSensor extends Region
 				new Stop(1, Color.web("#ffffff33"))
 			};
 		stopMap.put(StopIndizes.BASE_BACKGROUND_LINEAR_GRADIENT, stopArray);
+		alphaChannelProperty.addListener(new ChangeListener<Number>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if(newValue != null)
+				{
+					
+					double alphaValueAsDouble = 0;
+					if(newValue.intValue() > 0)
+						alphaValueAsDouble = newValue.intValue() / 255D;
+					System.out.println("alphaValueAsDouble "+ alphaValueAsDouble);
+				
+					Stop endStop = stopMap.get(StopIndizes.BASE_BACKGROUND_LINEAR_GRADIENT)[1];
+					Color colorValue = endStop.getColor();
+					String webColorString = UIToolBox.getWebColorString(colorValue.getRed(), colorValue.getGreen(), colorValue.getBlue(), alphaValueAsDouble);
+				
+					stopMap.get(StopIndizes.BASE_BACKGROUND_LINEAR_GRADIENT)[1] = new Stop(1, Color.web(webColorString));
+					
+					//wird der init umschifft
+					if(base_background_component != null)
+						resize();
+					
+				
+				}
+				
+			}
+			
+		});
+		alphaChannelProperty.set(0x33);
+		
+		
 		
 		base_background_component = new Rectangle();
-		base_background_component.setFill(Color.TRANSPARENT);
+		//base_background_component.setFill(Color.TRANSPARENT);
 		//TODO
 		base_background_component.setStroke(Color.web("#5abaa0"));
 		//base_background_component.setSmooth(false);
@@ -194,6 +230,7 @@ public class GlassPaneSensor extends Region
 				false, CycleMethod.NO_CYCLE, stopMap.get(StopIndizes.BASE_BACKGROUND_LINEAR_GRADIENT));
 		base_background_component.setFill(lg);
 		
+		
 		//als erstes die gezeichnete Fläche leeren
 		//imageCanvas.getGraphicsContext2D().clearRect(imageCanvas.getLayoutX(), imageCanvas.getLayoutY(), imageCanvas.getWidth(), imageCanvas.getHeight());
 		
@@ -232,25 +269,8 @@ public class GlassPaneSensor extends Region
 		textCanvas.relocate(newX, newY);
 		
 		refreshLCDContent(refresh_w, refresh_h);
-		
-		
-//		button_down.setX(width_component * 0.23555555562222225);
-//		button_down.setY(height_component * 0.92000000001);
-//		button_down.setWidth(width_component * 0.5288888887222222);
-//		button_down.setHeight(height_component *  0.07999999995);
-//		button_down.setArcWidth(width_component * 0.022222222222222223);
-//		button_down.setArcHeight(width_component * 0.022222222222222223);
-		
+
 		button_down.refreshSize(width_component, height_component);
-	
-//		
-//		button_up.setX(width_component * 0.23555555563333336);
-//		button_up.setY(height_component * 0.0);
-//		button_up.setWidth(width_component * 0.5288888887222222);
-//		button_up.setHeight(height_component * 0.07999999995);
-//		button_up.setArcWidth(width_component * 0.022222222222222223);
-//		button_up.setArcHeight(width_component * 0.022222222222222223);
-		
 		button_up.refreshSize(width_component, height_component);
 	}
 	
@@ -413,6 +433,19 @@ public class GlassPaneSensor extends Region
 
 	public int getMaxBlurRadiusValue() {
 		return MAX_BLUR_RADIUS;
+	}
+
+	public double getMinGradientAlphaChannel() {
+		return MIN_GRADIENT_ALPHA_CHANNEL;
+	}
+
+	public double getMaxGradientAlphaChannel() {
+		return MAX_GRADIENT_ALPHA_CHANNEL;
+	}
+	
+	public SimpleIntegerProperty getAlphaChannelProperty()
+	{
+		return alphaChannelProperty;
 	}
 	
 }
