@@ -24,6 +24,8 @@ public class ButtonRectangle extends Rectangle
 	//Werte die auf Basis der ursprünglichen Breite und Höhe des ausgehenden Objekts ermittelt wurden.
 	private double percentValue_X, percenValue_Y, percentValue_Width, percentValue_Height,arcWidthAndHeight;
 	
+	private Color baseColor = Color.web("#5abaa0");
+	
 	public enum PositionGradient
 	{
 		FROM_DOWN_TO_UP,
@@ -61,14 +63,14 @@ public class ButtonRectangle extends Rectangle
 			if(positionGradient == PositionGradient.FROM_DOWN_TO_UP)
 			{
 				gradient = new LinearGradient(0, 0.3, 0, 1, true, CycleMethod.NO_CYCLE,
-					    new Stop(0, Color.web("#5abaa0")),
-					    new Stop(1, Color.web("#2d6c5b")));
+					    new Stop(0, baseColor),
+					    new Stop(1, baseColor.darker()));
 			}
 			else
 			{
 				gradient = new LinearGradient(0, 0, 0, 0.7, true, CycleMethod.NO_CYCLE,
-					    new Stop(1, Color.web("#5abaa0")),
-					    new Stop(0, Color.web("#2d6c5b")));
+					    new Stop(1, baseColor),
+					    new Stop(0, baseColor.darker()));
 			}
 			
 
@@ -76,7 +78,7 @@ public class ButtonRectangle extends Rectangle
 		}
 		else if(commandValue == Command.BUTTON_RELEASED)
 		{
-			this.setFill( Color.web("#5abaa0"));
+			this.setFill(baseColor);
 		}
 		
 		commandProperty.set(commandValue);
@@ -97,6 +99,16 @@ public class ButtonRectangle extends Rectangle
 		this.setArcWidth(width_component * arcWidthAndHeight);
 		this.setArcHeight(width_component * arcWidthAndHeight);
 		
+	}
+
+	/**
+	 * BasisFarbe und Ermittlung der Stop Values
+	 * @param newValue
+	 */
+	public void setBaseColor(Color newValue) 
+	{
+		this.baseColor = newValue;
+		this.setFill(baseColor);
 	}
 	
 	
