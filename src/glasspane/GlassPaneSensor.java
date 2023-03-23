@@ -111,7 +111,7 @@ public class GlassPaneSensor extends Region
 					double alphaValueAsDouble = 0;
 					if(newValue.intValue() > 0)
 						alphaValueAsDouble = newValue.intValue() / 255D;
-					System.out.println("alphaValueAsDouble "+ alphaValueAsDouble);
+					
 				
 					Stop endStop = stopMap.get(StopIndizes.BASE_BACKGROUND_LINEAR_GRADIENT)[1];
 					Color colorValue = endStop.getColor();
