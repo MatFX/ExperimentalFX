@@ -31,17 +31,28 @@ public class WebViewTest extends Application {
         webView.getEngine().setUserAgent("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0");
       
       
-        webView.getEngine().load("http://192.168.150.129");
+        webView.getEngine().load("http://192.168.150.142/login?pw=bscgmbh");
      // Update the stage title when a new web page title is available
+        webView.getEngine().locationProperty().addListener((obs, oldLocation, newLocation) -> 
+        {
+        	
+        	System.out.println("newLocation " + newLocation);
+        	
+        	
+            if (newLocation != null && newLocation.contains("login?")) {
+            	 webView.getEngine().load(newLocation);
+            }
+        });
+        
         webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) ->
         {
         	System.out.println("newVlaue " + newValue);
-            JSObject window = (JSObject)  webView.getEngine().executeScript("window");
-            window.setMember("java", webView);
-            webView.getEngine().executeScript("console.log = function(message)\n" +
-                "{\n" +
-                "    java.log(message);\n" +
-                "};");
+//            JSObject window = (JSObject)  webView.getEngine().executeScript("window");
+//            window.setMember("java", webView);
+//            webView.getEngine().executeScript("console.log = function(message)\n" +
+//                "{\n" +
+//                "    java.log(message);\n" +
+//                "};");
         });
         
         VBox vBox = new VBox(webView);
