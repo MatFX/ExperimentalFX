@@ -176,4 +176,12 @@ public class UIToolBox
 		System.out.println(" sb " + sb.toString());
 		return sb.toString();
 	}
+
+	public static double calculateWidthFromView(int percentValue, double widthFromScree)
+	{
+		if(percentValue > 0)
+			percentValue = percentValue / 100;
+	
+		return widthFromScree*percentValue;
+	}
 }

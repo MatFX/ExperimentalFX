@@ -8,12 +8,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.SwipeEvent;
+import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -48,7 +52,7 @@ public class ExampleCellFactoryList extends Application  {
 		itemList.add("Gateway 2");
 		ObservableList<String> obsList = FXCollections.observableArrayList(itemList);
 		selectedGateway.getItems().addAll(obsList);
-		selectedGateway.getSelectionModel().select(0);
+		selectedGateway.getSelectionModel().select(1);
 		
 		selectedGateway.valueProperty().addListener(new ChangeListener<String>(){
 
@@ -63,7 +67,7 @@ public class ExampleCellFactoryList extends Application  {
 			}
 			
 		});
-		
+	
 		
 		contentBox.getChildren().add(selectedGateway);
 		
@@ -76,7 +80,7 @@ public class ExampleCellFactoryList extends Application  {
 		borderPane.setCenter(contentBox);
 		
 		
-		
+		refreshListView();
 		Scene scene = new Scene(borderPane, 300, 300);
 		
 		primaryStage.setTitle("Image Colorizer");
@@ -90,7 +94,7 @@ public class ExampleCellFactoryList extends Application  {
 	{
 	
 		//TODO
-		listView.setCellFactory(null);
+		listView.setCellFactory(c -> new ListCellFactory());
 		listView.getItems().clear();
 
 		ObservableList<SampleItem> obsList = null;
@@ -111,41 +115,6 @@ public class ExampleCellFactoryList extends Application  {
 			
 		}
 		listView.getItems().addAll(obsList);
-		
-		
-		listView.setCellFactory(c -> new ListCell<SampleItem>()
-		{
-			private Label label = null;
-			
-			
-			@Override
-			protected void updateItem(SampleItem item, boolean empty)
-			{
-				super.updateItem(item, empty);
-				System.out.println("updateItem call " + item);
-				if(label == null)
-				{
-					label = new Label();
-				}
-				
-				if(!empty && item != null)
-				{
-					label.setText(item.getDescription());
-					
-					setText(null);
-		        	setGraphic(label);
-				}
-				else
-				{
-					// label.setText("");
-					 setText(null);
-			         setGraphic(null);
-				}
-			}
-			
-			
-			
-		} );
 	}
 	
 	
