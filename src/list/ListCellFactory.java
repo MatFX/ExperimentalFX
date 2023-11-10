@@ -77,8 +77,7 @@ public class ListCellFactory extends ListCell<SampleItem>
 			
 			//Der StackPane die zwei verschiedenen Sichten hinzufügen
 			stackPane.getChildren().add(0, bottomContent);
-			//TODO rein 
-			//stackPane.getChildren().add(1, overlayContent);
+			stackPane.getChildren().add(1, overlayContent);
 			
 			
 			
