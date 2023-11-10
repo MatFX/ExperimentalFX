@@ -39,6 +39,9 @@ public class ListCellFactory extends ListCell<SampleItem>
 	
 	private Cursor cursor;
 	
+	private Button minus, add;
+
+	
  	private enum SWIPE
  	{
  		NO_DETECTION,
@@ -58,15 +61,16 @@ public class ListCellFactory extends ListCell<SampleItem>
 		if(stackPane == null)
 		{
 			stackPane = new StackPane();
-			
-			
-		
-			
+				
 			bottomContent = new HBox(15);
 			bottomContent.setMinHeight(25);
 			bottomContent.setPadding(new Insets(5,5,5,5));
 			bottomContent.setMaxWidth(Double.MAX_VALUE);
 			
+		
+			minus = new Button("-");
+			add = new Button("+");
+		
 			
 			overlayContent = new HBox(15);
 			overlayContent.setMinHeight(25);
@@ -173,26 +177,16 @@ public class ListCellFactory extends ListCell<SampleItem>
 			bottomContent.setStyle("-fx-background-color: #0088cc;");
 			bottomContent.setPrefWidth(150D);
 			bottomContent.setMinWidth(150D);
-//
-//			bottomContent.setMinWidth(UIToolBox.calculateWidthFromView(90, 500));
-//			bottomContent.setMaxWidth(UIToolBox.calculateWidthFromView(92, 500));
-//			bottomContent.setPrefWidth(UIToolBox.calculateWidthFromView(90, 500));
-			
 			
 			overlayContent.setStyle("-fx-background-color: #66ccff;"); 
-			Button minus = new Button("-");
-			Button add = new Button("+");
+			
 			add.setAlignment(Pos.BASELINE_RIGHT);
 			
 			System.out.println("bottomContent " + bottomContent.getWidth() + " " + bottomContent.getHeight());
 			
-			
 			bottomContent.getChildren().addAll(UIToolBox.createHorizontalSpacer(), minus, add);
-			labelContainer.setText(shownItem.getDescription());
-			
-	
-			
 		
+			labelContainer.setText(shownItem.getDescription());
 		}
 
 		setText(null);

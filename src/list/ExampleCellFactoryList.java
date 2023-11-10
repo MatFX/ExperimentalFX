@@ -73,6 +73,8 @@ public class ExampleCellFactoryList extends Application  {
 		
 		
 		listView = new ListView<SampleItem>();
+		listView.setCellFactory(c -> new ListCellFactory());
+	
 		VBox.setVgrow(listView, Priority.ALWAYS);
 		contentBox.getChildren().add(listView);
 		
@@ -92,9 +94,9 @@ public class ExampleCellFactoryList extends Application  {
 
 	protected void refreshListView() 
 	{
-	
+		
 		//TODO
-		listView.setCellFactory(c -> new ListCellFactory());
+		
 		listView.getItems().clear();
 
 		ObservableList<SampleItem> obsList = null;
@@ -114,7 +116,9 @@ public class ExampleCellFactoryList extends Application  {
 			
 			
 		}
+		
 		listView.getItems().addAll(obsList);
+		
 	}
 	
 	
