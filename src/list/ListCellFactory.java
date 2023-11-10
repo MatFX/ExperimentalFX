@@ -188,7 +188,7 @@ public class ListCellFactory extends ListCell<SampleItem>
 			System.out.println("bottomContent " + bottomContent.getWidth() + " " + bottomContent.getHeight());
 			
 			
-			bottomContent.getChildren().addAll(UIToolBox.createVerticalSpacer(), minus, add);
+			bottomContent.getChildren().addAll(UIToolBox.createHorizontalSpacer(), minus, add);
 			labelContainer.setText(shownItem.getDescription());
 			
 	
