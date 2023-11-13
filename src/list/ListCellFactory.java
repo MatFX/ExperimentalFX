@@ -40,6 +40,11 @@ public class ListCellFactory extends ListCell<SampleItem>
 	private Cursor cursor;
 	
 	private Button minus, add;
+	
+	/**
+	 * node locked in the end position.
+	 */
+	private SWIPE swippedEndPosition = SWIPE.NO_DETECTION;
 
 	
  	private enum SWIPE
@@ -90,12 +95,16 @@ public class ListCellFactory extends ListCell<SampleItem>
 
 				@Override
 				public void handle(MouseEvent event) {
-					sceneWidth = overlayContent.getScene().getWidth();
-					sceneHeight = overlayContent.getScene().getHeight();
-					System.out.println("scene w: " + sceneWidth + " h: " + sceneHeight);
-					cursor = Cursor.MOVE;
-					//Punkt muss von der Scene genommen werden weil später das layoutx von HBoxContent angepasst wird.
-					startingPoint = event.getSceneX();
+					
+
+						
+						sceneWidth = overlayContent.getScene().getWidth();
+						sceneHeight = overlayContent.getScene().getHeight();
+						System.out.println("scene w: " + sceneWidth + " h: " + sceneHeight);
+						cursor = Cursor.MOVE;
+						//Punkt muss von der Scene genommen werden weil später das layoutx von HBoxContent angepasst wird.
+						startingPoint = event.getSceneX();
+					
 				}
 				
 			});
@@ -129,9 +138,18 @@ public class ListCellFactory extends ListCell<SampleItem>
 						}
 					
 						double newPositon = 0;
+						
 						if(swipe == SWIPE.SWIPE_LEFT)
 						{
-							newPositon = overlayContent.getLayoutX() - result;
+							if(!overlayContent.getBoundsInParent().contains(minus.getBoundsInParent())
+									&& !overlayContent.getBoundsInParent().contains(add.getBoundsInParent())) 
+							{
+								newPositon = minus.getLayoutX() - 10 - overlayContent.getWidth();
+								swippedEndPosition = SWIPE.SWIPE_LEFT;
+								
+							}
+							else
+								newPositon = overlayContent.getLayoutX() - result;
 							
 						}
 						else if(swipe == SWIPE.SWIPE_RIGHT)
@@ -142,6 +160,12 @@ public class ListCellFactory extends ListCell<SampleItem>
 						
 						overlayContent.setTranslateX(newPositon);
 						event.consume();
+						
+						if(swippedEndPosition != SWIPE.NO_DETECTION)
+						{
+							cursor = Cursor.NONE;
+							swipe = SWIPE.NO_DETECTION;
+						}
 					}
 				}
 				
@@ -155,7 +179,7 @@ public class ListCellFactory extends ListCell<SampleItem>
 				public void handle(MouseEvent event) 
 				{
 
-					if(cursor == Cursor.MOVE)
+					if(cursor == Cursor.MOVE && swippedEndPosition == SWIPE.NO_DETECTION)
 					{
 						cursor = Cursor.NONE;
 						swipe = SWIPE.NO_DETECTION;
