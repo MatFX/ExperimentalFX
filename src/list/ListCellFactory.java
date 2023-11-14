@@ -152,10 +152,12 @@ public class ListCellFactory extends ListCell<SampleItem>
 								newPositon = overlayContent.getLayoutX() - result;
 							
 						}
-						else if(swipe == SWIPE.SWIPE_RIGHT)
+						//Nach rechts gehts nur wenn vorher nach Links geswipped wurde
+						else if(swipe == SWIPE.SWIPE_RIGHT && swippedEndPosition == SWIPE.SWIPE_LEFT)
 						{
 							newPositon = overlayContent.getLayoutX() + result;
-							
+							newPositon = 0;
+							swippedEndPosition = SWIPE.NO_DETECTION;
 						}
 						
 						overlayContent.setTranslateX(newPositon);
