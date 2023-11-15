@@ -8,9 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import tools.helper.UIToolBox;
 
@@ -47,7 +45,25 @@ public class ListCellFactory extends ListCell<SampleItem>
 	private SWIPE swippedEndPosition = SWIPE.NO_DETECTION;
 
 	
- 	private enum SWIPE
+	private SWIPE_USE swipeUse = SWIPE_USE.SWIPE_BOTH_ALLOWED;
+	
+	
+	/**
+	 * 
+	 * which swipe gesture is allowed 
+	 */
+	public enum SWIPE_USE
+	{
+		SWIPE_LEFT_ALLOWED,
+		
+		SWIPE_RIGHT_ALLOWED,
+		
+		SWIPE_BOTH_ALLOWED,
+		
+	}
+	
+	
+ 	public enum SWIPE
  	{
  		NO_DETECTION,
  		
@@ -57,7 +73,13 @@ public class ListCellFactory extends ListCell<SampleItem>
  		
  	}
 	
- 	@Override
+ 	public ListCellFactory(SWIPE_USE swipeUse) 
+ 	{
+ 		this.swipeUse = swipeUse;
+ 		//the swipeUse create the handler for mouseDragged and so on
+	}
+
+	@Override
 	protected void updateItem(SampleItem item, boolean empty)
 	{
  		super.updateItem(item, empty);
@@ -65,6 +87,7 @@ public class ListCellFactory extends ListCell<SampleItem>
 		
 		if(stackPane == null)
 		{
+			System.out.println("AUFRUF stackpane");
 			stackPane = new StackPane();
 				
 			bottomContent = new HBox(15);
@@ -98,9 +121,9 @@ public class ListCellFactory extends ListCell<SampleItem>
 					
 
 						
-						sceneWidth = overlayContent.getScene().getWidth();
-						sceneHeight = overlayContent.getScene().getHeight();
-						System.out.println("scene w: " + sceneWidth + " h: " + sceneHeight);
+						//sceneWidth = overlayContent.getScene().getWidth();
+						//sceneHeight = overlayContent.getScene().getHeight();
+						//System.out.println("scene w: " + sceneWidth + " h: " + sceneHeight);
 						cursor = Cursor.MOVE;
 						//Punkt muss von der Scene genommen werden weil später das layoutx von HBoxContent angepasst wird.
 						startingPoint = event.getSceneX();
@@ -209,8 +232,9 @@ public class ListCellFactory extends ListCell<SampleItem>
 			add.setAlignment(Pos.BASELINE_RIGHT);
 			
 			System.out.println("bottomContent " + bottomContent.getWidth() + " " + bottomContent.getHeight());
-			
-			bottomContent.getChildren().addAll(UIToolBox.createHorizontalSpacer(), minus, add);
+			//wird benötigt für Gluon da funktioniert das Rendering anscheinend anders
+			if(!bottomContent.getChildren().contains(minus) && !bottomContent.getChildren().contains(add))
+				bottomContent.getChildren().addAll(UIToolBox.createHorizontalSpacer(), minus, add);
 		
 			labelContainer.setText(shownItem.getDescription());
 		}

@@ -8,23 +8,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.SwipeEvent;
-import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import list.ListCellFactory.SWIPE_USE;
+import list.overlay.OverlayContentPane.SWIPE_USE;
 
-public class ExampleCellFactoryList extends Application  {
+
+public class SecondExampleCellFactoryList extends Application  {
 
 	
 	private ListView<SampleItem> listView;
@@ -49,8 +44,9 @@ public class ExampleCellFactoryList extends Application  {
 		
 		selectedGateway = new ComboBox<String>();
 		List<String> itemList = new ArrayList<String>();
-		itemList.add("Gateway 1");
-		itemList.add("Gateway 2");
+		itemList.add("Swipe Both Example");
+		itemList.add("Swipe Left Example");
+		itemList.add("Swipe Right Example");
 		ObservableList<String> obsList = FXCollections.observableArrayList(itemList);
 		selectedGateway.getItems().addAll(obsList);
 		selectedGateway.getSelectionModel().select(1);
@@ -74,7 +70,7 @@ public class ExampleCellFactoryList extends Application  {
 		
 		
 		listView = new ListView<SampleItem>();
-		listView.setCellFactory(c -> new ListCellFactory(SWIPE_USE.SWIPE_LEFT_ALLOWED));
+		listView.setCellFactory(c -> new SecondListCellFactory(SWIPE_USE.SWIPE_LEFT_ALLOWED));
 	
 		VBox.setVgrow(listView, Priority.ALWAYS);
 		contentBox.getChildren().add(listView);
@@ -97,10 +93,41 @@ public class ExampleCellFactoryList extends Application  {
 	{
 		
 		//TODO
+		listView.setCellFactory(null);
+		
+		int selectedIndex = selectedGateway.getSelectionModel().getSelectedIndex();
+		
+		switch(selectedIndex)
+		{
+			//swipe both
+			case 0:
+				listView.setCellFactory(c -> new SecondListCellFactory(SWIPE_USE.SWIPE_BOTH_ALLOWED));
+				break;
+			//swipe left
+			case 1:
+				listView.setCellFactory(c -> new SecondListCellFactory(SWIPE_USE.SWIPE_LEFT_ALLOWED));
+				break;
+				//swipe right
+			case 2:
+				listView.setCellFactory(c -> new SecondListCellFactory(SWIPE_USE.SWIPE_RIGHT_ALLOWED));
+				break;
+		}
+		
+	
 		
 		listView.getItems().clear();
 
 		ObservableList<SampleItem> obsList = null;
+		
+		List<SampleItem> itemList = new ArrayList<SampleItem>();
+		itemList.add(new SampleItem(1));
+		itemList.add(new SampleItem(2));
+		itemList.add(new SampleItem(3));
+		itemList.add(new SampleItem(4));
+		
+		obsList = FXCollections.observableArrayList(itemList);
+		
+		/*
 		if(selectedGateway.getSelectionModel().getSelectedIndex() == 0)
 		{
 			obsList = FXCollections.emptyObservableList();
@@ -116,7 +143,7 @@ public class ExampleCellFactoryList extends Application  {
 			obsList = FXCollections.observableArrayList(itemList);
 			
 			
-		}
+		}*/
 		
 		listView.getItems().addAll(obsList);
 		
