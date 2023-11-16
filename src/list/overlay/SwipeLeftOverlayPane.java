@@ -50,7 +50,7 @@ public class SwipeLeftOverlayPane extends OverlayContentPane
 					if(getSwipe() == SWIPE.SWIPE_LEFT)
 					{
 						
-						if(!isMinOneNodeInOverlay())
+						if(!isMinOneNodeInOverlay(SWIPE.SWIPE_LEFT))
 						{
 							newPositon = contentNodeTree.get(FIRST_RIGHT_CONTENT_INDEX).getLayoutX() - SwipeLeftOverlayPane.this.getComponentGap() - SwipeLeftOverlayPane.this.getWidth();
 							SwipeLeftOverlayPane.this.setSwippedEndPosition(SWIPE.SWIPE_LEFT);
@@ -103,22 +103,6 @@ public class SwipeLeftOverlayPane extends OverlayContentPane
 	}
 
 	
-	/**
-	 * Every node in the bottom pane is in the overlay, wenn the overlay has the layout x coordinate 0
-	 * @return
-	 */
-	private boolean isMinOneNodeInOverlay() 
-	{
-		for(Entry<Integer, Node> entry : contentNodeTree.entrySet())
-		{
-			//wenn vorhanden dann sofort Abbruch
-			if(SwipeLeftOverlayPane.this.getBoundsInParent().contains(entry.getValue().getBoundsInParent()))
-			{
-				return true;
-			}
-			
-		}
-		return false;
-	}
+	
 
 }

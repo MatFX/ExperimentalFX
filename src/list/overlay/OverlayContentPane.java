@@ -1,6 +1,7 @@
 package list.overlay;
 
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -173,5 +174,36 @@ public abstract class OverlayContentPane extends HBox
 		
 	}
 	
+	/**
+	 * Every node in the bottom pane is in the overlay, wenn the overlay has the layout x coordinate 0
+	 * @param swipePosition 
+	 * @return
+	 */
+	protected boolean isMinOneNodeInOverlay(SWIPE toSwipePosition) 
+	{
+		//if to left the nodes with positive keys are needed
+		
+		//if to right the nodes with negative keys are needed to check
+		
+		for(Entry<Integer, Node> entry : contentNodeTree.entrySet())
+		{
+			if(entry.getKey() > 0 && toSwipePosition == SWIPE.SWIPE_LEFT )
+			{
+				if(getBoundsInParent().contains(entry.getValue().getBoundsInParent()))
+				{
+					return true;
+				}
+			}
+			else if(entry.getKey() < 0 && toSwipePosition == SWIPE.SWIPE_RIGHT )
+			{
+				if(getBoundsInParent().contains(entry.getValue().getBoundsInParent()))
+				{
+					return true;
+				}
+			}
+			
+		}
+		return false;
+	}
 
 }

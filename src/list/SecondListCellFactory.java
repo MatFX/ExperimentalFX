@@ -128,7 +128,10 @@ public class SecondListCellFactory extends ListCell<SampleItem>
 			System.out.println("bottomContent " + bottomContent.getWidth() + " " + bottomContent.getHeight());
 			//wird benötigt für Gluon da funktioniert das Rendering anscheinend anders
 			if(!bottomContent.getChildren().contains(minus) && !bottomContent.getChildren().contains(add))
-				bottomContent.getChildren().addAll(UIToolBox.createHorizontalSpacer(), minus, add);
+			{
+				
+				bottomContent.getChildren().addAll(right_add, left_minus, UIToolBox.createHorizontalSpacer(), minus, add);
+			}
 		
 			labelContainer.setText(shownItem.getDescription());
 		}
