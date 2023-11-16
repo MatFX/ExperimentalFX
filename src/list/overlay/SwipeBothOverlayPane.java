@@ -8,7 +8,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 
-
 public class SwipeBothOverlayPane extends OverlayContentPane
 {
 
@@ -49,10 +48,7 @@ public class SwipeBothOverlayPane extends OverlayContentPane
 
 					double newPositon = 0;
 					
-					System.out.println("swipe wohin: " + getSwipe() + " end position " + getSwippedEndPosition());
-					
-					
-					if(getSwipe() == SWIPE.SWIPE_LEFT)
+					if(getSwipe() == SWIPE.SWIPE_LEFT && SwipeBothOverlayPane.this.getSwippedEndPosition() != SWIPE.SWIPE_RIGHT)
 					{
 						//Positionermittlung für Bewegung nach links aber nur wenn nicht die Endposition erreicht wurde
 						if(!isMinOneNodeInOverlay(SWIPE.SWIPE_LEFT) && SwipeBothOverlayPane.this.getSwippedEndPosition() == SWIPE.NO_DETECTION)
@@ -64,7 +60,7 @@ public class SwipeBothOverlayPane extends OverlayContentPane
 							newPositon = SwipeBothOverlayPane.this.getLayoutX() - result;
 					}
 					//rechts und keine keine Endposition links (=> Ermittlung der Position )
-					else if(getSwipe() == SWIPE.SWIPE_RIGHT && SwipeBothOverlayPane.this.getSwippedEndPosition() == SWIPE.NO_DETECTION)
+					else if(getSwipe() == SWIPE.SWIPE_RIGHT && SwipeBothOverlayPane.this.getSwippedEndPosition() != SWIPE.SWIPE_LEFT)
 					{
 						if(!isMinOneNodeInOverlay(SWIPE.SWIPE_RIGHT))
 						{
@@ -93,6 +89,7 @@ public class SwipeBothOverlayPane extends OverlayContentPane
 					SwipeBothOverlayPane.this.setTranslateX(newPositon);
 					event.consume();
 					
+					
 					if(SwipeBothOverlayPane.this.getSwippedEndPosition() != SWIPE.NO_DETECTION)
 					{
 						SwipeBothOverlayPane.this.setCursorInfo(Cursor.NONE);
@@ -112,7 +109,14 @@ public class SwipeBothOverlayPane extends OverlayContentPane
 
 			@Override
 			public void handle(MouseEvent event) {
-				// TODO Auto-generated method stub
+
+
+				if(SwipeBothOverlayPane.this.getCursorInfo() == Cursor.MOVE && SwipeBothOverlayPane.this.getSwippedEndPosition() == SWIPE.NO_DETECTION)
+				{
+					SwipeBothOverlayPane.this.setCursorInfo(Cursor.NONE);
+					SwipeBothOverlayPane.this.setSwipe(SWIPE.NO_DETECTION);
+					SwipeBothOverlayPane.this.setTranslateX(0);
+				}
 				
 			}
 			

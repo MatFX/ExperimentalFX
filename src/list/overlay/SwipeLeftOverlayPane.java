@@ -1,6 +1,5 @@
 package list.overlay;
 
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javafx.event.EventHandler;

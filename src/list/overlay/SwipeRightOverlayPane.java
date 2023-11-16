@@ -6,8 +6,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
-import list.overlay.OverlayContentPane.SWIPE;
-
 
 
 public class SwipeRightOverlayPane extends OverlayContentPane
