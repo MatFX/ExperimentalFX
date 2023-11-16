@@ -67,7 +67,6 @@ public class SecondListCellFactory extends ListCell<SampleItem>
 		
 		if(stackPane == null)
 		{
-			System.out.println("AUFRUF stackpane");
 			stackPane = new StackPane();
 				
 			bottomContent = new HBox(15);
@@ -115,7 +114,6 @@ public class SecondListCellFactory extends ListCell<SampleItem>
 		
 		if(item != null)
 		{
-			System.out.println("call Item " );
 			this.shownItem = item;
 			stackPane.setStyle("-fx-background-color: #00334d;");
 			bottomContent.setStyle("-fx-background-color: #0088cc;");
@@ -125,8 +123,7 @@ public class SecondListCellFactory extends ListCell<SampleItem>
 			overlayContent.setStyle("-fx-background-color: #66ccff;"); 
 			
 			add.setAlignment(Pos.BASELINE_RIGHT);
-			
-			System.out.println("bottomContent " + bottomContent.getWidth() + " " + bottomContent.getHeight());
+		
 			//wird benötigt für Gluon da funktioniert das Rendering anscheinend anders
 			if(!bottomContent.getChildren().contains(minus) && !bottomContent.getChildren().contains(add))
 			{

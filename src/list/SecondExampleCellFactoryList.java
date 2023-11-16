@@ -127,24 +127,6 @@ public class SecondExampleCellFactoryList extends Application  {
 		
 		obsList = FXCollections.observableArrayList(itemList);
 		
-		/*
-		if(selectedGateway.getSelectionModel().getSelectedIndex() == 0)
-		{
-			obsList = FXCollections.emptyObservableList();
-		}
-		else
-		{
-			List<SampleItem> itemList = new ArrayList<SampleItem>();
-			itemList.add(new SampleItem(1));
-			itemList.add(new SampleItem(2));
-			itemList.add(new SampleItem(3));
-			itemList.add(new SampleItem(4));
-			
-			obsList = FXCollections.observableArrayList(itemList);
-			
-			
-		}*/
-		
 		listView.getItems().addAll(obsList);
 		
 	}
