@@ -29,15 +29,11 @@ public class SwipeLeftOverlayPane extends OverlayContentPane
 					if(SwipeLeftOverlayPane.this.getStartingPoint() > SwipeLeftOverlayPane.this.getMovingPoint())
 					{
 						setSwipe(SWIPE.SWIPE_LEFT);
-
 						result = SwipeLeftOverlayPane.this.getStartingPoint() - SwipeLeftOverlayPane.this.getMovingPoint();
 					}
 					else if(SwipeLeftOverlayPane.this.getStartingPoint() < SwipeLeftOverlayPane.this.getMovingPoint())
 					{
 						SwipeLeftOverlayPane.this.setSwipe(SWIPE.SWIPE_RIGHT);
-						//swipe = SWIPE.SWIPE_RIGHT;
-						//result = movedPoint - startingPoint;
-						
 					}
 					else
 					{

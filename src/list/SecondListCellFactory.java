@@ -89,7 +89,8 @@ public class SecondListCellFactory extends ListCell<SampleItem>
 				contentNodeTree.put(1, minus);
 				contentNodeTree.put(2, add);
 			}
-			else if(this.swipeUse == SWIPE_USE.SWIPE_RIGHT_ALLOWED  || this.swipeUse == SWIPE_USE.SWIPE_BOTH_ALLOWED)
+			
+			if(this.swipeUse == SWIPE_USE.SWIPE_RIGHT_ALLOWED  || this.swipeUse == SWIPE_USE.SWIPE_BOTH_ALLOWED)
 			{
 				contentNodeTree.put(-1, left_minus);
 				contentNodeTree.put(-2, right_add);

@@ -36,10 +36,8 @@ public class SwipeRightOverlayPane extends OverlayContentPane
 					}
 					else if(SwipeRightOverlayPane.this.getStartingPoint() < SwipeRightOverlayPane.this.getMovingPoint())
 					{
-						System.out.println("Rechtsbewegung");
 						SwipeRightOverlayPane.this.setSwipe(SWIPE.SWIPE_RIGHT);
 						result = SwipeRightOverlayPane.this.getMovingPoint() - SwipeRightOverlayPane.this.getStartingPoint();
-						System.out.println("result " + result);
 					}
 					else
 					{
@@ -51,15 +49,11 @@ public class SwipeRightOverlayPane extends OverlayContentPane
 					
 					if(SwipeRightOverlayPane.this.getSwipe() == SWIPE.SWIPE_RIGHT)
 					{
-						System.out.println(">> " + !isMinOneNodeInOverlay(SWIPE.SWIPE_RIGHT));
 						if(!isMinOneNodeInOverlay(SWIPE.SWIPE_RIGHT))
 						{
-							
 							newPositon = contentNodeTree.get(FIRST_LEFT_CONTENT_INDEX).getLayoutX() + contentNodeTree.get(FIRST_LEFT_CONTENT_INDEX).getLayoutBounds().getWidth()
 									+ SwipeRightOverlayPane.this.getComponentGap();
 							SwipeRightOverlayPane.this.setSwippedEndPosition(SWIPE.SWIPE_RIGHT);
-							
-							
 						}
 						else
 							newPositon = result;

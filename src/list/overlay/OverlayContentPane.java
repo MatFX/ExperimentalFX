@@ -97,12 +97,7 @@ public abstract class OverlayContentPane extends HBox
 		}
 		return null;
 	}
-	
-	
-	
-	
-
-	//TODO evtl. raus
+		
 	public Cursor getCursorInfo() {
 		return cursor;
 	}
