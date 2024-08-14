@@ -230,19 +230,6 @@ public class RGBWDimmerControl extends Region
 				params.setFill(Color.TRANSPARENT);
 				Image snapshot = canvasColoredCircle.snapshot(params, null);
 				
-				
-				/* TODO raus
-				File outputFile = new File("./test.png");
-			    BufferedImage bImage = SwingFXUtils.fromFXImage(snapshot, null);
-			    //try {
-			      try {
-					ImageIO.write(bImage, "png", outputFile);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
-				
-				
 				PixelReader pixReader = snapshot.getPixelReader();
 				
 				Color selectedColor = pixReader.getColor((int)result.getIntersectedPoint().getX(), (int)result.getIntersectedPoint().getY());
